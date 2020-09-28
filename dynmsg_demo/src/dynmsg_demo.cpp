@@ -165,6 +165,30 @@ member_value_to_string(
 }
 
 
+std::stringstream print_message(
+  const rosidl_typesupport_introspection_c__MessageMembers *type_info,
+  std::shared_ptr<uint8_t> message)
+{
+  std::stringstream output;
+  // Iterate over the message members
+  RCUTILS_LOG_INFO_NAMED(
+    "dynmsg_demo",
+    "Received message is of type %s/%s",
+    type_info->message_namespace_,
+    type_info->message_name_);
+  RCUTILS_LOG_INFO_NAMED("dynmsg_demo", "Message field values:");
+  for (uint32_t ii = 0; ii < type_info->member_count_; ++ii) {
+    RCUTILS_LOG_INFO_NAMED(
+      "dynmsg_demo",
+      "  %s (%s):\t%s",
+      type_info->members_[ii].name_,
+      member_type_to_string(type_info->members_[ii]),
+      member_value_to_string(type_info->members_[ii], message).c_str());
+  }
+  return output;
+}
+
+
 int
 main(int argc, char ** argv) {
   std::string msg_namespace(argv[1]);
@@ -302,21 +326,7 @@ main(int argc, char ** argv) {
     }
   }
 
-  // Iterate over the message members
-  RCUTILS_LOG_INFO_NAMED(
-    "dynmsg_demo",
-    "Received message is of type %s/%s",
-    type_info->message_namespace_,
-    type_info->message_name_);
-  RCUTILS_LOG_INFO_NAMED("dynmsg_demo", "Message field values:");
-  for (uint32_t ii = 0; ii < type_info->member_count_; ++ii) {
-    RCUTILS_LOG_INFO_NAMED(
-      "dynmsg_demo",
-      "  %s (%s):\t%s",
-      type_info->members_[ii].name_,
-      member_type_to_string(type_info->members_[ii]),
-      member_value_to_string(type_info->members_[ii], message).c_str());
-  }
+  print_message(type_info, message);
 
   ret = rcl_node_fini(&node);
   if (ret != RCL_RET_OK) {
