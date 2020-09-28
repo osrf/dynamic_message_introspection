@@ -1,3 +1,5 @@
+#include "cli.hpp"
+
 #include <dlfcn.h>
 #include <sstream>
 #include <unistd.h>
@@ -167,6 +169,8 @@ member_value_to_string(
 
 int
 main(int argc, char ** argv) {
+  auto args = parse_arguments(argc, argv);
+
   std::string msg_namespace(argv[1]);
   std::string msg_type(argv[2]);
 
