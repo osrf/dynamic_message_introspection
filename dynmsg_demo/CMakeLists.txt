@@ -19,10 +19,30 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rcl REQUIRED)
 
+# downloads and imports yaml-cpp into the build tree, we need to do this because we want to
+# statically link yaml-cpp.
+include(FetchContent)
+FetchContent_Declare(yaml-cpp
+  GIT_REPOSITORY https://github.com/jbeder/yaml-cpp
+  GIT_TAG yaml-cpp-0.6.3
+  GIT_SHALLOW true
+  CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DYAML_CPP_BUILD_TESTS=OFF -DYAML_CPP_INSTALL=OFF)
+set(YAML_CPP_BUILD_TESTS OFF)
+set(YAML_CPP_INSTALL OFF)
+FetchContent_MakeAvailable(yaml-cpp)
+
+set(source_files
+  src/cli.cpp
+  src/msg_parser.cpp
+  src/typesupport_utils.cpp
+)
+
 add_executable(dynmsg_demo
   src/dynmsg_demo.cpp
-  src/cli.cpp
+  ${source_files}
 )
+# should have been PRIVATE, but ament uses the old signature and we can't mix them
+target_link_libraries(dynmsg_demo yaml-cpp)
 ament_target_dependencies(dynmsg_demo rcl)
 
 install(TARGETS dynmsg_demo DESTINATION lib/${PROJECT_NAME})
@@ -36,6 +56,20 @@ if(BUILD_TESTING)
   # uncomment the line when this package is not in a git repo
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  # TODO: export main funcs as a static lib so we can use target linking?
+  find_package(PkgConfig REQUIRED)
+  pkg_search_module(GTEST REQUIRED gtest_main)
+  add_executable(dynmsg_demo_test
+    ${source_files}
+    test/msg_parser_test.cpp
+  )
+  # should have been PRIVATE, but ament uses the old signature and we can't mix them
+  target_link_libraries(dynmsg_demo_test yaml-cpp)
+  ament_target_dependencies(dynmsg_demo_test rcl GTEST)
+  target_compile_options(dynmsg_demo_test PUBLIC ${GTEST_CFLAGS})
+  include(GoogleTest)
+  gtest_discover_tests(dynmsg_demo_test)
 endif()
 
 ament_package()
