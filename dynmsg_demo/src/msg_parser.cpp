@@ -1,5 +1,7 @@
 #include "msg_parser.hpp"
 
+#include <yaml-cpp/yaml.h>
+
 #include <rosidl_runtime_c/string.h>
 #include <rosidl_runtime_c/u16string.h>
 #include <rosidl_typesupport_introspection_c/field_types.h>
