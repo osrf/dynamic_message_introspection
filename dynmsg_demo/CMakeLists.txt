@@ -57,6 +57,8 @@ if(BUILD_TESTING)
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 
+  find_package(test_msgs REQUIRED)
+
   # TODO: export main funcs as a static lib so we can use target linking?
   find_package(PkgConfig REQUIRED)
   pkg_search_module(GTEST REQUIRED gtest_main)
@@ -66,7 +68,7 @@ if(BUILD_TESTING)
   )
   # should have been PRIVATE, but ament uses the old signature and we can't mix them
   target_link_libraries(dynmsg_demo_test yaml-cpp)
-  ament_target_dependencies(dynmsg_demo_test rcl GTEST)
+  ament_target_dependencies(dynmsg_demo_test rcl test_msgs GTEST)
   target_compile_options(dynmsg_demo_test PUBLIC ${GTEST_CFLAGS})
   include(GoogleTest)
   gtest_discover_tests(dynmsg_demo_test)

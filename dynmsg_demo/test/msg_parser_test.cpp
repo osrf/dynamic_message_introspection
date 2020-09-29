@@ -5,12 +5,50 @@
 #include <test_msgs/msg/basic_types.h>
 #include <test_msgs/msg/defaults.h>
 #include <test_msgs/msg/nested.h>
+#include <test_msgs/msg/arrays.h>
 
 #include <yaml-cpp/yaml.h>
 
 #include <limits>
 
 #include <gtest/gtest.h>
+
+YAML::Node basic_types_node() {
+  YAML::Node msg;
+  msg["bool_value"] = true;
+  msg["byte_value"] = std::numeric_limits<uint8_t>::max();
+  msg["char_value"] = std::numeric_limits<uint8_t>::min();
+  msg["float32_value"] = 1.1;
+  msg["float64_value"] = 2.1;
+  msg["int8_value"] = std::numeric_limits<int8_t>::min();
+  msg["uint8_value"] = std::numeric_limits<uint8_t>::max();
+  msg["int16_value"] = std::numeric_limits<int16_t>::min();
+  msg["uint16_value"] = std::numeric_limits<uint16_t>::max();
+  msg["int32_value"] = std::numeric_limits<int32_t>::min();
+  msg["uint32_value"] = std::numeric_limits<uint32_t>::max();
+  msg["int64_value"] = std::numeric_limits<int64_t>::min();
+  msg["uint64_value"] = std::numeric_limits<uint64_t>::max();
+  return msg;
+}
+
+void check_basic_types_values(
+    const test_msgs__msg__BasicTypes* converted,
+    const test_msgs__msg__BasicTypes& ros_msg
+) {
+  EXPECT_EQ(converted->bool_value, ros_msg.bool_value);
+  EXPECT_EQ(converted->byte_value, ros_msg.byte_value);
+  EXPECT_EQ(converted->char_value, ros_msg.char_value);
+  EXPECT_EQ(converted->float32_value, ros_msg.float32_value);
+  EXPECT_EQ(converted->float64_value, ros_msg.float64_value);
+  EXPECT_EQ(converted->int8_value, ros_msg.int8_value);
+  EXPECT_EQ(converted->uint8_value, ros_msg.uint8_value);
+  EXPECT_EQ(converted->int16_value, ros_msg.int16_value);
+  EXPECT_EQ(converted->uint16_value, ros_msg.uint16_value);
+  EXPECT_EQ(converted->int32_value, ros_msg.int32_value);
+  EXPECT_EQ(converted->uint32_value, ros_msg.uint32_value);
+  EXPECT_EQ(converted->int64_value, ros_msg.int64_value);
+  EXPECT_EQ(converted->uint64_value, ros_msg.uint64_value);
+}
 
 TEST(MsgParser, String) {
   auto* typeinfo = get_type_info("std_msgs", "String");
@@ -32,20 +70,7 @@ TEST(MsgParser, String) {
 
 TEST(MsgParser, BasicTypes) {
   auto* typeinfo = get_type_info("test_msgs", "BasicTypes");
-  YAML::Node msg;
-  msg["bool_value"] = true;
-  msg["byte_value"] = std::numeric_limits<uint8_t>::max();
-  msg["char_value"] = std::numeric_limits<uint8_t>::min();
-  msg["float32_value"] = 1.1;
-  msg["float64_value"] = 2.1;
-  msg["int8_value"] = std::numeric_limits<int8_t>::min();
-  msg["uint8_value"] = std::numeric_limits<uint8_t>::max();
-  msg["int16_value"] = std::numeric_limits<int16_t>::min();
-  msg["uint16_value"] = std::numeric_limits<uint16_t>::max();
-  msg["int32_value"] = std::numeric_limits<int32_t>::min();
-  msg["uint32_value"] = std::numeric_limits<uint32_t>::max();
-  msg["int64_value"] = std::numeric_limits<int64_t>::min();
-  msg["uint64_value"] = std::numeric_limits<uint64_t>::max();
+  YAML::Node msg = basic_types_node();
   YAML::Emitter emitter;
   emitter << msg;
   auto buffer = yaml_to_rosmsg(emitter.c_str(), typeinfo);
@@ -69,19 +94,7 @@ TEST(MsgParser, BasicTypes) {
   test_msgs__msg__BasicTypes* converted =
     reinterpret_cast<test_msgs__msg__BasicTypes*>(buffer.data());
 
-  EXPECT_EQ(converted->bool_value, ros_msg.bool_value);
-  EXPECT_EQ(converted->byte_value, ros_msg.byte_value);
-  EXPECT_EQ(converted->char_value, ros_msg.char_value);
-  EXPECT_EQ(converted->float32_value, ros_msg.float32_value);
-  EXPECT_EQ(converted->float64_value, ros_msg.float64_value);
-  EXPECT_EQ(converted->int8_value, ros_msg.int8_value);
-  EXPECT_EQ(converted->uint8_value, ros_msg.uint8_value);
-  EXPECT_EQ(converted->int16_value, ros_msg.int16_value);
-  EXPECT_EQ(converted->uint16_value, ros_msg.uint16_value);
-  EXPECT_EQ(converted->int32_value, ros_msg.int32_value);
-  EXPECT_EQ(converted->uint32_value, ros_msg.uint32_value);
-  EXPECT_EQ(converted->int64_value, ros_msg.int64_value);
-  EXPECT_EQ(converted->uint64_value, ros_msg.uint64_value);
+  check_basic_types_values(converted, ros_msg);
 }
 
 TEST(MsgParser, Defaults) {
@@ -125,21 +138,7 @@ TEST(MsgParser, Defaults) {
 TEST(MsgParser, Nested) {
   auto* typeinfo = get_type_info("test_msgs", "Nested");
   YAML::Node msg;
-  msg["basic_types_value"] = YAML::Node();
-  auto basic_types_node = msg["basic_types_value"];
-  basic_types_node["bool_value"] = true;
-  basic_types_node["byte_value"] = std::numeric_limits<uint8_t>::max();
-  basic_types_node["char_value"] = std::numeric_limits<uint8_t>::min();
-  basic_types_node["float32_value"] = 1.1;
-  basic_types_node["float64_value"] = 2.1;
-  basic_types_node["int8_value"] = std::numeric_limits<int8_t>::min();
-  basic_types_node["uint8_value"] = std::numeric_limits<uint8_t>::max();
-  basic_types_node["int16_value"] = std::numeric_limits<int16_t>::min();
-  basic_types_node["uint16_value"] = std::numeric_limits<uint16_t>::max();
-  basic_types_node["int32_value"] = std::numeric_limits<int32_t>::min();
-  basic_types_node["uint32_value"] = std::numeric_limits<uint32_t>::max();
-  basic_types_node["int64_value"] = std::numeric_limits<int64_t>::min();
-  basic_types_node["uint64_value"] = std::numeric_limits<uint64_t>::max();
+  msg["basic_types_value"] = basic_types_node();
   YAML::Emitter emitter;
   emitter << msg;
   auto buffer = yaml_to_rosmsg(emitter.c_str(), typeinfo);
@@ -176,4 +175,118 @@ TEST(MsgParser, Nested) {
   EXPECT_EQ(converted->basic_types_value.uint32_value, ros_msg.basic_types_value.uint32_value);
   EXPECT_EQ(converted->basic_types_value.int64_value, ros_msg.basic_types_value.int64_value);
   EXPECT_EQ(converted->basic_types_value.uint64_value, ros_msg.basic_types_value.uint64_value);
+}
+
+TEST(MsgParser, Arrays) {
+  auto* typeinfo = get_type_info("test_msgs", "Arrays");
+  YAML::Node msg;
+  msg["bool_values"] = std::vector<bool>{true, true, false};
+  msg["byte_values"] = std::vector<uint8_t>{1 ,2 ,3};
+  msg["char_values"] = std::vector<uint8_t>{1, 2, 3};
+  msg["float32_values"] = std::vector<float>{1, 2, 3};
+  msg["float64_values"] = std::vector<double>{10, 20, 30};
+  msg["int8_values"] = std::vector<int8_t>{1, 2, 3};
+  msg["uint8_values"] = std::vector<uint8_t>{4, 5, 6};
+  msg["int16_values"] = std::vector<int16_t>{10, 20, 30};
+  msg["uint16_values"] = std::vector<uint16_t>{40, 50, 60};
+  msg["int32_values"] = std::vector<int32_t>{100, 200, 300};
+  msg["uint32_values"] = std::vector<uint32_t>{400, 500, 600};
+  msg["int64_values"] = std::vector<int64_t>{1000, 2000, 3000};
+  msg["uint64_values"] = std::vector<uint64_t>{4000, 5000, 6000};
+  msg["string_values"] = std::vector<std::string>{"hello", "world", "!"};
+  msg["basic_types_values"] = std::vector<YAML::Node>{basic_types_node(), basic_types_node(), basic_types_node()};
+  YAML::Emitter emitter;
+  emitter << msg;
+  auto buffer = yaml_to_rosmsg(emitter.c_str(), typeinfo);
+
+  test_msgs__msg__Arrays* ros_msg = test_msgs__msg__Arrays__create();
+  ros_msg->bool_values[0] = true;
+  ros_msg->bool_values[1] = true;
+  ros_msg->bool_values[2] = false;
+  ros_msg->byte_values[0] = 1;
+  ros_msg->byte_values[1] = 2;
+  ros_msg->byte_values[2] = 3;
+  ros_msg->char_values[0] = 1;
+  ros_msg->char_values[1] = 2;
+  ros_msg->char_values[2] = 3;
+  ros_msg->float32_values[0] = 1;
+  ros_msg->float32_values[1] = 2;
+  ros_msg->float32_values[2] = 3;
+  ros_msg->float64_values[0] = 10;
+  ros_msg->float64_values[1] = 20;
+  ros_msg->float64_values[2] = 30;
+  ros_msg->int8_values[0] = 1;
+  ros_msg->int8_values[1] = 2;
+  ros_msg->int8_values[2] = 3;
+  ros_msg->uint8_values[0] = 4;
+  ros_msg->uint8_values[1] = 5;
+  ros_msg->uint8_values[2] = 6;
+  ros_msg->int16_values[0] = 10;
+  ros_msg->int16_values[1] = 20;
+  ros_msg->int16_values[2] = 30;
+  ros_msg->uint16_values[0] = 40;
+  ros_msg->uint16_values[1] = 50;
+  ros_msg->uint16_values[2] = 60;
+  ros_msg->int32_values[0] = 100;
+  ros_msg->int32_values[1] = 200;
+  ros_msg->int32_values[2] = 300;
+  ros_msg->uint32_values[0] = 400;
+  ros_msg->uint32_values[1] = 500;
+  ros_msg->uint32_values[2] = 600;
+  ros_msg->int64_values[0] = 1000;
+  ros_msg->int64_values[1] = 2000;
+  ros_msg->int64_values[2] = 3000;
+  ros_msg->uint64_values[0] = 4000;
+  ros_msg->uint64_values[1] = 5000;
+  ros_msg->uint64_values[2] = 6000;
+  std::vector<std::string> strings{"hello", "world", "!"};
+  ros_msg->string_values[0].data = new char[strings[0].size() + 1];
+  strcpy(ros_msg->string_values[0].data, strings[0].data());
+  ros_msg->string_values[0].size = strings[0].size();
+  ros_msg->string_values[0].capacity = strings[0].size() + 1;
+  ros_msg->string_values[1].data = new char[strings[1].size() + 1];
+  strcpy(ros_msg->string_values[1].data, strings[1].data());
+  ros_msg->string_values[1].size = strings[1].size();
+  ros_msg->string_values[1].capacity = strings[1].size() + 1;
+  ros_msg->string_values[2].data = new char[strings[2].size() + 1];
+  strcpy(ros_msg->string_values[2].data, strings[2].data());
+  ros_msg->string_values[2].size = strings[2].size();
+  ros_msg->string_values[2].capacity = strings[2].size() + 1;
+
+  test_msgs__msg__Arrays* converted =
+    reinterpret_cast<test_msgs__msg__Arrays*>(buffer.data());
+
+  for (size_t i = 0; i < 3; i++) {
+    EXPECT_EQ(converted->bool_values[i], ros_msg->bool_values[i]);
+    EXPECT_EQ(converted->byte_values[i], ros_msg->byte_values[i]);
+    EXPECT_EQ(converted->char_values[i], ros_msg->char_values[i]);
+    EXPECT_EQ(converted->float32_values[i], ros_msg->float32_values[i]);
+    EXPECT_EQ(converted->float64_values[i], ros_msg->float64_values[i]);
+    EXPECT_EQ(converted->int8_values[i], ros_msg->int8_values[i]);
+    EXPECT_EQ(converted->uint8_values[i], ros_msg->uint8_values[i]);
+    EXPECT_EQ(converted->int16_values[i], ros_msg->int16_values[i]);
+    EXPECT_EQ(converted->uint16_values[i], ros_msg->uint16_values[i]);
+    EXPECT_EQ(converted->int32_values[i], ros_msg->int32_values[i]);
+    EXPECT_EQ(converted->uint32_values[i], ros_msg->uint32_values[i]);
+    EXPECT_EQ(converted->int64_values[i], ros_msg->int64_values[i]);
+    EXPECT_EQ(converted->uint64_values[i], ros_msg->uint64_values[i]);
+    EXPECT_STREQ(converted->string_values[i].data, ros_msg->string_values[i].data);
+    check_basic_types_values(&converted->basic_types_values[i], ros_msg->basic_types_values[i]);
+    EXPECT_EQ(converted->bool_values_default[i], ros_msg->bool_values_default[i]);
+    EXPECT_EQ(converted->byte_values_default[i], ros_msg->byte_values_default[i]);
+    EXPECT_EQ(converted->char_values_default[i], ros_msg->char_values_default[i]);
+    EXPECT_EQ(converted->float32_values_default[i], ros_msg->float32_values_default[i]);
+    EXPECT_EQ(converted->float64_values_default[i], ros_msg->float64_values_default[i]);
+    EXPECT_EQ(converted->int8_values_default[i], ros_msg->int8_values_default[i]);
+    EXPECT_EQ(converted->uint8_values_default[i], ros_msg->uint8_values_default[i]);
+    EXPECT_EQ(converted->int16_values_default[i], ros_msg->int16_values_default[i]);
+    EXPECT_EQ(converted->uint16_values_default[i], ros_msg->uint16_values_default[i]);
+    EXPECT_EQ(converted->int32_values_default[i], ros_msg->int32_values_default[i]);
+    EXPECT_EQ(converted->uint32_values_default[i], ros_msg->uint32_values_default[i]);
+    EXPECT_EQ(converted->int64_values_default[i], ros_msg->int64_values_default[i]);
+    EXPECT_EQ(converted->uint64_values_default[i], ros_msg->uint64_values_default[i]);
+    EXPECT_STREQ(converted->string_values_default[i].data, ros_msg->string_values_default[i].data);
+  }
+
+  test_msgs__msg__Arrays__destroy(ros_msg);
 }
