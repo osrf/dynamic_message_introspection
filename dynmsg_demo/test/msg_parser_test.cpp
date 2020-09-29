@@ -1,29 +1,16 @@
 #include "../src/msg_parser.hpp"
 #include "../src/typesupport_utils.hpp"
 
-#include <std_msgs/msg/int32.h>
 #include <std_msgs/msg/string.h>
 #include <test_msgs/msg/basic_types.h>
 #include <test_msgs/msg/defaults.h>
+#include <test_msgs/msg/nested.h>
 
 #include <yaml-cpp/yaml.h>
 
 #include <limits>
 
 #include <gtest/gtest.h>
-
-TEST(MsgParser, Int32) {
-  auto* typeinfo = get_type_info("std_msgs", "Int32");
-  auto buffer = yaml_to_rosmsg("{ data: 123 }", typeinfo);
-
-  std_msgs__msg__Int32 ros_msg{
-    123,
-  };
-
-  std_msgs__msg__Int32* converted = reinterpret_cast<std_msgs__msg__Int32*>(buffer.data());
-
-  EXPECT_EQ(converted->data, ros_msg.data);
-}
 
 TEST(MsgParser, String) {
   auto* typeinfo = get_type_info("std_msgs", "String");
@@ -133,4 +120,60 @@ TEST(MsgParser, Defaults) {
   EXPECT_EQ(converted->uint32_value, ros_msg.uint32_value);
   EXPECT_EQ(converted->int64_value, ros_msg.int64_value);
   EXPECT_EQ(converted->uint64_value, ros_msg.uint64_value);
+}
+
+TEST(MsgParser, Nested) {
+  auto* typeinfo = get_type_info("test_msgs", "Nested");
+  YAML::Node msg;
+  msg["basic_types_value"] = YAML::Node();
+  auto basic_types_node = msg["basic_types_value"];
+  basic_types_node["bool_value"] = true;
+  basic_types_node["byte_value"] = std::numeric_limits<uint8_t>::max();
+  basic_types_node["char_value"] = std::numeric_limits<uint8_t>::min();
+  basic_types_node["float32_value"] = 1.1;
+  basic_types_node["float64_value"] = 2.1;
+  basic_types_node["int8_value"] = std::numeric_limits<int8_t>::min();
+  basic_types_node["uint8_value"] = std::numeric_limits<uint8_t>::max();
+  basic_types_node["int16_value"] = std::numeric_limits<int16_t>::min();
+  basic_types_node["uint16_value"] = std::numeric_limits<uint16_t>::max();
+  basic_types_node["int32_value"] = std::numeric_limits<int32_t>::min();
+  basic_types_node["uint32_value"] = std::numeric_limits<uint32_t>::max();
+  basic_types_node["int64_value"] = std::numeric_limits<int64_t>::min();
+  basic_types_node["uint64_value"] = std::numeric_limits<uint64_t>::max();
+  YAML::Emitter emitter;
+  emitter << msg;
+  auto buffer = yaml_to_rosmsg(emitter.c_str(), typeinfo);
+
+  test_msgs__msg__Nested ros_msg{{
+    true,
+    std::numeric_limits<uint8_t>::max(),
+    std::numeric_limits<uint8_t>::min(),
+    1.1,
+    2.1,
+    std::numeric_limits<int8_t>::min(),
+    std::numeric_limits<uint8_t>::max(),
+    std::numeric_limits<int16_t>::min(),
+    std::numeric_limits<uint16_t>::max(),
+    std::numeric_limits<int32_t>::min(),
+    std::numeric_limits<uint32_t>::max(),
+    std::numeric_limits<int64_t>::min(),
+    std::numeric_limits<uint64_t>::max()
+  }};
+
+  test_msgs__msg__Nested* converted =
+    reinterpret_cast<test_msgs__msg__Nested*>(buffer.data());
+
+  EXPECT_EQ(converted->basic_types_value.bool_value, ros_msg.basic_types_value.bool_value);
+  EXPECT_EQ(converted->basic_types_value.byte_value, ros_msg.basic_types_value.byte_value);
+  EXPECT_EQ(converted->basic_types_value.char_value, ros_msg.basic_types_value.char_value);
+  EXPECT_EQ(converted->basic_types_value.float32_value, ros_msg.basic_types_value.float32_value);
+  EXPECT_EQ(converted->basic_types_value.float64_value, ros_msg.basic_types_value.float64_value);
+  EXPECT_EQ(converted->basic_types_value.int8_value, ros_msg.basic_types_value.int8_value);
+  EXPECT_EQ(converted->basic_types_value.uint8_value, ros_msg.basic_types_value.uint8_value);
+  EXPECT_EQ(converted->basic_types_value.int16_value, ros_msg.basic_types_value.int16_value);
+  EXPECT_EQ(converted->basic_types_value.uint16_value, ros_msg.basic_types_value.uint16_value);
+  EXPECT_EQ(converted->basic_types_value.int32_value, ros_msg.basic_types_value.int32_value);
+  EXPECT_EQ(converted->basic_types_value.uint32_value, ros_msg.basic_types_value.uint32_value);
+  EXPECT_EQ(converted->basic_types_value.int64_value, ros_msg.basic_types_value.int64_value);
+  EXPECT_EQ(converted->basic_types_value.uint64_value, ros_msg.basic_types_value.uint64_value);
 }
