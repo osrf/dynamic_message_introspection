@@ -13,7 +13,8 @@ void yaml_to_rosmsg_impl(
   uint8_t* buffer
 ) {
   if (!root[member.name_]) {
-    throw std::runtime_error("missing field \"" + std::string(member.name_) + "\"");
+    RCUTILS_LOG_DEBUG_NAMED("dynmsg_demo", "\"%s\" not found in yaml", member.name_);
+    return;
   }
 
   switch (member.type_id_) {
@@ -117,6 +118,7 @@ void yaml_to_rosmsg_impl(
 std::vector<uint8_t> yaml_to_rosmsg(const std::string& yaml_str, const TypeInfo* typeinfo) {
   YAML::Node root = YAML::Load(yaml_str);
   std::vector<uint8_t> buffer(typeinfo->size_of_);
+  typeinfo->init_function(buffer.data(), ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY);
   for (uint32_t i = 0; i < typeinfo->member_count_; i++) {
     const auto& member = typeinfo->members_[i];
     yaml_to_rosmsg_impl(root, member, buffer.data());

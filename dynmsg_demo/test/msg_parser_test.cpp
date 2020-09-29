@@ -4,6 +4,7 @@
 #include <std_msgs/msg/int32.h>
 #include <std_msgs/msg/string.h>
 #include <test_msgs/msg/basic_types.h>
+#include <test_msgs/msg/defaults.h>
 
 #include <yaml-cpp/yaml.h>
 
@@ -76,6 +77,44 @@ TEST(MsgParser, BasicTypes) {
     std::numeric_limits<uint32_t>::max(),
     std::numeric_limits<int64_t>::min(),
     std::numeric_limits<uint64_t>::max()
+  };
+
+  test_msgs__msg__BasicTypes* converted =
+    reinterpret_cast<test_msgs__msg__BasicTypes*>(buffer.data());
+
+  EXPECT_EQ(converted->bool_value, ros_msg.bool_value);
+  EXPECT_EQ(converted->byte_value, ros_msg.byte_value);
+  EXPECT_EQ(converted->char_value, ros_msg.char_value);
+  EXPECT_EQ(converted->float32_value, ros_msg.float32_value);
+  EXPECT_EQ(converted->float64_value, ros_msg.float64_value);
+  EXPECT_EQ(converted->int8_value, ros_msg.int8_value);
+  EXPECT_EQ(converted->uint8_value, ros_msg.uint8_value);
+  EXPECT_EQ(converted->int16_value, ros_msg.int16_value);
+  EXPECT_EQ(converted->uint16_value, ros_msg.uint16_value);
+  EXPECT_EQ(converted->int32_value, ros_msg.int32_value);
+  EXPECT_EQ(converted->uint32_value, ros_msg.uint32_value);
+  EXPECT_EQ(converted->int64_value, ros_msg.int64_value);
+  EXPECT_EQ(converted->uint64_value, ros_msg.uint64_value);
+}
+
+TEST(MsgParser, Defaults) {
+  auto* typeinfo = get_type_info("test_msgs", "Defaults");
+  auto buffer = yaml_to_rosmsg("", typeinfo);
+
+  test_msgs__msg__Defaults ros_msg{
+    true,
+    50,
+    100,
+    1.125,
+    1.125,
+    -50,
+    200,
+    -1000,
+    2000,
+    -30000,
+    60000,
+    -40000000,
+    50000000,
   };
 
   test_msgs__msg__BasicTypes* converted =
