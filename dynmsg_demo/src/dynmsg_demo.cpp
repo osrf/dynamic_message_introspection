@@ -1,9 +1,12 @@
 #include <dlfcn.h>
 #include <unistd.h>
 
+#include <clocale>
 #include <iostream>
+#include <locale>
 #include <memory>
 #include <sstream>
+#include <vector>
 
 #include "rcl/context.h"
 #include "rcl/init_options.h"
@@ -17,12 +20,40 @@
 
 #include "rcutils/logging_macros.h"
 
-void message_to_string(
+void
+message_to_string(
   const rosidl_typesupport_introspection_c__MessageMembers * type_info,
   std::shared_ptr<uint8_t> message_data,
   size_t indent_level,
   std::stringstream &output);
 
+
+std::string
+widestring_to_string(std::u16string * input)
+{
+  std::setlocale(LC_ALL, "");
+  const std::locale locale("");
+  typedef std::codecvt<char16_t, char, std::mbstate_t> converter_type;
+  const converter_type &converter = std::use_facet<converter_type>(locale);
+  std::vector<char> to; to = std::vector<char>(input->length() * converter.max_length());
+  std::mbstate_t state;
+  const char16_t * from_next;
+  char * to_next;
+  const converter_type::result result = converter.out(
+    state,
+    input->data(),
+    input->data() + input->length(),
+    from_next,
+    &to[0],
+    &to[0] + to.size(),
+    to_next);
+  if (result == converter_type::ok or result == converter_type::noconv) {
+    const std::string s(&to[0], to_next);
+    return s;
+  } else {
+    return "failed to convert u16string";
+  }
+}
 
 const char *
 member_type_to_string(const rosidl_typesupport_introspection_c__MessageMember &type_info)
@@ -78,89 +109,57 @@ member_value_to_string(
   std::stringstream value;
   switch (type_info.type_id_) {
     case rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT:
-      float float_data;
-      memcpy(&float_data, &message_data.get()[type_info.offset_], sizeof(float));
-      value << float_data;
+      value << *reinterpret_cast<float*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE:
-      double double_data;
-      memcpy(&double_data, &message_data.get()[type_info.offset_], sizeof(double));
-      value << double_data;
+      value << *reinterpret_cast<double*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE:
-      long double ldouble_data;
-      memcpy(&ldouble_data, &message_data.get()[type_info.offset_], sizeof(long double));
-      value << ldouble_data;
+      value << *reinterpret_cast<long double*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_CHAR:
-      char char_data;
-      memcpy(&char_data, &message_data.get()[type_info.offset_], sizeof(char));
-      value << char_data;
+      value << *reinterpret_cast<unsigned char*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR:
-      wchar_t wchar_t_data;
-      memcpy(&wchar_t_data, &message_data.get()[type_info.offset_], sizeof(wchar_t));
-      value << wchar_t_data;
+      value << *reinterpret_cast<char16_t*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN:
-      bool bool_data;
-      memcpy(&bool_data, &message_data.get()[type_info.offset_], sizeof(bool));
-      value << bool_data;
+      value << *reinterpret_cast<bool*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_OCTET:
-      uint8_t octet_data;
-      memcpy(&octet_data, &message_data.get()[type_info.offset_], sizeof(uint8_t));
-      value << octet_data;
+      value << *reinterpret_cast<unsigned char*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT8:
-      uint8_t uint8_t_data;
-      memcpy(&uint8_t_data, &message_data.get()[type_info.offset_], sizeof(uint8_t));
-      value << uint8_t_data;
+      value << *reinterpret_cast<uint8_t*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT8:
-      int8_t int8_t_data;
-      memcpy(&int8_t_data, &message_data.get()[type_info.offset_], sizeof(int8_t));
-      value << int8_t_data;
+      value << *reinterpret_cast<int8_t*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT16:
-      uint16_t uint16_t_data;
-      memcpy(&uint16_t_data, &message_data.get()[type_info.offset_], sizeof(uint16_t));
-      value << uint16_t_data;
+      value << *reinterpret_cast<uint16_t*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT16:
-      int16_t int16_t_data;
-      memcpy(&int16_t_data, &message_data.get()[type_info.offset_], sizeof(int16_t));
-      value << int16_t_data;
+      value << *reinterpret_cast<int16_t*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT32:
-      uint32_t uint32_t_data;
-      memcpy(&uint32_t_data, &message_data.get()[type_info.offset_], sizeof(uint32_t));
-      value << uint32_t_data;
+      value << *reinterpret_cast<uint32_t*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT32:
-      int32_t int32_t_data;
-      memcpy(&int32_t_data, &message_data.get()[type_info.offset_], sizeof(int32_t));
-      value << int32_t_data;
+      value << *reinterpret_cast<int32_t*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT64:
-      uint64_t uint64_t_data;
-      memcpy(&uint64_t_data, &message_data.get()[type_info.offset_], sizeof(uint64_t));
-      value << uint64_t_data;
+      value << *reinterpret_cast<uint64_t*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT64:
-      int64_t int64_t_data;
-      memcpy(&int64_t_data, &message_data.get()[type_info.offset_], sizeof(int64_t));
-      value << int64_t_data;
+      value << *reinterpret_cast<int64_t*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_STRING:
-      char string_data[1024];
-      strncpy(string_data, reinterpret_cast<const char*>(&message_data.get()[type_info.offset_]), 1024);
-      value << string_data;
+      value << *reinterpret_cast<std::string*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING:
-      char wstring_data[1024];
-      memcpy(&wstring_data, &message_data.get()[type_info.offset_], type_info.array_size_);
-      value << wstring_data;
+      value << widestring_to_string(
+        reinterpret_cast<std::u16string*>(&message_data.get()[type_info.offset_]));
+      //value << *reinterpret_cast<std::u16string*>(&message_data.get()[type_info.offset_]);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE:
       value << "recursively handle sub-message here";
