@@ -1,6 +1,7 @@
 #include "../src/msg_parser.hpp"
 #include "../src/typesupport_utils.hpp"
 
+#include <dynmsg_msgs/msg/wide_string.h>
 #include <std_msgs/msg/string.h>
 #include <test_msgs/msg/basic_types.h>
 #include <test_msgs/msg/defaults.h>
@@ -81,6 +82,28 @@ TEST(MsgParser, String) {
     reinterpret_cast<rosidl_runtime_c__String*>(generic_msg.data);
 
   EXPECT_STREQ(created_msg->data, ros_msg.data.data);
+
+  ros_message_destroy(&generic_msg);
+}
+
+TEST(MsgParser, WideString) {
+  auto generic_msg = yaml_to_rosmsg("{ data: hello }", "dynmsg_msgs", "WideString");
+
+  std::u16string ws(u"hello");
+  dynmsg_msgs__msg__WideString ros_msg{
+    {
+      reinterpret_cast<uint_least16_t*>(const_cast<char16_t*>(ws.data())),
+      // should these by the number of codepoints or the number of bytes?
+      10,
+      12
+    },
+  };
+
+  rosidl_runtime_c__U16String* created_msg =
+    reinterpret_cast<rosidl_runtime_c__U16String*>(generic_msg.data);
+
+  std::u16string converted(reinterpret_cast<char16_t*>(created_msg->data));
+  EXPECT_EQ(converted, ws);
 
   ros_message_destroy(&generic_msg);
 }

@@ -1,4 +1,5 @@
 #include "msg_parser.hpp"
+#include "string_utils.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -26,7 +27,7 @@ void write_member<std::string>(const YAML::Node& yaml, uint8_t* buffer, const Me
     std::vector<std::string> sequence = yaml[member.name_].as<std::vector<std::string>>();
     for (size_t i = 0; i < member.array_size_; i++) {
       rosidl_runtime_c__String* ros_string =
-        reinterpret_cast<rosidl_runtime_c__String*>(buffer + member.offset_ + sizeof(rosidl_runtime_c__String) * i);
+        reinterpret_cast<rosidl_runtime_c__String*>(buffer + member.offset_ + sizeof(*ros_string) * i);
       ros_string->data = new char[sequence[i].size() + 1];
       strncpy(ros_string->data, sequence[i].data(), sequence[i].size() + 1);
       ros_string->size = sequence[i].size();
@@ -40,6 +41,31 @@ void write_member<std::string>(const YAML::Node& yaml, uint8_t* buffer, const Me
     strncpy(ros_string->data, s.data(), s.size() + 1);
     ros_string->size = s.size();
     ros_string->capacity = s.size() + 1;
+  }
+}
+
+template<>
+void write_member<std::u16string>(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
+  if (member.is_array_) {
+    std::vector<std::string> sequence = yaml[member.name_].as<std::vector<std::string>>();
+    for (size_t i = 0; i < member.array_size_; i++) {
+      rosidl_runtime_c__U16String* ros_string =
+        reinterpret_cast<rosidl_runtime_c__U16String*>(buffer + member.offset_ + sizeof(*ros_string) * i);
+      ros_string->data = new uint16_t[sequence[i].size() + 1];
+      auto u16s = string_to_u16string(sequence[i]);
+      memcpy(ros_string->data, u16s.data(), (u16s.size() + 1) * sizeof(std::u16string::value_type));
+      // should this be the length of chars or the number of bytes?
+      ros_string->size = u16s.size() * sizeof(std::u16string::value_type);
+      ros_string->capacity = (u16s.size() + 1) * sizeof(std::u16string::value_type);
+    }
+  } else {
+    rosidl_runtime_c__U16String* ros_string =
+      reinterpret_cast<rosidl_runtime_c__U16String*>(buffer + member.offset_);
+    std::u16string u16s = string_to_u16string(yaml[member.name_].as<std::string>());
+    memcpy(ros_string->data, u16s.data(), (u16s.size() + 1) * sizeof(std::u16string::value_type));
+    // should this be the length of chars or the number of bytes?
+    ros_string->size = u16s.size() * sizeof(std::u16string::value_type);
+    ros_string->capacity = (u16s.size() + 1) * sizeof(std::u16string::value_type);
   }
 }
 
@@ -73,7 +99,7 @@ void yaml_to_rosmsg_impl(
         break;
       }
       case rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR: {
-        throw std::runtime_error("not implemented");
+        write_member<uint16_t>(root, buffer, member);
       }
       case rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN: {
         write_member<bool>(root, buffer, member);
@@ -120,7 +146,7 @@ void yaml_to_rosmsg_impl(
         break;
       }
       case rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING: {
-        throw std::runtime_error("not implemented");
+        write_member<std::u16string>(root, buffer, member);
         break;
       }
       case rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE: {
