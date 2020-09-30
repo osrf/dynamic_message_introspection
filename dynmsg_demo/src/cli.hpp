@@ -1,3 +1,6 @@
+#ifndef CLI_HPP
+#define CLI_HPP
+
 #include <unordered_map>
 
 enum class Command {
@@ -14,3 +17,5 @@ struct Arguments {
 };
 
 Arguments parse_arguments(int argc, char** argv);
+
+#endif

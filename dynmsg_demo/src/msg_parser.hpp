@@ -1,5 +1,14 @@
+#ifndef MSG_PARSER_HPP
+#define MSG_PARSER_HPP
+
 #include "typesupport_utils.hpp"
 
 #include <vector>
 
-std::vector<uint8_t> yaml_to_rosmsg(const std::string& yaml_str, const TypeInfo* typeinfo);
+RosMessage yaml_to_rosmsg(
+  const std::string& yaml_str,
+  const std::string& msg_namespace,
+  const std::string& msg_type
+);
+
+#endif

@@ -48,8 +48,6 @@ void yaml_to_rosmsg_impl(
   const TypeInfo* typeinfo,
   uint8_t* buffer
 ) {
-  typeinfo->init_function(buffer, ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY);
-
   for (uint32_t i = 0; i < typeinfo->member_count_; i++) {
     const auto& member = typeinfo->members_[i];
 
@@ -130,7 +128,7 @@ void yaml_to_rosmsg_impl(
         if (member.is_array_) {
           const TypeInfo* member_typeinfo = reinterpret_cast<const TypeInfo*>(member.members_->data);
           for (size_t i = 0; i < member.array_size_; i++) {
-            yaml_to_rosmsg_impl(root[member.name_], member_typeinfo, buffer + member.offset_ + member_typeinfo->size_of_ * i);
+            yaml_to_rosmsg_impl(root[member.name_][i], member_typeinfo, buffer + member.offset_ + member_typeinfo->size_of_ * i);
           }
         } else {
           const TypeInfo* member_typeinfo = reinterpret_cast<const TypeInfo*>(member.members_->data);
@@ -145,9 +143,14 @@ void yaml_to_rosmsg_impl(
   }
 }
 
-std::vector<uint8_t> yaml_to_rosmsg(const std::string& yaml_str, const TypeInfo* typeinfo) {
+RosMessage yaml_to_rosmsg(
+  const std::string& yaml_str,
+  const std::string& msg_namespace,
+  const std::string& msg_type
+) {
   YAML::Node root = YAML::Load(yaml_str);
-  std::vector<uint8_t> buffer(typeinfo->size_of_);
-  yaml_to_rosmsg_impl(root, typeinfo, buffer.data());
-  return buffer;
+  RosMessage ros_msg;
+  ros_message_init(msg_namespace.data(), msg_type.data(), &ros_msg);
+  yaml_to_rosmsg_impl(root, ros_msg.type_info, ros_msg.data);
+  return ros_msg;
 }

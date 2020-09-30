@@ -47,3 +47,20 @@ const TypeInfo* get_type_info(const std::string& msg_namespace, const std::strin
 
   return type_info;
 }
+
+int ros_message_init(
+  const char* msg_namespace,
+  const char* msg_type,
+  RosMessage* ros_msg
+) {
+  const auto* type_info = get_type_info(msg_namespace, msg_type);
+  uint8_t* data = new uint8_t[type_info->size_of_];
+  type_info->init_function(data, ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY);
+  *ros_msg = RosMessage{ type_info, data };
+  return 0;
+}
+
+extern "C"
+int ros_message_destroy(RosMessage* ros_msg) {
+  ros_msg->type_info->fini_function(ros_msg->data);
+}
