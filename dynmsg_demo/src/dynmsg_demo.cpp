@@ -1,3 +1,5 @@
+#include "cli.hpp"
+
 #include <dlfcn.h>
 #include <unistd.h>
 
@@ -308,6 +310,8 @@ rcl_ret_t load_interface_type_support(
 
 int
 main(int argc, char ** argv) {
+  auto args = parse_arguments(argc, argv);
+
   std::string msg_namespace(argv[1]);
   std::string msg_type(argv[2]);
 

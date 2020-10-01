@@ -19,7 +19,10 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rcl REQUIRED)
 
-add_executable(dynmsg_demo src/dynmsg_demo.cpp)
+add_executable(dynmsg_demo
+  src/dynmsg_demo.cpp
+  src/cli.cpp
+)
 ament_target_dependencies(dynmsg_demo rcl)
 
 install(TARGETS dynmsg_demo DESTINATION lib/${PROJECT_NAME})
