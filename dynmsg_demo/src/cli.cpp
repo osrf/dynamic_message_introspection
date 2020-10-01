@@ -3,7 +3,12 @@
 #include <iostream>
 
 void print_help_and_exit() {
-  std::cout << "Usage: dynmsg <command> <params>" << std::endl;
+  std::cout << "Usage:\n"
+    << "  dynmsg echo <topic>\n"
+    << "  dynmsg publish <topic> <message>\n"
+    << "  dynmsg call <service> <request>\n"
+    << "  dynmsg host <service> <response>\n"
+    << std::endl;
   exit(1);
 }
 
@@ -40,6 +45,11 @@ Arguments parse_arguments(int argc, char** argv) {
     params["req"] = argv[3];
   } else if (argv[1] == "host") {
     args.cmd = Command::ServiceHost;
+    if (argc < 4) {
+      print_help_and_exit();
+    }
+    params["service"] = argv[2];
+    params["resp"] = argv[3];
   }
 
   return args;

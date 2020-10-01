@@ -68,6 +68,7 @@ void check_basic_types_values(
 }
 
 TEST(MsgParser, String) {
+  std::string asd("asd");
   auto generic_msg = yaml_to_rosmsg("{ data: hello }", "std_msgs", "String");
 
   std_msgs__msg__String ros_msg{
