@@ -1,5 +1,6 @@
 #include "cli.hpp"
 
+#include <cstring>
 #include <iostream>
 
 void print_help_and_exit() {
@@ -8,6 +9,7 @@ void print_help_and_exit() {
     << "  dynmsg publish <topic> <message>\n"
     << "  dynmsg call <service> <request>\n"
     << "  dynmsg host <service> <response>\n"
+    << "  dynmsg discover\n"
     << std::endl;
   exit(1);
 }
@@ -23,33 +25,35 @@ Arguments parse_arguments(int argc, char** argv) {
   args.cmd = Command::Unknown;
 
   std::unordered_map<std::string, std::string> params;
-  if (argv[1] == "echo") {
+  if (strcmp(argv[1],  "echo") == 0) {
     args.cmd = Command::TopicEcho;
     if (argc < 3) {
       print_help_and_exit();
     }
     params["topic"] = argv[2];
-  } else if (argv[1] == "publish") {
+  } else if (strcmp(argv[1], "publish") == 0) {
     args.cmd = Command::TopicPublish;
     if (argc < 4) {
       print_help_and_exit();
     }
     params["topic"] = argv[2];
     params["msg"] = argv[3];
-  } else if (argv[1] == "call") {
+  } else if (strcmp(argv[1], "call") == 0) {
     args.cmd = Command::ServiceCall;
     if (argc < 4) {
       print_help_and_exit();
     }
     params["service"] = argv[2];
     params["req"] = argv[3];
-  } else if (argv[1] == "host") {
+  } else if (strcmp(argv[1], "host") == 0) {
     args.cmd = Command::ServiceHost;
     if (argc < 4) {
       print_help_and_exit();
     }
     params["service"] = argv[2];
     params["resp"] = argv[3];
+  } else if (strcmp(argv[1], "discover") == 0) {
+    args.cmd = Command::Discover;
   }
 
   return args;

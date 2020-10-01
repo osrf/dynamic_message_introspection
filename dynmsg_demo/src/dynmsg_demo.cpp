@@ -6,8 +6,10 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <thread>
 
 #include "rcl/context.h"
+#include "rcl/graph.h"
 #include "rcl/init_options.h"
 #include "rcl/node_options.h"
 #include "rcl/node.h"
@@ -308,12 +310,76 @@ rcl_ret_t load_interface_type_support(
 }
 
 
+void print_nodes(const rcl_node_t* node) {
+  auto names = rcutils_get_zero_initialized_string_array();
+  auto namespaces = rcutils_get_zero_initialized_string_array();
+  auto ret = rcl_get_node_names(node, rcl_get_default_allocator(), &names, &namespaces);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "discovering nodes failed");
+    exit(1);
+  }
+  std::cout << "nodes:" << std::endl;
+  for (size_t i = 0; i < names.size; i++) {
+    std::cout << "  " << names.data[i] << std::endl;
+  }
+  ret = rcutils_string_array_fini(&names);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "deallocating names array failed");
+    exit(1);
+  }
+  rcutils_string_array_fini(&namespaces);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "deallocating namespaces array failed");
+    exit(1);
+  }
+}
+
+
+void print_topics(const rcl_node_t* node) {
+  auto topics = rcl_get_zero_initialized_names_and_types();
+  auto allocator = rcl_get_default_allocator();
+  auto ret = rcl_get_topic_names_and_types(node, &allocator, false, &topics);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "discovering topics failed");
+    exit(1);
+  }
+  std::cout << "topics:" << std::endl;
+  for (size_t i = 0; i < topics.names.size; i++) {
+    std::cout << "  " << topics.names.data[i] << " [" << topics.types[i].data[0] << "]" << std::endl;
+  }
+  ret = rcl_names_and_types_fini(&topics);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "destroying names and types failed");
+    exit(1);
+  }
+}
+
+
+void print_services(const rcl_node_t* node) {
+  auto services = rcl_get_zero_initialized_names_and_types();
+  auto allocator = rcl_get_default_allocator();
+  auto ret = rcl_get_service_names_and_types(node, &allocator, &services);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "discovering services failed");
+    exit(1);
+  }
+  std::cout << "services:" << std::endl;
+  for (size_t i = 0; i < services.names.size; i++) {
+    std::cout << "  " << services.names.data[i]
+      << " [" << services.types[i].data[0] << "]"
+      << std::endl;
+  }
+  ret = rcl_names_and_types_fini(&services);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "destroying names and types failed");
+    exit(1);
+  }
+}
+
+
 int
 main(int argc, char ** argv) {
   auto args = parse_arguments(argc, argv);
-
-  std::string msg_namespace(argv[1]);
-  std::string msg_type(argv[2]);
 
   rcl_init_options_t options = rcl_get_zero_initialized_init_options();
   rcl_ret_t ret = rcl_init_options_init(&options, rcl_get_default_allocator());
@@ -342,6 +408,22 @@ main(int argc, char ** argv) {
     RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "node init failed");
     return 1;
   }
+
+  // TODO: switch based on the cli command
+  switch (args.cmd) {
+    case Command::Discover: {
+      // why do we need to wait for discovery to find the nodes?
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+      print_nodes(&node);
+      print_topics(&node);
+      print_services(&node);
+      //print_actions(&node);
+      exit(0);
+    }
+  }
+
+  std::string msg_namespace(argv[1]);
+  std::string msg_type(argv[2]);
 
   TypeSupport type_support;
   if (load_interface_type_support(msg_namespace, msg_type, type_support) != RCL_RET_OK) {
