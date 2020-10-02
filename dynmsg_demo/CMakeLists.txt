@@ -41,6 +41,7 @@ set(source_files
 add_library(dynmsg_demo_library STATIC
   src/cli.cpp
   src/msg_parser.cpp
+  src/message_reading.cpp
   src/typesupport_utils.cpp
   src/string_utils.cpp
   )
@@ -61,12 +62,14 @@ if(BUILD_TESTING)
   #set(ament_cmake_copyright_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 
-  find_package(test_msgs REQUIRED)
-  find_package(dynmsg_msgs REQUIRED)
   find_package(ament_cmake_gtest REQUIRED)
+  find_package(test_msgs REQUIRED)
+  find_package(example_interfaces REQUIRED)
+  find_package(dynmsg_msgs REQUIRED)
+  find_package(geometry_msgs REQUIRED)
 
-  ament_add_gtest(msg_parser_test test/msg_parser_test.cpp ${source_files})
-  target_link_libraries(msg_parser_test yaml-cpp)
+  ament_add_gtest(msg_parser_test test/msg_parser_test.cpp)
+  target_link_libraries(msg_parser_test dynmsg_demo_library yaml-cpp)
   ament_target_dependencies(msg_parser_test
     rcl
     test_msgs
@@ -75,7 +78,7 @@ if(BUILD_TESTING)
   ament_add_gtest(wide_strings test/test_wide_strings.cpp)
   target_link_libraries(wide_strings dynmsg_demo_library)
   ament_add_gtest(read_msg_buffer test/test_read_msg_buffer.cpp)
-  ament_target_dependencies(read_msg_buffer dynmsg_msgs)
+  ament_target_dependencies(read_msg_buffer example_interfaces test_msgs)
   target_link_libraries(read_msg_buffer dynmsg_demo_library)
 endif()
 

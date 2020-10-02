@@ -11,7 +11,7 @@ typedef const rosidl_message_type_support_t* (*get_message_ts_func)();
 const TypeSupport* get_type_support(const std::string& msg_namespace, const std::string& msg_type) {
   std::string ts_lib_name;
   ts_lib_name = "lib" + msg_namespace + "__rosidl_typesupport_c.so";
-  RCUTILS_LOG_INFO_NAMED(
+  RCUTILS_LOG_DEBUG_NAMED(
     "dynmsg_demo",
     "Loading type support library %s",
     ts_lib_name.c_str());
@@ -23,7 +23,7 @@ const TypeSupport* get_type_support(const std::string& msg_namespace, const std:
   std::string ts_func_name;
   ts_func_name = "rosidl_typesupport_c__get_message_type_support_handle__" + msg_namespace +
     "__msg__" + msg_type;
-  RCUTILS_LOG_INFO_NAMED("dynmsg_demo", "Loading type support function %s", ts_func_name.c_str());
+  RCUTILS_LOG_DEBUG_NAMED("dynmsg_demo", "Loading type support function %s", ts_func_name.c_str());
 
   get_message_ts_func type_support_handle_func =
     reinterpret_cast<get_message_ts_func>(dlsym(type_support_lib, ts_func_name.c_str()));
@@ -33,7 +33,7 @@ const TypeSupport* get_type_support(const std::string& msg_namespace, const std:
   }
 
   const rosidl_message_type_support_t * ts = type_support_handle_func();
-  RCUTILS_LOG_INFO_NAMED("dynmsg_demo", "Loaded type support %s", ts->typesupport_identifier);
+  RCUTILS_LOG_DEBUG_NAMED("dynmsg_demo", "Loaded type support %s", ts->typesupport_identifier);
 
   return ts;
 }
@@ -41,7 +41,7 @@ const TypeSupport* get_type_support(const std::string& msg_namespace, const std:
 const TypeInfo* get_type_info(const std::string& msg_namespace, const std::string& msg_type) {
   std::stringstream ts_lib_name;
   ts_lib_name << "lib" << msg_namespace << "__rosidl_typesupport_introspection_c.so";
-  RCUTILS_LOG_INFO_NAMED(
+  RCUTILS_LOG_DEBUG_NAMED(
     "dynmsg_demo",
     "Loading introspection type support library %s",
     ts_lib_name.str().c_str());
@@ -53,7 +53,7 @@ const TypeInfo* get_type_info(const std::string& msg_namespace, const std::strin
   std::stringstream ts_func_name;
   ts_func_name << "rosidl_typesupport_introspection_c__get_message_type_support_handle__" << msg_namespace <<
     "__msg__" << msg_type;
-  RCUTILS_LOG_INFO_NAMED("dynmsg_demo", "Loading type support function %s", ts_func_name.str().c_str());
+  RCUTILS_LOG_DEBUG_NAMED("dynmsg_demo", "Loading type support function %s", ts_func_name.str().c_str());
 
   get_message_ts_func introspection_type_support_handle_func =
     reinterpret_cast<get_message_ts_func>(dlsym(
@@ -68,7 +68,7 @@ const TypeInfo* get_type_info(const std::string& msg_namespace, const std::strin
   }
 
   const rosidl_message_type_support_t *introspection_ts = introspection_type_support_handle_func();
-  RCUTILS_LOG_INFO_NAMED(
+  RCUTILS_LOG_DEBUG_NAMED(
     "dynmsg_demo",
     "Loaded type support %s",
     introspection_ts->typesupport_identifier);
