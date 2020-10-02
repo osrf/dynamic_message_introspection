@@ -235,7 +235,7 @@ void member_to_yaml_array_item(
 }
 
 
-void member_to_yaml(
+void basic_value_to_yaml(
   const MemberInfo &member_info,
   const uint8_t * member_data,
   YAML::Node &member)
@@ -493,7 +493,7 @@ YAML::Node member_to_yaml(
       nested_member.data = const_cast<uint8_t*>(member_data);
       member["value"] = message_to_yaml(nested_member);
     } else {
-      member_to_yaml(member_info, member_data, member);
+      basic_value_to_yaml(member_info, member_data, member);
     }
   }
 
