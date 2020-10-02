@@ -16,6 +16,7 @@
 #include "rcl/rcl.h"
 #include "rcl/subscription.h"
 #include "rcl/types.h"
+#include "rcl_action/graph.h"
 #include "rosidl_typesupport_introspection_c/message_introspection.h"
 #include "rosidl_typesupport_introspection_c/field_types.h"
 
@@ -377,6 +378,28 @@ void print_services(const rcl_node_t* node) {
 }
 
 
+void print_actions(const rcl_node_t* node) {
+  auto actions = rcl_get_zero_initialized_names_and_types();
+  auto allocator = rcl_get_default_allocator();
+  auto ret = rcl_action_get_names_and_types(node, &allocator, &actions);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "discovering actions failed");
+    exit(1);
+  }
+  std::cout << "actions:" << std::endl;
+  for (size_t i = 0; i < actions.names.size; i++) {
+    std::cout << "  " << actions.names.data[i]
+      << " [" << actions.types[i].data[0] << "]"
+      << std::endl;
+  }
+  ret = rcl_names_and_types_fini(&actions);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "destroying names and types failed");
+    exit(1);
+  }
+}
+
+
 int
 main(int argc, char ** argv) {
   auto args = parse_arguments(argc, argv);
@@ -417,7 +440,7 @@ main(int argc, char ** argv) {
       print_nodes(&node);
       print_topics(&node);
       print_services(&node);
-      //print_actions(&node);
+      print_actions(&node);
       exit(0);
     }
   }

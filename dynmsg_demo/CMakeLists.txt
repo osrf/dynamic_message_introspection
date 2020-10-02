@@ -18,6 +18,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rcl REQUIRED)
+find_package(rcl_action REQUIRED)
 
 # downloads and imports yaml-cpp into the build tree, we need to do this because we want to
 # statically link yaml-cpp.
@@ -45,7 +46,7 @@ add_executable(dynmsg_demo
 )
 # should have been PRIVATE, but ament uses the old signature and we can't mix them
 target_link_libraries(dynmsg_demo yaml-cpp)
-ament_target_dependencies(dynmsg_demo rcl)
+ament_target_dependencies(dynmsg_demo rcl rcl_action)
 
 install(TARGETS dynmsg_demo DESTINATION lib/${PROJECT_NAME})
 
