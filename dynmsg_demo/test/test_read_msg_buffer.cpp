@@ -340,7 +340,7 @@ TEST(ReadMsgBuffer, ReadArrays)
   rosidl_runtime_c__String__assign(&msg->string_values[0], "one");
   rosidl_runtime_c__String__assign(&msg->string_values[1], "two");
   rosidl_runtime_c__String__assign(&msg->string_values[2], "three");
-  for (int ii = 0; ii < 3; ++ii) {
+  for (size_t ii = 0; ii < 3; ++ii) {
     populate_basic_types(&msg->basic_types_values[ii]);
   }
   msg->alignment_check = 42;
@@ -508,8 +508,8 @@ TEST(ReadMsgBuffer, ReadBoundedSequences)
   test_msgs__msg__BasicTypes__Sequence__init(
     &msg->basic_types_values,
     test_msgs__msg__BoundedSequences__basic_types_values__MAX_SIZE);
-  for (int ii = 0; ii < 3; ++ii) {
-    populate_basic_types(&msg->basic_types_values.data[ii]);
+  for (size_t ii = 0; ii < 3; ++ii) {
+    populate_basic_types(&(msg->basic_types_values.data[ii]));
   }
   msg->alignment_check = 42;
 
@@ -578,8 +578,8 @@ TEST(ReadMsgBuffer, ReadBoundedSequences)
   EXPECT_EQ(
     yaml_msg["basic_types_values"]["type"].as<std::string>(),
     "test_msgs__msg/BasicTypes[<=3]");
-  for (auto array_item : yaml_msg["basic_types_values"]["value"]) {
-    compare_basic_types_item(array_item, msg->basic_types_values.data[0]);
+  for (size_t ii = 0; ii < 3; ++ii) {
+    compare_basic_types_item(yaml_msg["basic_types_values"]["value"][ii], msg->basic_types_values.data[ii]);
   }
   EXPECT_EQ(yaml_msg["alignment_check"]["type"].as<std::string>(), "int32");
   EXPECT_EQ(yaml_msg["alignment_check"]["value"].as<int32_t>(), 42);
@@ -633,11 +633,10 @@ TEST(ReadMsgBuffer, ReadUnboundedSequences)
   rosidl_runtime_c__String__assign(&msg->string_values.data[0], "one");
   rosidl_runtime_c__String__assign(&msg->string_values.data[1], "two");
   test_msgs__msg__BasicTypes__Sequence__init(&msg->basic_types_values, 2);
-  for (int ii = 0; ii < 2; ++ii) {
+  for (size_t ii = 0; ii < 2; ++ii) {
     populate_basic_types(&msg->basic_types_values.data[ii]);
   }
   msg->alignment_check = 42;
-
 
   RosMessage message;
   message.type_info = get_type_info("test_msgs", "UnboundedSequences");
@@ -704,7 +703,7 @@ TEST(ReadMsgBuffer, ReadUnboundedSequences)
     yaml_msg["basic_types_values"]["type"].as<std::string>(),
     "test_msgs__msg/BasicTypes[]");
   for (auto array_item : yaml_msg["basic_types_values"]["value"]) {
-    //compare_basic_types_item(array_item, msg->basic_types_values.data[0]);
+    compare_basic_types_item(array_item, msg->basic_types_values.data[0]);
   }
   EXPECT_EQ(yaml_msg["alignment_check"]["type"].as<std::string>(), "int32");
   EXPECT_EQ(yaml_msg["alignment_check"]["value"].as<int32_t>(), 42);

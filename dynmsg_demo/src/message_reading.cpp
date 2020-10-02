@@ -309,7 +309,7 @@ void basic_value_to_yaml(
 
 template<typename T>
 void
-dynamic_array_to_string_impl(const MemberInfo &member_info, T * array, YAML::Node &array_node)
+dynamic_array_to_yaml_impl(const MemberInfo &member_info, T * array, YAML::Node &array_node)
 {
   for (size_t ii = 0; ii < array->size; ++ii) {
     member_to_yaml_array_item(
@@ -328,103 +328,103 @@ dynamic_array_to_yaml(
 {
   switch (member_info.type_id_) {
     case rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__float__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__double__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__long_double__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_CHAR:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__char__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__wchar__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__boolean__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_OCTET:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__octet__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT8:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__uint8__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT8:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__int8__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT16:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__uint16__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT16:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__int16__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT32:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__uint32__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT32:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__int32__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT64:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__uint64__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT64:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__int64__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_STRING:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__String__Sequence *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING:
-      dynamic_array_to_string_impl(
+      dynamic_array_to_yaml_impl(
         member_info,
         reinterpret_cast<const rosidl_runtime_c__U16String__Sequence *>(member_data),
         array_node);
@@ -433,14 +433,16 @@ dynamic_array_to_yaml(
       // We do not know the specific type of the sequence, but they all follow the same structure
       // pattern, where a pointer to the data is first, followed by the element count, followed by
       // the capacity
+      RosMessage nested_member;
+      nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
+      uint8_t * element_data;
+      memcpy(&element_data, member_data, sizeof(void*));
+      size_t element_size;
+      element_size = nested_member.type_info->size_of_;
       size_t element_count;
       element_count = static_cast<size_t>(member_data[sizeof(void*)]);
-      size_t element_size;
-      element_size = sizeof(void*) + sizeof(size_t) + sizeof(size_t);
       for (size_t ii = 0; ii < element_count; ++ii) {
-        RosMessage nested_member;
-        nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
-        nested_member.data = const_cast<uint8_t*>(&member_data[ii * element_size]);
+        nested_member.data = element_data + ii * element_size;
         array_node.push_back(message_to_yaml(nested_member));
       }
       break;
