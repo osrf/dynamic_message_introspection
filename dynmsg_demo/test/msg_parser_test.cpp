@@ -1,5 +1,5 @@
-#include "../src/msg_parser.hpp"
-#include "../src/typesupport_utils.hpp"
+#include "dynmsg_demo/msg_parser.hpp"
+#include "dynmsg_demo/typesupport_utils.hpp"
 
 #include <dynmsg_msgs/msg/wide_string.h>
 #include <std_msgs/msg/string.h>
