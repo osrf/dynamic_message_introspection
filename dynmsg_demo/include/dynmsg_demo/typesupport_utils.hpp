@@ -1,6 +1,7 @@
 #ifndef TYPESUPPORT_UTILS_HPP
 #define TYPESUPPORT_UTILS_HPP
 
+
 #include <string>
 
 #include <rcl/types.h>

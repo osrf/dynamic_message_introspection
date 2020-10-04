@@ -1,6 +1,6 @@
-#include "cli.hpp"
-#include "message_reading.hpp"
-#include "typesupport_utils.hpp"
+#include "dynmsg_demo/cli.hpp"
+#include "dynmsg_demo/message_reading.hpp"
+#include "dynmsg_demo/typesupport_utils.hpp"
 
 #include <unistd.h>
 

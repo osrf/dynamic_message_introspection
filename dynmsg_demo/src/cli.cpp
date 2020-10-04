@@ -1,6 +1,10 @@
-#include "cli.hpp"
+#include "dynmsg_demo/cli.hpp"
 
 #include <iostream>
+#include <string>
+
+
+using namespace std::string_literals;
 
 void print_help_and_exit() {
   std::cout << "Usage:\n"
@@ -23,27 +27,27 @@ Arguments parse_arguments(int argc, char** argv) {
   args.cmd = Command::Unknown;
 
   std::unordered_map<std::string, std::string> params;
-  if (argv[1] == "echo") {
+  if (argv[1] == "echo"s) {
     args.cmd = Command::TopicEcho;
     if (argc < 3) {
       print_help_and_exit();
     }
     params["topic"] = argv[2];
-  } else if (argv[1] == "publish") {
+  } else if (argv[1] == "publish"s) {
     args.cmd = Command::TopicPublish;
     if (argc < 4) {
       print_help_and_exit();
     }
     params["topic"] = argv[2];
     params["msg"] = argv[3];
-  } else if (argv[1] == "call") {
+  } else if (argv[1] == "call"s) {
     args.cmd = Command::ServiceCall;
     if (argc < 4) {
       print_help_and_exit();
     }
     params["service"] = argv[2];
     params["req"] = argv[3];
-  } else if (argv[1] == "host") {
+  } else if (argv[1] == "host"s) {
     args.cmd = Command::ServiceHost;
     if (argc < 4) {
       print_help_and_exit();
