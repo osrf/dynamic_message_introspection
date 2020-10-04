@@ -5,10 +5,6 @@
 
 #include <vector>
 
-RosMessage yaml_to_rosmsg(
-  const std::string& yaml_str,
-  const std::string& msg_namespace,
-  const std::string& msg_type
-);
+RosMessage yaml_to_rosmsg(const InterfaceTypeName &interface_type, const std::string& yaml_str);
 
 #endif

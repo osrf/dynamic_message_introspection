@@ -2,6 +2,7 @@
 #define TYPESUPPORT_UTILS_HPP
 
 
+#include <utility>
 #include <string>
 
 #include <rcl/types.h>
@@ -11,9 +12,13 @@ using TypeSupport = rosidl_message_type_support_t;
 using TypeInfo = rosidl_typesupport_introspection_c__MessageMembers;
 using MemberInfo = rosidl_typesupport_introspection_c__MessageMember;
 
+using InterfaceTypeName = std::pair<std::string, std::string>;
+
+InterfaceTypeName get_topic_type(const std::string &topic);
+
 // TODO: export this?
-const TypeSupport* get_type_support(const std::string& msg_namespace, const std::string& msg_type);
-const TypeInfo* get_type_info(const std::string& msg_namespace, const std::string& msg_type);
+const TypeSupport* get_type_support(const InterfaceTypeName &interface_type);
+const TypeInfo* get_type_info(const InterfaceTypeName &interface_type);
 
 /**
  * Wrapper to a generic ros message
@@ -26,8 +31,7 @@ typedef struct RosMessage {
 
 extern "C"
 rcl_ret_t ros_message_init(
-  const char* msg_namespace,
-  const char* msg_type,
+  const InterfaceTypeName &interface_type,
   RosMessage* ros_msg
 );
 

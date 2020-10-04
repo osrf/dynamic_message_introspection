@@ -69,7 +69,7 @@ void check_basic_types_values(
 
 TEST(MsgParser, String) {
   std::string asd("asd");
-  auto generic_msg = yaml_to_rosmsg("{ data: hello }", "std_msgs", "String");
+  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"std_msgs", "String"}, "{ data: hello }");
 
   std_msgs__msg__String ros_msg{
     {
@@ -88,7 +88,9 @@ TEST(MsgParser, String) {
 }
 
 TEST(MsgParser, WideString) {
-  auto generic_msg = yaml_to_rosmsg("{ data: hello }", "dynmsg_msgs", "WideString");
+  auto generic_msg = yaml_to_rosmsg(
+    InterfaceTypeName{"dynmsg_msgs", "WideString"},
+    "{ data: hello }");
 
   std::u16string ws(u"hello");
   dynmsg_msgs__msg__WideString ros_msg{
@@ -113,7 +115,7 @@ TEST(MsgParser, BasicTypes) {
   YAML::Node msg = basic_types_node();
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = yaml_to_rosmsg(emitter.c_str(), "test_msgs", "BasicTypes");
+  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "BasicTypes"}, emitter.c_str());
 
   test_msgs__msg__BasicTypes ros_msg;
   set_basic_types(ros_msg);
@@ -127,7 +129,7 @@ TEST(MsgParser, BasicTypes) {
 }
 
 TEST(MsgParser, Defaults) {
-  auto generic_msg = yaml_to_rosmsg("", "test_msgs", "Defaults");
+  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Defaults"}, "");
 
   test_msgs__msg__Defaults ros_msg{
     true,
@@ -170,7 +172,7 @@ TEST(MsgParser, Nested) {
   msg["basic_types_value"] = basic_types_node();
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = yaml_to_rosmsg(emitter.c_str(), "test_msgs", "Nested");
+  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Nested"}, emitter.c_str());
 
   test_msgs__msg__Nested ros_msg{{
     true,
@@ -227,7 +229,7 @@ TEST(MsgParser, Arrays) {
   msg["basic_types_values"] = std::vector<YAML::Node>{basic_types_node(), basic_types_node(), basic_types_node()};
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = yaml_to_rosmsg(emitter.c_str(), "test_msgs", "Arrays");
+  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Arrays"}, emitter.c_str());
 
   test_msgs__msg__Arrays* ros_msg = test_msgs__msg__Arrays__create();
   ros_msg->bool_values[0] = true;

@@ -170,13 +170,12 @@ void yaml_to_rosmsg_impl(
 }
 
 RosMessage yaml_to_rosmsg(
-  const std::string& yaml_str,
-  const std::string& msg_namespace,
-  const std::string& msg_type
+  const InterfaceTypeName &interface_type,
+  const std::string& yaml_str
 ) {
   YAML::Node root = YAML::Load(yaml_str);
   RosMessage ros_msg;
-  ros_message_init(msg_namespace.data(), msg_type.data(), &ros_msg);
+  ros_message_init(interface_type, &ros_msg);
   yaml_to_rosmsg_impl(root, ros_msg.type_info, ros_msg.data);
   return ros_msg;
 }
