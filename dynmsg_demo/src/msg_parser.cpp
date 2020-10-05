@@ -126,8 +126,7 @@ void write_member_item(
   uint8_t* buffer
 ) {
   using CppType = typename TypeMapping<RosTypeId>::CppType;
-  CppType data = yaml.as<CppType>();
-  *reinterpret_cast<CppType*>(buffer) = data;
+  *reinterpret_cast<CppType*>(buffer) = yaml.as<CppType>();
 }
 
 template<>
