@@ -37,7 +37,6 @@ set(source_files
   src/msg_parser.cpp
   src/typesupport_utils.cpp
   src/string_utils.cpp
-  src/discovery.cpp
 )
 
 add_executable(dynmsg_demo
