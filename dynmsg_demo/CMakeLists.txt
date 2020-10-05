@@ -31,13 +31,7 @@ set(YAML_CPP_BUILD_TESTS OFF)
 set(YAML_CPP_INSTALL OFF)
 FetchContent_MakeAvailable(yaml-cpp)
 
-set(source_files
-  src/cli.cpp
-  src/msg_parser.cpp
-  src/typesupport_utils.cpp
-  src/string_utils.cpp
-)
-
+include_directories(include)
 add_library(dynmsg_demo_library STATIC
   src/cli.cpp
   src/msg_parser.cpp
@@ -48,12 +42,12 @@ add_library(dynmsg_demo_library STATIC
 ament_target_dependencies(dynmsg_demo_library rcl)
 target_link_libraries(dynmsg_demo_library yaml-cpp)
 
-add_executable(dynmsg_demo src/dynmsg_demo.cpp)
+add_executable(clitool src/cli_tool.cpp)
 # should have been PRIVATE, but ament uses the old signature and we can't mix them
-target_link_libraries(dynmsg_demo dynmsg_demo_library yaml-cpp)
-ament_target_dependencies(dynmsg_demo rcl)
+target_link_libraries(clitool dynmsg_demo_library yaml-cpp)
+ament_target_dependencies(clitool rcl)
 
-install(TARGETS dynmsg_demo DESTINATION lib/${PROJECT_NAME})
+install(TARGETS clitool DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

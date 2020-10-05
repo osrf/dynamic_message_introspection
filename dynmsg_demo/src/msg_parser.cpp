@@ -1,5 +1,5 @@
-#include "msg_parser.hpp"
-#include "string_utils.hpp"
+#include "dynmsg_demo/msg_parser.hpp"
+#include "dynmsg_demo/string_utils.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -100,6 +100,7 @@ void yaml_to_rosmsg_impl(
       }
       case rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR: {
         write_member<uint16_t>(root, buffer, member);
+        break;
       }
       case rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN: {
         write_member<bool>(root, buffer, member);
@@ -169,13 +170,12 @@ void yaml_to_rosmsg_impl(
 }
 
 RosMessage yaml_to_rosmsg(
-  const std::string& yaml_str,
-  const std::string& msg_namespace,
-  const std::string& msg_type
+  const InterfaceTypeName &interface_type,
+  const std::string& yaml_str
 ) {
   YAML::Node root = YAML::Load(yaml_str);
   RosMessage ros_msg;
-  ros_message_init(msg_namespace.data(), msg_type.data(), &ros_msg);
+  ros_message_init(interface_type, &ros_msg);
   yaml_to_rosmsg_impl(root, ros_msg.type_info, ros_msg.data);
   return ros_msg;
 }

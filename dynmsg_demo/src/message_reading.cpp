@@ -1,4 +1,6 @@
-#include "message_reading.hpp"
+#include "dynmsg_demo/message_reading.hpp"
+#include "dynmsg_demo/string_utils.hpp"
+#include "dynmsg_demo/typesupport_utils.hpp"
 
 #include <dlfcn.h>
 
@@ -8,10 +10,6 @@
 #include <memory>
 #include <sstream>
 #include <vector>
-
-#include "cli.hpp"
-#include "string_utils.hpp"
-#include "typesupport_utils.hpp"
 
 #include "rcl/context.h"
 #include "rcl/init_options.h"
