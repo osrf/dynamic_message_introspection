@@ -22,119 +22,102 @@ template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT> {
   using CppType = float;
   using SequenceType = rosidl_runtime_c__float32__Sequence;
-  using RosType = float;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE> {
   using CppType = double;
   using SequenceType = rosidl_runtime_c__double__Sequence;
-  using RosType = double;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE> {
   using CppType = long double;
   using SequenceType = rosidl_runtime_c__long_double__Sequence;
-  using RosType = long double;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_CHAR> {
   using CppType = signed char;
   using SequenceType = rosidl_runtime_c__char__Sequence;
-  using RosType = signed char;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR> {
   using CppType = uint16_t;
   using SequenceType = rosidl_runtime_c__wchar__Sequence;
-  using RosType = uint16_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN> {
   using CppType = bool;
   using SequenceType = rosidl_runtime_c__bool__Sequence;
-  using RosType = bool;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_OCTET> {
   using CppType = uint8_t;
   using SequenceType = rosidl_runtime_c__octet__Sequence;
-  using RosType = uint8_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT8> {
   using CppType = uint8_t;
   using SequenceType = rosidl_runtime_c__uint8__Sequence;
-  using RosType = uint8_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT8> {
   using CppType = int8_t;
   using SequenceType = rosidl_runtime_c__int8__Sequence;
-  using RosType = int8_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT16> {
   using CppType = uint16_t;
   using SequenceType = rosidl_runtime_c__uint16__Sequence;
-  using RosType = uint16_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT16> {
   using CppType = int16_t;
   using SequenceType = rosidl_runtime_c__int16__Sequence;
-  using RosType = int16_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT32> {
   using CppType = uint32_t;
   using SequenceType = rosidl_runtime_c__uint32__Sequence;
-  using RosType = uint32_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT32> {
   using CppType = int32_t;
   using SequenceType = rosidl_runtime_c__int32__Sequence;
-  using RosType = int32_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT64> {
   using CppType = uint64_t;
   using SequenceType = rosidl_runtime_c__uint64__Sequence;
-  using RosType = uint64_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT64> {
   using CppType = int64_t;
   using SequenceType = rosidl_runtime_c__int64__Sequence;
-  using RosType = int64_t;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_STRING> {
-  using CppType = std::string;
+  using CppType = rosidl_runtime_c__String;
   using SequenceType = rosidl_runtime_c__String__Sequence;
-  using RosType = rosidl_runtime_c__String;
 };
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING> {
-  using CppType = std::u16string;
+  using CppType = rosidl_runtime_c__U16String;
   using SequenceType = rosidl_runtime_c__U16String__Sequence;
-  using RosType = rosidl_runtime_c__U16String;
 };
 
 template<int RosTypeId>
@@ -142,9 +125,9 @@ void write_member_item(
   const YAML::Node& yaml,
   uint8_t* buffer
 ) {
-  using RosType = typename TypeMapping<RosTypeId>::RosType;
-  RosType data = yaml.as<RosType>();
-  *reinterpret_cast<RosType*>(buffer) = data;
+  using CppType = typename TypeMapping<RosTypeId>::CppType;
+  CppType data = yaml.as<CppType>();
+  *reinterpret_cast<CppType*>(buffer) = data;
 }
 
 template<>
@@ -152,9 +135,8 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>(
   const YAML::Node& yaml,
   uint8_t* buffer
 ) {
-  using RosType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>::RosType;
-  RosType* ros_string =
-    reinterpret_cast<RosType*>(buffer);
+  using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>::CppType;
+  CppType* ros_string = reinterpret_cast<CppType*>(buffer);
   std::string s = yaml.as<std::string>();
   ros_string->data = new char[s.size() + 1];
   strncpy(ros_string->data, s.data(), s.size() + 1);
@@ -167,9 +149,8 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>(
   const YAML::Node& yaml,
   uint8_t* buffer
 ) {
-  using RosType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>::RosType;
-  RosType* ros_string =
-    reinterpret_cast<RosType*>(buffer);
+  using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>::CppType;
+  CppType* ros_string = reinterpret_cast<CppType*>(buffer);
   std::u16string u16s = string_to_u16string(yaml.as<std::string>());
   ros_string->data = new uint16_t[u16s.size() + 1];
   memcpy(ros_string->data, u16s.data(), (u16s.size() + 1) * sizeof(std::u16string::value_type));
@@ -181,12 +162,12 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>(
 template<int RosTypeId>
 void write_member_sequence(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
   using SequenceType = typename TypeMapping<RosTypeId>::SequenceType;
-  using RosType = typename TypeMapping<RosTypeId>::RosType;
+  using CppType = typename TypeMapping<RosTypeId>::CppType;
   if (member.is_upper_bound_ && yaml.size() > member.array_size_) {
     throw std::runtime_error("yaml sequence is more than capacity");
   }
   auto seq = reinterpret_cast<SequenceType*>(buffer);
-  seq->data = new RosType[yaml.size()];
+  seq->data = new CppType[yaml.size()];
   for (size_t i = 0; i < yaml.size(); i++) {
     write_member_item<RosTypeId>(
       yaml[i],
@@ -206,7 +187,7 @@ bool is_sequence(const MemberInfo& member) {
 
 template<int RosTypeId>
 void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
-  using RosType = typename TypeMapping<RosTypeId>::RosType;
+  using CppType = typename TypeMapping<RosTypeId>::CppType;
   if (is_sequence(member)) {
     write_member_sequence<RosTypeId>(yaml[member.name_], buffer + member.offset_, member);
     return;
@@ -216,7 +197,7 @@ void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& mem
     for (size_t i = 0; i < member.array_size_; i++) {
       write_member_item<RosTypeId>(
         yaml[member.name_][i],
-        buffer + member.offset_ + sizeof(RosType) * i
+        buffer + member.offset_ + sizeof(CppType) * i
       );
     }
   } else {
@@ -227,7 +208,7 @@ void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& mem
 void write_member_sequence_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
   // We don't know the type at compiler time but they all follow the same structure.
   using SequenceType = rosidl_runtime_c__uint8__Sequence;
-  using RosType = void*;
+  using CppType = void*;
 
   if (member.is_upper_bound_ && yaml.size() > member.array_size_) {
     throw std::runtime_error("yaml sequence is more than capacity");
