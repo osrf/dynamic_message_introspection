@@ -14,7 +14,7 @@ InterfaceTypeName get_topic_type(const rcl_node_t *node, const std::string &topi
   auto ret = rcl_get_publishers_info_by_topic(node, &allocator, topic.data(), false, &pubs);
   if (ret != RCL_RET_OK || pubs.size <= 0) {
     RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "getting publishers failed");
-    exit(1);
+    throw std::runtime_error(rcutils_get_error_string().str);
   }
   std::string topic_type(pubs.info_array->topic_type);
   std::string pkg = topic_type.substr(0, topic_type.find('/'));
@@ -24,7 +24,7 @@ InterfaceTypeName get_topic_type(const rcl_node_t *node, const std::string &topi
   ret = rcl_topic_endpoint_info_array_fini(&pubs, &allocator);
   if (ret != RCL_RET_OK) {
     RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "cleaning up publishers failed");
-    exit(1);
+    throw std::runtime_error(rcutils_get_error_string().str);
   }
 
   return int_type_name;
