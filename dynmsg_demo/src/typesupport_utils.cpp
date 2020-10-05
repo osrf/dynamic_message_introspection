@@ -58,6 +58,7 @@ const TypeInfo* get_type_info(const InterfaceTypeName &interface_type) {
     "dynmsg_demo",
     "Loading introspection type support library %s",
     ts_lib_name.str().c_str());
+  auto asd = ts_lib_name.str();
   void * introspection_type_support_lib = dlopen(ts_lib_name.str().c_str(), RTLD_LAZY);
   if (introspection_type_support_lib == nullptr) {
     RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "failed to load introspection type support library: %s", dlerror());
