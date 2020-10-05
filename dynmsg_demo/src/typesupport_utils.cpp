@@ -4,18 +4,30 @@
 
 #include <sstream>
 
+#include <rcl/graph.h>
 #include <rcutils/logging_macros.h>
 
-#include <iostream>
 
-InterfaceTypeName get_topic_type(const std::string &topic) {
-  // Until graph information is available, the topic parameter should be the interface type in the
-  // form of "package/Interface", e.g. "example_interfaces/Bool"
-  std::string::size_type split_at = topic.find('/');
-  if (split_at == std::string::npos) {
-    return InterfaceTypeName{"", ""};
+InterfaceTypeName get_topic_type(const rcl_node_t *node, const std::string &topic) {
+  auto pubs = rcl_get_zero_initialized_topic_endpoint_info_array();
+  auto allocator = rcl_get_default_allocator();
+  auto ret = rcl_get_publishers_info_by_topic(node, &allocator, topic.data(), false, &pubs);
+  if (ret != RCL_RET_OK || pubs.size <= 0) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "getting publishers failed");
+    exit(1);
   }
-  return InterfaceTypeName(topic.substr(0, split_at), topic.substr(split_at + 1));
+  std::string topic_type(pubs.info_array->topic_type);
+  std::string pkg = topic_type.substr(0, topic_type.find('/'));
+  std::string name = topic_type.substr(topic_type.rfind('/') + 1);
+  InterfaceTypeName int_type_name{pkg, name};
+
+  ret = rcl_topic_endpoint_info_array_fini(&pubs, &allocator);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "cleaning up publishers failed");
+    exit(1);
+  }
+
+  return int_type_name;
 }
 
 

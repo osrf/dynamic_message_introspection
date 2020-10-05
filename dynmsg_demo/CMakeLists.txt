@@ -40,7 +40,7 @@ add_library(dynmsg_demo_library STATIC
   src/typesupport_utils.cpp
   src/string_utils.cpp
   )
-ament_target_dependencies(dynmsg_demo_library rcl)
+ament_target_dependencies(dynmsg_demo_library rcl rcl_action)
 target_link_libraries(dynmsg_demo_library yaml-cpp)
 
 add_executable(clitool src/cli_tool.cpp)

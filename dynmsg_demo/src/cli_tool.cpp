@@ -7,14 +7,17 @@
 
 #include <iostream>
 #include <sstream>
+#include <thread>
 
 #include "rcl/context.h"
+#include "rcl/graph.h"
 #include "rcl/init_options.h"
 #include "rcl/node_options.h"
 #include "rcl/node.h"
 #include "rcl/rcl.h"
 #include "rcl/subscription.h"
 #include "rcl/types.h"
+#include "rcl_action/graph.h"
 
 #include "rcutils/logging_macros.h"
 
@@ -136,6 +139,95 @@ int publish_to_topic(
 }
 
 
+void print_nodes(const rcl_node_t* node) {
+  auto names = rcutils_get_zero_initialized_string_array();
+  auto namespaces = rcutils_get_zero_initialized_string_array();
+  auto ret = rcl_get_node_names(node, rcl_get_default_allocator(), &names, &namespaces);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "discovering nodes failed");
+    exit(1);
+  }
+  std::cout << "nodes:" << std::endl;
+  for (size_t i = 0; i < names.size; i++) {
+    std::cout << "  " << names.data[i] << std::endl;
+  }
+  ret = rcutils_string_array_fini(&names);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "deallocating names array failed");
+    exit(1);
+  }
+  rcutils_string_array_fini(&namespaces);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "deallocating namespaces array failed");
+    exit(1);
+  }
+}
+
+
+void print_topics(const rcl_node_t* node) {
+  auto topics = rcl_get_zero_initialized_names_and_types();
+  auto allocator = rcl_get_default_allocator();
+  auto ret = rcl_get_topic_names_and_types(node, &allocator, false, &topics);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "discovering topics failed");
+    exit(1);
+  }
+  std::cout << "topics:" << std::endl;
+  for (size_t i = 0; i < topics.names.size; i++) {
+    std::cout << "  " << topics.names.data[i] << " [" << topics.types[i].data[0] << "]" << std::endl;
+  }
+  ret = rcl_names_and_types_fini(&topics);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "destroying names and types failed");
+    exit(1);
+  }
+}
+
+
+void print_services(const rcl_node_t* node) {
+  auto services = rcl_get_zero_initialized_names_and_types();
+  auto allocator = rcl_get_default_allocator();
+  auto ret = rcl_get_service_names_and_types(node, &allocator, &services);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "discovering services failed");
+    exit(1);
+  }
+  std::cout << "services:" << std::endl;
+  for (size_t i = 0; i < services.names.size; i++) {
+    std::cout << "  " << services.names.data[i]
+      << " [" << services.types[i].data[0] << "]"
+      << std::endl;
+  }
+  ret = rcl_names_and_types_fini(&services);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "destroying names and types failed");
+    exit(1);
+  }
+}
+
+
+void print_actions(const rcl_node_t* node) {
+  auto actions = rcl_get_zero_initialized_names_and_types();
+  auto allocator = rcl_get_default_allocator();
+  auto ret = rcl_action_get_names_and_types(node, &allocator, &actions);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "discovering actions failed");
+    exit(1);
+  }
+  std::cout << "actions:" << std::endl;
+  for (size_t i = 0; i < actions.names.size; i++) {
+    std::cout << "  " << actions.names.data[i]
+      << " [" << actions.types[i].data[0] << "]"
+      << std::endl;
+  }
+  ret = rcl_names_and_types_fini(&actions);
+  if (ret != RCL_RET_OK) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "destroying names and types failed");
+    exit(1);
+  }
+}
+
+
 int
 main(int argc, char ** argv) {
   auto args = parse_arguments(argc, argv);
@@ -168,10 +260,13 @@ main(int argc, char ** argv) {
     return 1;
   }
 
+  // need to sleep for abit for discovery to populate
+  std::this_thread::sleep_for(std::chrono::seconds(1));
+
   InterfaceTypeName interface_type;
   switch (args.cmd) {
     case Command::TopicEcho:
-      interface_type = get_topic_type(args.params["message_type"]);
+      interface_type = get_topic_type(&node, args.params["topic"]);
       if (interface_type.first == "" || interface_type.second == "") {
         std::cout << "Unknown topic type '" << interface_type.first << '/' <<
           interface_type.second << "'\n";
@@ -179,7 +274,7 @@ main(int argc, char ** argv) {
       }
       return echo_topic(&node, args.params["topic"], interface_type);
     case Command::TopicPublish:
-      interface_type = get_topic_type(args.params["message_type"]);
+      interface_type = get_topic_type(&node, args.params["topic"]);
       if (interface_type.first == "" || interface_type.second == "") {
         std::cout << "Unknown topic type '" << interface_type.first << '/' <<
           interface_type.second << "'\n";
@@ -190,6 +285,13 @@ main(int argc, char ** argv) {
       throw NotImplemented();
     case Command::ServiceHost:
       throw NotImplemented();
+    case Command::Discover: {
+      print_nodes(&node);
+      print_topics(&node);
+      print_services(&node);
+      print_actions(&node);
+      exit(0);
+    }
     case Command::Unknown:
       std::cout << "Unknown command\n";
       return 1;
