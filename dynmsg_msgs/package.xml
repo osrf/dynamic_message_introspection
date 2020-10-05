@@ -13,8 +13,6 @@
 
   <exec_depend>rosidl_default_runtime</exec_depend>
 
-  <depend>geometry_msgs</depend>
-
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 

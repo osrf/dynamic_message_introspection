@@ -1,14 +1,18 @@
 #ifndef TYPESUPPORT_UTILS_HPP
 #define TYPESUPPORT_UTILS_HPP
 
-#include <rosidl_typesupport_introspection_c/message_introspection.h>
 
 #include <string>
 
+#include <rcl/types.h>
+#include <rosidl_typesupport_introspection_c/message_introspection.h>
+
+using TypeSupport = rosidl_message_type_support_t;
 using TypeInfo = rosidl_typesupport_introspection_c__MessageMembers;
 using MemberInfo = rosidl_typesupport_introspection_c__MessageMember;
 
 // TODO: export this?
+const TypeSupport* get_type_support(const std::string& msg_namespace, const std::string& msg_type);
 const TypeInfo* get_type_info(const std::string& msg_namespace, const std::string& msg_type);
 
 /**
@@ -21,13 +25,13 @@ typedef struct RosMessage {
 } RosMessage;
 
 extern "C"
-int ros_message_init(
+rcl_ret_t ros_message_init(
   const char* msg_namespace,
   const char* msg_type,
   RosMessage* ros_msg
 );
 
 extern "C"
-int ros_message_destroy(RosMessage* ros_msg);
+void ros_message_destroy(RosMessage* ros_msg);
 
 #endif
