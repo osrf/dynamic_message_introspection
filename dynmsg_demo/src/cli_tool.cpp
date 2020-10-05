@@ -290,7 +290,7 @@ main(int argc, char ** argv) {
       print_topics(&node);
       print_services(&node);
       print_actions(&node);
-      exit(0);
+      return 0;
     }
     case Command::Unknown:
       std::cout << "Unknown command\n";
