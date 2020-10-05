@@ -1,17 +1,60 @@
-#include "typesupport_utils.hpp"
-
-#include <rcutils/logging_macros.h>
+#include "dynmsg_demo/typesupport_utils.hpp"
 
 #include <dlfcn.h>
 
 #include <sstream>
 
+#include <rcutils/logging_macros.h>
+
+#include <iostream>
+
+InterfaceTypeName get_topic_type(const std::string &topic) {
+  // Until graph information is available, the topic parameter should be the interface type in the
+  // form of "package/Interface", e.g. "example_interfaces/Bool"
+  std::string::size_type split_at = topic.find('/');
+  if (split_at == std::string::npos) {
+    return InterfaceTypeName{"", ""};
+  }
+  return InterfaceTypeName(topic.substr(0, split_at), topic.substr(split_at + 1));
+}
+
+
 typedef const rosidl_message_type_support_t* (*get_message_ts_func)();
 
-const TypeInfo* get_type_info(const std::string& msg_namespace, const std::string& msg_type) {
+const TypeSupport* get_type_support(const InterfaceTypeName &interface_type) {
+  std::string ts_lib_name;
+  ts_lib_name = "lib" + interface_type.first + "__rosidl_typesupport_c.so";
+  RCUTILS_LOG_DEBUG_NAMED(
+    "dynmsg_demo",
+    "Loading type support library %s",
+    ts_lib_name.c_str());
+  void * type_support_lib = dlopen(ts_lib_name.c_str(), RTLD_LAZY);
+  if (type_support_lib == nullptr) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "failed to load type support library: %s", dlerror());
+    return nullptr;
+  }
+  std::string ts_func_name;
+  ts_func_name = "rosidl_typesupport_c__get_message_type_support_handle__" + interface_type.first +
+    "__msg__" + interface_type.second;
+  RCUTILS_LOG_DEBUG_NAMED("dynmsg_demo", "Loading type support function %s", ts_func_name.c_str());
+
+  get_message_ts_func type_support_handle_func =
+    reinterpret_cast<get_message_ts_func>(dlsym(type_support_lib, ts_func_name.c_str()));
+  if (type_support_handle_func == nullptr) {
+    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "failed to load type support function: %s", dlerror());
+    return nullptr;
+  }
+
+  const rosidl_message_type_support_t * ts = type_support_handle_func();
+  RCUTILS_LOG_DEBUG_NAMED("dynmsg_demo", "Loaded type support %s", ts->typesupport_identifier);
+
+  return ts;
+}
+
+const TypeInfo* get_type_info(const InterfaceTypeName &interface_type) {
   std::stringstream ts_lib_name;
-  ts_lib_name << "lib" << msg_namespace << "__rosidl_typesupport_introspection_c.so";
-  RCUTILS_LOG_INFO_NAMED(
+  ts_lib_name << "lib" << interface_type.first << "__rosidl_typesupport_introspection_c.so";
+  RCUTILS_LOG_DEBUG_NAMED(
     "dynmsg_demo",
     "Loading introspection type support library %s",
     ts_lib_name.str().c_str());
@@ -21,9 +64,9 @@ const TypeInfo* get_type_info(const std::string& msg_namespace, const std::strin
     return nullptr;
   }
   std::stringstream ts_func_name;
-  ts_func_name << "rosidl_typesupport_introspection_c__get_message_type_support_handle__" << msg_namespace <<
-    "__msg__" << msg_type;
-  RCUTILS_LOG_INFO_NAMED("dynmsg_demo", "Loading type support function %s", ts_func_name.str().c_str());
+  ts_func_name << "rosidl_typesupport_introspection_c__get_message_type_support_handle__" << interface_type.first <<
+    "__msg__" << interface_type.second;
+  RCUTILS_LOG_DEBUG_NAMED("dynmsg_demo", "Loading type support function %s", ts_func_name.str().c_str());
 
   get_message_ts_func introspection_type_support_handle_func =
     reinterpret_cast<get_message_ts_func>(dlsym(
@@ -38,7 +81,7 @@ const TypeInfo* get_type_info(const std::string& msg_namespace, const std::strin
   }
 
   const rosidl_message_type_support_t *introspection_ts = introspection_type_support_handle_func();
-  RCUTILS_LOG_INFO_NAMED(
+  RCUTILS_LOG_DEBUG_NAMED(
     "dynmsg_demo",
     "Loaded type support %s",
     introspection_ts->typesupport_identifier);
@@ -48,19 +91,26 @@ const TypeInfo* get_type_info(const std::string& msg_namespace, const std::strin
   return type_info;
 }
 
-int ros_message_init(
-  const char* msg_namespace,
-  const char* msg_type,
+rcl_ret_t ros_message_init(
+  const InterfaceTypeName &interface_type,
   RosMessage* ros_msg
 ) {
-  const auto* type_info = get_type_info(msg_namespace, msg_type);
+  const auto* type_info = get_type_info(interface_type);
+  if (type_info == nullptr) {
+    return RCL_RET_ERROR;
+  }
+  RCUTILS_LOG_DEBUG_NAMED(
+    "dynmsg_demo",
+    "Allocating message buffer of size %ld bytes",
+    type_info->size_of_);
   uint8_t* data = new uint8_t[type_info->size_of_];
   type_info->init_function(data, ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY);
   *ros_msg = RosMessage{ type_info, data };
-  return 0;
+  return RCL_RET_OK;
 }
 
 extern "C"
-int ros_message_destroy(RosMessage* ros_msg) {
+void ros_message_destroy(RosMessage* ros_msg) {
   ros_msg->type_info->fini_function(ros_msg->data);
+  delete[] ros_msg->data;
 }
