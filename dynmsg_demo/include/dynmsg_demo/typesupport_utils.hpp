@@ -5,9 +5,11 @@
 #include <utility>
 #include <string>
 
-#include <rcl/rcl.h>
 #include <rcl/types.h>
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
+
+// forward declare
+struct rcl_node_t;
 
 using TypeSupport = rosidl_message_type_support_t;
 using TypeInfo = rosidl_typesupport_introspection_c__MessageMembers;
