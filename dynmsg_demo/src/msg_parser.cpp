@@ -4,9 +4,19 @@
 #include <yaml-cpp/yaml.h>
 
 #include <rosidl_runtime_c/string.h>
+#include <rosidl_runtime_c/string_functions.h>
 #include <rosidl_runtime_c/u16string.h>
+#include <rosidl_runtime_c/u16string_functions.h>
+#include <rosidl_runtime_c/primitives_sequence_functions.h>
 #include <rosidl_typesupport_introspection_c/field_types.h>
 #include <rcutils/logging_macros.h>
+
+// is there a better approach?
+#define DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(type_name_enum, type_name) \
+  const SequenceInitFunc< \
+    TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_ ## type_name_enum>::SequenceType \
+  > TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_ ## type_name_enum>::sequence_init \
+    = rosidl_runtime_c__ ## type_name ## __Sequence__init
 
 // forward declare
 void yaml_to_rosmsg_impl(
@@ -18,107 +28,144 @@ void yaml_to_rosmsg_impl(
 template<int RosTypeId>
 struct TypeMapping {};
 
+template<typename SequenceType>
+using SequenceInitFunc = bool (*)(SequenceType*, size_t);
+
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT> {
   using CppType = float;
   using SequenceType = rosidl_runtime_c__float32__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(FLOAT, float32);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE> {
   using CppType = double;
   using SequenceType = rosidl_runtime_c__double__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(DOUBLE, double);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE> {
   using CppType = long double;
   using SequenceType = rosidl_runtime_c__long_double__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(LONG_DOUBLE, long_double);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_CHAR> {
   using CppType = signed char;
   using SequenceType = rosidl_runtime_c__char__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(CHAR, char);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR> {
   using CppType = uint16_t;
   using SequenceType = rosidl_runtime_c__wchar__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(WCHAR, wchar);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN> {
   using CppType = bool;
   using SequenceType = rosidl_runtime_c__bool__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(BOOLEAN, bool);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_OCTET> {
   using CppType = uint8_t;
   using SequenceType = rosidl_runtime_c__octet__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(OCTET, octet);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT8> {
   using CppType = uint8_t;
   using SequenceType = rosidl_runtime_c__uint8__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(UINT8, uint8);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT8> {
   using CppType = int8_t;
   using SequenceType = rosidl_runtime_c__int8__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(INT8, int8);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT16> {
   using CppType = uint16_t;
   using SequenceType = rosidl_runtime_c__uint16__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(UINT16, uint16);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT16> {
   using CppType = int16_t;
   using SequenceType = rosidl_runtime_c__int16__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(INT16, int16);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT32> {
   using CppType = uint32_t;
   using SequenceType = rosidl_runtime_c__uint32__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(UINT32, uint32);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT32> {
   using CppType = int32_t;
   using SequenceType = rosidl_runtime_c__int32__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(INT32, int32);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT64> {
   using CppType = uint64_t;
   using SequenceType = rosidl_runtime_c__uint64__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(UINT64, uint64);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT64> {
   using CppType = int64_t;
   using SequenceType = rosidl_runtime_c__int64__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(INT64, int64);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_STRING> {
   using CppType = rosidl_runtime_c__String;
   using SequenceType = rosidl_runtime_c__String__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(STRING, String);
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING> {
   using CppType = rosidl_runtime_c__U16String;
   using SequenceType = rosidl_runtime_c__U16String__Sequence;
+  static const SequenceInitFunc<SequenceType> sequence_init;
 };
+DYNMSG_DEMO_DECALRE_SEQUENCE_INIT_FUNC(WSTRING, U16String);
 
 template<int RosTypeId>
 void write_member_item(
@@ -166,15 +213,13 @@ void write_member_sequence(const YAML::Node& yaml, uint8_t* buffer, const Member
     throw std::runtime_error("yaml sequence is more than capacity");
   }
   auto seq = reinterpret_cast<SequenceType*>(buffer);
-  seq->data = new CppType[yaml.size()];
+  TypeMapping<RosTypeId>::sequence_init(seq, yaml.size());
   for (size_t i = 0; i < yaml.size(); i++) {
     write_member_item<RosTypeId>(
       yaml[i],
       reinterpret_cast<uint8_t*>(seq->data + i)
     );
   }
-  seq->size = yaml.size();
-  seq->capacity = yaml.size();
 }
 
 bool is_sequence(const MemberInfo& member) {
