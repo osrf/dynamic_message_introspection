@@ -9,6 +9,7 @@ enum class Command {
   TopicPublish,
   ServiceCall,
   ServiceHost,
+  Discover,
 };
 
 struct Arguments {

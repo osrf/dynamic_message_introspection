@@ -8,13 +8,16 @@
 #include <rcl/types.h>
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
 
+// forward declare
+struct rcl_node_t;
+
 using TypeSupport = rosidl_message_type_support_t;
 using TypeInfo = rosidl_typesupport_introspection_c__MessageMembers;
 using MemberInfo = rosidl_typesupport_introspection_c__MessageMember;
 
 using InterfaceTypeName = std::pair<std::string, std::string>;
 
-InterfaceTypeName get_topic_type(const std::string &topic);
+InterfaceTypeName get_topic_type(const rcl_node_t *node, const std::string &topic);
 
 // TODO: export this?
 const TypeSupport* get_type_support(const InterfaceTypeName &interface_type);
