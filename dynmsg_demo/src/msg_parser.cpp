@@ -18,11 +18,11 @@ void yaml_to_rosmsg_impl(
   uint8_t* buffer
 );
 
-template<int RosTypeId>
-struct TypeMapping {};
-
 template<typename SequenceType>
 using SequenceInitFunc = bool (*)(SequenceType*, size_t);
+
+template<int RosTypeId>
+struct TypeMapping {};
 
 template<>
 struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT> {
@@ -175,12 +175,11 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>(
   uint8_t* buffer
 ) {
   using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>::CppType;
-  CppType* ros_string = reinterpret_cast<CppType*>(buffer);
   std::string s = yaml.as<std::string>();
-  ros_string->data = new char[s.size() + 1];
-  strncpy(ros_string->data, s.data(), s.size() + 1);
-  ros_string->size = s.size();
-  ros_string->capacity = s.size() + 1;
+  CppType* ros_string = reinterpret_cast<CppType*>(buffer);
+  if (!rosidl_runtime_c__String__assign(ros_string, s.data())) {
+    throw std::runtime_error("error assigning rosidl string");
+  }
 }
 
 template<>
@@ -189,13 +188,14 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>(
   uint8_t* buffer
 ) {
   using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>::CppType;
-  CppType* ros_string = reinterpret_cast<CppType*>(buffer);
   std::u16string u16s = string_to_u16string(yaml.as<std::string>());
-  ros_string->data = new uint16_t[u16s.size() + 1];
-  memcpy(ros_string->data, u16s.data(), (u16s.size() + 1) * sizeof(std::u16string::value_type));
-  // should this be the length of chars or the number of bytes?
-  ros_string->size = u16s.size();
-  ros_string->capacity = u16s.size() + 1;
+  CppType* ros_string = reinterpret_cast<CppType*>(buffer);
+  if (
+    !rosidl_runtime_c__U16String__assign(
+      ros_string, reinterpret_cast<uint16_t*>(const_cast<char16_t*>(u16s.data())))
+  ) {
+    throw std::runtime_error("error assigning rosidl string");
+  }
 }
 
 template<int RosTypeId>
