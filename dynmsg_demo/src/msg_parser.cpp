@@ -243,17 +243,18 @@ void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& mem
 }
 
 void write_member_sequence_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
-  // We don't know the type at compiler time but they all follow the same structure.
-  using SequenceType = rosidl_runtime_c__uint8__Sequence;
-
   if (member.is_upper_bound_ && yaml.size() > member.array_size_) {
     throw std::runtime_error("yaml sequence is more than capacity");
   }
   const TypeInfo* member_typeinfo = reinterpret_cast<const TypeInfo*>(member.members_->data);
-  auto seq = reinterpret_cast<SequenceType*>(buffer);
+  auto& seq = buffer;
   member.resize_function(seq, yaml.size());
   for (size_t i = 0; i < yaml.size(); i++) {
-    yaml_to_rosmsg_impl(yaml[i], member_typeinfo, seq->data + member_typeinfo->size_of_ * i);
+    yaml_to_rosmsg_impl(
+      yaml[i],
+      member_typeinfo,
+      reinterpret_cast<uint8_t*>(member.get_function(seq, i))
+    );
   }
 }
 
