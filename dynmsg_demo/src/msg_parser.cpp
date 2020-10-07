@@ -216,6 +216,23 @@ void write_member_sequence(const YAML::Node& yaml, uint8_t* buffer, const Member
 }
 
 bool is_sequence(const MemberInfo& member) {
+  // there isn't a "is_sequence" flag in the introspection data, from manual inspection, it looks
+  // like,
+  //
+  // array:
+  //   is_array == true
+  //   array_size > 0
+  //   is_upper_bound == false
+  // bounded_sequences:
+  //   is_array == true
+  //   array_size > 0
+  //   is_upper_bound == true
+  // unbounded_sequence:
+  //   is_array == true
+  //   array_size == 0
+  //   is_upper_bound == false
+  //
+  // Qn: What if there is an array with size of 0?
   if ((member.is_array_ && member.array_size_ == 0) || member.is_upper_bound_) {
     return true;
   }
@@ -225,6 +242,10 @@ bool is_sequence(const MemberInfo& member) {
 template<int RosTypeId>
 void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
   using CppType = typename TypeMapping<RosTypeId>::CppType;
+  // arrays and sequences have different struct representation. An array is represented by a
+  // classic c array (pointer with byte size == sizeof(type) * array_size).
+  //
+  // sequences on the other hand is a custom-defined struct with data, size and capacity members.
   if (is_sequence(member)) {
     write_member_sequence<RosTypeId>(yaml[member.name_], buffer + member.offset_, member);
     return;
