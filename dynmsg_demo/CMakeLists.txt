@@ -64,7 +64,8 @@ if(BUILD_TESTING)
   find_package(geometry_msgs REQUIRED)
 
   ament_add_gtest(msg_parser_test test/msg_parser_test.cpp)
-  target_link_libraries(msg_parser_test dynmsg_demo_library yaml-cpp)
+  target_compile_options(msg_parser_test PRIVATE -fsanitize=address)
+  target_link_libraries(msg_parser_test dynmsg_demo_library yaml-cpp -fsanitize=address)
   ament_target_dependencies(msg_parser_test
     rcl
     test_msgs

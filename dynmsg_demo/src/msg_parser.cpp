@@ -251,12 +251,10 @@ void write_member_sequence_nested(const YAML::Node& yaml, uint8_t* buffer, const
   }
   const TypeInfo* member_typeinfo = reinterpret_cast<const TypeInfo*>(member.members_->data);
   auto seq = reinterpret_cast<SequenceType*>(buffer);
-  seq->data = new uint8_t[member_typeinfo->size_of_ * yaml.size()];
+  member.resize_function(seq, yaml.size());
   for (size_t i = 0; i < yaml.size(); i++) {
     yaml_to_rosmsg_impl(yaml[i], member_typeinfo, seq->data + member_typeinfo->size_of_ * i);
   }
-  seq->size = yaml.size();
-  seq->capacity = yaml.size();
 }
 
 void write_member_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
