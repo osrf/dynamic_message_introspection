@@ -201,7 +201,7 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>(
 template<int RosTypeId>
 void write_member_sequence(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
   using SequenceType = typename TypeMapping<RosTypeId>::SequenceType;
-  using CppType = typename TypeMapping<RosTypeId>::CppType;
+
   if (member.is_upper_bound_ && yaml.size() > member.array_size_) {
     throw std::runtime_error("yaml sequence is more than capacity");
   }
@@ -245,7 +245,6 @@ void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& mem
 void write_member_sequence_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
   // We don't know the type at compiler time but they all follow the same structure.
   using SequenceType = rosidl_runtime_c__uint8__Sequence;
-  using CppType = void*;
 
   if (member.is_upper_bound_ && yaml.size() > member.array_size_) {
     throw std::runtime_error("yaml sequence is more than capacity");
