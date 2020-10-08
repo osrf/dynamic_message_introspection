@@ -36,7 +36,7 @@ InterfaceTypeName get_topic_type(const rcl_node_t *node, const std::string &topi
 InterfaceTypeName get_topic_type_from_string_type(const std::string &type) {
   std::string::size_type split_at = type.find('/');
   if (split_at == std::string::npos) {
-    return InterfaceTypeName{"", ""};
+    throw std::runtime_error("invalid type specification");
   }
   return InterfaceTypeName(type.substr(0, split_at), type.substr(split_at + 1));
 }
