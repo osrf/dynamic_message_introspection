@@ -17,6 +17,7 @@
 
 #include <unordered_map>
 
+// Commands available in the CLI tool
 enum class Command {
   Unknown,
   TopicEcho,
@@ -31,6 +32,8 @@ struct Arguments {
   std::unordered_map<std::string, std::string> params;
 };
 
+// Parse the arguments given on the command line into a command and its arguments.
+// Some simple error checking is performed only.
 Arguments parse_arguments(int argc, char** argv);
 
 #endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_CLI_HPP_
