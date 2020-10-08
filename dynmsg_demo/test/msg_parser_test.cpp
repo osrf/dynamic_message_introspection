@@ -9,6 +9,8 @@
 #include <test_msgs/msg/arrays.h>
 #include <test_msgs/msg/bounded_sequences.h>
 #include <test_msgs/msg/unbounded_sequences.h>
+#include <rosidl_runtime_c/primitives_sequence_functions.h>
+#include <rosidl_runtime_c/string_functions.h>
 
 #include <yaml-cpp/yaml.h>
 
@@ -276,18 +278,9 @@ TEST(MsgParser, Arrays) {
   set_basic_types(ros_msg->basic_types_values[1]);
   set_basic_types(ros_msg->basic_types_values[2]);
   std::vector<std::string> strings{"hello", "world", "!"};
-  ros_msg->string_values[0].data = new char[strings[0].size() + 1];
-  strcpy(ros_msg->string_values[0].data, strings[0].data());
-  ros_msg->string_values[0].size = strings[0].size();
-  ros_msg->string_values[0].capacity = strings[0].size() + 1;
-  ros_msg->string_values[1].data = new char[strings[1].size() + 1];
-  strcpy(ros_msg->string_values[1].data, strings[1].data());
-  ros_msg->string_values[1].size = strings[1].size();
-  ros_msg->string_values[1].capacity = strings[1].size() + 1;
-  ros_msg->string_values[2].data = new char[strings[2].size() + 1];
-  strcpy(ros_msg->string_values[2].data, strings[2].data());
-  ros_msg->string_values[2].size = strings[2].size();
-  ros_msg->string_values[2].capacity = strings[2].size() + 1;
+  rosidl_runtime_c__String__assign(&ros_msg->string_values[0], "hello");
+  rosidl_runtime_c__String__assign(&ros_msg->string_values[1], "world");
+  rosidl_runtime_c__String__assign(&ros_msg->string_values[2], "!");
 
   test_msgs__msg__Arrays* converted =
     reinterpret_cast<test_msgs__msg__Arrays*>(generic_msg.data);
@@ -338,26 +331,16 @@ TEST(MsgParser, BoundedSequences) {
   auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "BoundedSequences"}, emitter.c_str());
 
   test_msgs__msg__BoundedSequences* ros_msg = test_msgs__msg__BoundedSequences__create();
-  ros_msg->bool_values.capacity = 1;
-  ros_msg->bool_values.size = 1;
-  ros_msg->bool_values.data = new bool;
-  *ros_msg->bool_values.data = true;
-  ros_msg->basic_types_values = *test_msgs__msg__BasicTypes__Sequence__create(3);
+  rosidl_runtime_c__boolean__Sequence__init(&ros_msg->bool_values, 1);
+  ros_msg->bool_values.data[0] = true;
+  test_msgs__msg__BasicTypes__Sequence__init(&ros_msg->basic_types_values, 3);
   set_basic_types(ros_msg->basic_types_values.data[0]);
   set_basic_types(ros_msg->basic_types_values.data[1]);
   set_basic_types(ros_msg->basic_types_values.data[2]);
   std::vector<std::string> strings{"hello", "world"};
-  ros_msg->string_values.size = 2;
-  ros_msg->string_values.capacity = 2;
-  ros_msg->string_values.data = new rosidl_runtime_c__String[2];
-  ros_msg->string_values.data[0].data = new char[strings[0].size() + 1];
-  strcpy(ros_msg->string_values.data[0].data, strings[0].data());
-  ros_msg->string_values.data[0].size = strings[0].size();
-  ros_msg->string_values.data[0].capacity = strings[0].size() + 1;
-  ros_msg->string_values.data[1].data = new char[strings[1].size() + 1];
-  strcpy(ros_msg->string_values.data[1].data, strings[1].data());
-  ros_msg->string_values.data[1].size = strings[1].size();
-  ros_msg->string_values.data[1].capacity = strings[1].size() + 1;
+  rosidl_runtime_c__String__Sequence__init(&ros_msg->string_values, 2);
+  rosidl_runtime_c__String__assign(&ros_msg->string_values.data[0], "hello");
+  rosidl_runtime_c__String__assign(&ros_msg->string_values.data[1], "world");
 
   test_msgs__msg__BoundedSequences* converted =
     reinterpret_cast<test_msgs__msg__BoundedSequences*>(generic_msg.data);
@@ -378,6 +361,12 @@ TEST(MsgParser, BoundedSequences) {
   check_basic_types_values(&converted->basic_types_values.data[1], &ros_msg->basic_types_values.data[1]);
   check_basic_types_values(&converted->basic_types_values.data[2], &ros_msg->basic_types_values.data[2]);
 
+  EXPECT_EQ(converted->string_values_default.size, ros_msg->string_values_default.size);
+  EXPECT_EQ(converted->string_values_default.capacity, ros_msg->string_values_default.capacity);
+  EXPECT_STREQ(converted->string_values_default.data[0].data, ros_msg->string_values_default.data[0].data);
+  EXPECT_STREQ(converted->string_values_default.data[1].data, ros_msg->string_values_default.data[1].data);
+  EXPECT_STREQ(converted->string_values_default.data[2].data, ros_msg->string_values_default.data[2].data);
+
   test_msgs__msg__BoundedSequences__destroy(ros_msg);
   ros_message_destroy(&generic_msg);
 }
@@ -392,26 +381,16 @@ TEST(MsgParser, UnboundedSequences) {
   auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "UnboundedSequences"}, emitter.c_str());
 
   test_msgs__msg__UnboundedSequences* ros_msg = test_msgs__msg__UnboundedSequences__create();
-  ros_msg->bool_values.capacity = 1;
-  ros_msg->bool_values.size = 1;
-  ros_msg->bool_values.data = new bool;
-  *ros_msg->bool_values.data = true;
-  ros_msg->basic_types_values = *test_msgs__msg__BasicTypes__Sequence__create(3);
+  rosidl_runtime_c__boolean__Sequence__init(&ros_msg->bool_values, 1);
+  ros_msg->bool_values.data[0] = true;
+  test_msgs__msg__BasicTypes__Sequence__init(&ros_msg->basic_types_values, 3);
   set_basic_types(ros_msg->basic_types_values.data[0]);
   set_basic_types(ros_msg->basic_types_values.data[1]);
   set_basic_types(ros_msg->basic_types_values.data[2]);
   std::vector<std::string> strings{"hello", "world"};
-  ros_msg->string_values.size = 2;
-  ros_msg->string_values.capacity = 2;
-  ros_msg->string_values.data = new rosidl_runtime_c__String[2];
-  ros_msg->string_values.data[0].data = new char[strings[0].size() + 1];
-  strcpy(ros_msg->string_values.data[0].data, strings[0].data());
-  ros_msg->string_values.data[0].size = strings[0].size();
-  ros_msg->string_values.data[0].capacity = strings[0].size() + 1;
-  ros_msg->string_values.data[1].data = new char[strings[1].size() + 1];
-  strcpy(ros_msg->string_values.data[1].data, strings[1].data());
-  ros_msg->string_values.data[1].size = strings[1].size();
-  ros_msg->string_values.data[1].capacity = strings[1].size() + 1;
+  rosidl_runtime_c__String__Sequence__init(&ros_msg->string_values, 2);
+  rosidl_runtime_c__String__assign(&ros_msg->string_values.data[0], "hello");
+  rosidl_runtime_c__String__assign(&ros_msg->string_values.data[1], "world");
 
   test_msgs__msg__UnboundedSequences* converted =
     reinterpret_cast<test_msgs__msg__UnboundedSequences*>(generic_msg.data);
@@ -431,6 +410,12 @@ TEST(MsgParser, UnboundedSequences) {
   check_basic_types_values(&converted->basic_types_values.data[0], &ros_msg->basic_types_values.data[0]);
   check_basic_types_values(&converted->basic_types_values.data[1], &ros_msg->basic_types_values.data[1]);
   check_basic_types_values(&converted->basic_types_values.data[2], &ros_msg->basic_types_values.data[2]);
+
+  EXPECT_EQ(converted->string_values_default.size, ros_msg->string_values_default.size);
+  EXPECT_EQ(converted->string_values_default.capacity, ros_msg->string_values_default.capacity);
+  EXPECT_STREQ(converted->string_values_default.data[0].data, ros_msg->string_values_default.data[0].data);
+  EXPECT_STREQ(converted->string_values_default.data[1].data, ros_msg->string_values_default.data[1].data);
+  EXPECT_STREQ(converted->string_values_default.data[2].data, ros_msg->string_values_default.data[2].data);
 
   test_msgs__msg__UnboundedSequences__destroy(ros_msg);
   ros_message_destroy(&generic_msg);

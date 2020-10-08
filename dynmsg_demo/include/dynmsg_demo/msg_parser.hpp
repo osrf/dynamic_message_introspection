@@ -3,8 +3,7 @@
 
 #include "typesupport_utils.hpp"
 
-#include <vector>
-
+extern "C"
 RosMessage yaml_to_rosmsg(const InterfaceTypeName &interface_type, const std::string& yaml_str);
 
 #endif
