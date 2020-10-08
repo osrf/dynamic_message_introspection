@@ -311,7 +311,7 @@ main(int argc, char ** argv)
   RCUTILS_LOG_DEBUG_NAMED("cli-tool", "Creating node");
   rcl_node_options_t node_options = rcl_node_get_default_options();
   rcl_node_t node = rcl_get_zero_initialized_node();
-  ret = rcl_node_init(&node, "cli-tool", "", &context, &node_options);
+  ret = rcl_node_init(&node, "clitool", "", &context, &node_options);
   if (ret != RCL_RET_OK) {
     RCUTILS_LOG_ERROR_NAMED("cli-tool", "node init failed");
     return 1;
