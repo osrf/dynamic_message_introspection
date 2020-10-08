@@ -265,13 +265,13 @@ main(int argc, char ** argv) {
     return 1;
   }
 
-  // need to sleep for abit for discovery to populate
-  std::this_thread::sleep_for(std::chrono::seconds(1));
-
   try {
     InterfaceTypeName interface_type;
     switch (args.cmd) {
       case Command::TopicEcho:
+        // need to sleep for abit for discovery to populate
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
         interface_type = get_topic_type(&node, args.params["topic"]);
         if (interface_type.first == "" || interface_type.second == "") {
           std::cout << "Unknown topic type '" << interface_type.first << '/' <<
@@ -280,7 +280,7 @@ main(int argc, char ** argv) {
         }
         return echo_topic(&node, args.params["topic"], interface_type);
       case Command::TopicPublish:
-        interface_type = get_topic_type(&node, args.params["topic"]);
+        interface_type = get_topic_type_from_string_type(args.params["type"]);
         if (interface_type.first == "" || interface_type.second == "") {
           std::cout << "Unknown topic type '" << interface_type.first << '/' <<
             interface_type.second << "'\n";
@@ -292,6 +292,8 @@ main(int argc, char ** argv) {
       case Command::ServiceHost:
         throw NotImplemented();
       case Command::Discover: {
+        // need to sleep for abit for discovery to populate
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         return print_nodes(&node)
           || print_topics(&node)
           || print_services(&node)

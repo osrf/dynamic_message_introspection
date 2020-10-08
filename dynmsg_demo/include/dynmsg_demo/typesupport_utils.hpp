@@ -18,6 +18,7 @@ using MemberInfo = rosidl_typesupport_introspection_c__MessageMember;
 using InterfaceTypeName = std::pair<std::string, std::string>;
 
 InterfaceTypeName get_topic_type(const rcl_node_t *node, const std::string &topic);
+InterfaceTypeName get_topic_type_from_string_type(const std::string &type);
 
 // TODO: export this?
 const TypeSupport* get_type_support(const InterfaceTypeName &interface_type);
