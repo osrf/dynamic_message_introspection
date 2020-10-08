@@ -1,3 +1,17 @@
+// Copyright 2020 Open Source Robotics Foundation, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "dynmsg_demo/message_reading.hpp"
 #include "dynmsg_demo/string_utils.hpp"
 #include "dynmsg_demo/typesupport_utils.hpp"
@@ -26,6 +40,7 @@
 #include "rosidl_typesupport_introspection_c/field_types.h"
 
 
+// Convert primitive ROS types to a string representation
 std::string
 member_type_to_string(const MemberInfo &member_info)
 {
@@ -78,26 +93,32 @@ member_type_to_string(const MemberInfo &member_info)
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_STRING:
       result << "string";
+      // Strings may have an upper bound
       if (member_info.string_upper_bound_ > 0) {
         result << "<=" << member_info.string_upper_bound_;
       }
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING:
       result << "wstring";
+      // WStrings may have an upper bound
       if (member_info.string_upper_bound_ > 0) {
         result << "<=" << member_info.string_upper_bound_;
       }
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE:
+      // For nested types, the string representation must include the name space as well as the
+      // type name
       result <<
         reinterpret_cast<const TypeInfo *>(member_info.members_->data)->message_namespace_ <<
         "/" <<
         reinterpret_cast<const TypeInfo *>(member_info.members_->data)->message_name_;
       break;
     default:
+      // Don't throw an error, just print out "UNKNOWN" then keep persevering through the message
       result << "UNKNOWN";
       break;
   }
+  // If this member is a sequence of some kind, indicate that in the type
   if (member_info.is_array_) {
     result << '[';
     if (member_info.is_upper_bound_) {
@@ -112,6 +133,7 @@ member_type_to_string(const MemberInfo &member_info)
 }
 
 
+// Get the size of primitive types
 size_t
 size_of_member_type(uint8_t type_id)
 {
@@ -160,6 +182,7 @@ size_of_member_type(uint8_t type_id)
 }
 
 
+// Convert the binary data for an individual element of an array member to YAML
 void member_to_yaml_array_item(
   const MemberInfo &member_info,
   const uint8_t * member_data,
@@ -216,11 +239,14 @@ void member_to_yaml_array_item(
         std::string(reinterpret_cast<const rosidl_runtime_c__String *>(member_data)->data));
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING:
+      // WStrings require going through some intermediate formats
       array_node.push_back(u16string_to_string(
         std::u16string(reinterpret_cast<const char16_t *>(
           reinterpret_cast<const rosidl_runtime_c__U16String *>(member_data)->data))));
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE:
+      // For nested types, don't copy the data out of the buffer directly. Recursively read the
+      // nested type into the YAML.
       RosMessage nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
       nested_member.data = const_cast<uint8_t*>(member_data);
@@ -233,6 +259,7 @@ void member_to_yaml_array_item(
 }
 
 
+// Convert an individual member's value from binary to YAML
 void basic_value_to_yaml(
   const MemberInfo &member_info,
   const uint8_t * member_data,
@@ -288,11 +315,14 @@ void basic_value_to_yaml(
       member["value"] = reinterpret_cast<const rosidl_runtime_c__String *>(member_data)->data;
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING:
+      // WStrings require going through some intermediate formats
       member["value"] = u16string_to_string(
         std::u16string(reinterpret_cast<const char16_t *>(
           reinterpret_cast<const rosidl_runtime_c__U16String *>(member_data)->data)));
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE:
+      // For nested types, don't copy the data out of the buffer directly. Recursively read the
+      // nested type into the YAML.
       RosMessage nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
       nested_member.data = const_cast<uint8_t*>(member_data);
@@ -305,6 +335,7 @@ void basic_value_to_yaml(
 }
 
 
+// Convert a dynamically-sized sequence to YAML - implementation function
 template<typename T>
 void
 dynamic_array_to_yaml_impl(const MemberInfo &member_info, T * array, YAML::Node &array_node)
@@ -318,6 +349,7 @@ dynamic_array_to_yaml_impl(const MemberInfo &member_info, T * array, YAML::Node 
 }
 
 
+// Convert a dynamically-sized sequence to YAML
 void
 dynamic_array_to_yaml(
   const MemberInfo &member_info,
@@ -428,9 +460,9 @@ dynamic_array_to_yaml(
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE:
-      // We do not know the specific type of the sequence, but they all follow the same structure
-      // pattern, where a pointer to the data is first, followed by the element count, followed by
-      // the capacity
+      // We do not know the specific type of the sequence because the type is not available at
+      // compile-time, but they all follow the same structure pattern, where a pointer to the data
+      // is first, followed by the element count, followed by the capacity
       RosMessage nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
       uint8_t * element_data;
@@ -441,16 +473,19 @@ dynamic_array_to_yaml(
       element_count = static_cast<size_t>(member_data[sizeof(void*)]);
       for (size_t ii = 0; ii < element_count; ++ii) {
         nested_member.data = element_data + ii * element_size;
+        // Recursively read the nested type into the array element in the YAML representation
         array_node.push_back(message_to_yaml(nested_member));
       }
       break;
     default:
+      // Store an error string and keep going
       array_node.push_back("Unknown value for unknown type");
       break;
   }
 }
 
 
+// Convert a fixed-sized sequence (a C-style array) to YAML
 void fixed_array_to_yaml(
   const MemberInfo &member_info,
   uint8_t * member_data,
@@ -468,6 +503,7 @@ void fixed_array_to_yaml(
 }
 
 
+// Read one member of a message into a YAML node and return that node
 YAML::Node member_to_yaml(
   const MemberInfo &member_info,
   uint8_t * member_data)
@@ -505,9 +541,15 @@ YAML::Node
 message_to_yaml(const RosMessage &message)
 {
   YAML::Node yaml_msg;
+  // Iterate over the members of the message, converting the binary data for each into a node in
+  // the YAML representation
   for (uint32_t ii = 0; ii < message.type_info->member_count_; ++ii) {
+    // Get the introspection information for this particular member
     const MemberInfo &member_info = message.type_info->members_[ii];
+    // Get a pointer to the member's data in the binary buffer
     uint8_t * member_data = &message.data[member_info.offset_];
+    // Recursively (because some members may be non-primitive types themeslves) convert the member
+    // to YAML
     yaml_msg[member_info.name_] = member_to_yaml(member_info, member_data);
   }
   return yaml_msg;
