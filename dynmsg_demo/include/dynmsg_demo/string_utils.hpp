@@ -17,7 +17,13 @@
 
 #include <string>
 
+extern "C"
+{
+
+// Convert a std::string (8-bit characters) to a std::u16string (16-bit characters)
 std::u16string string_to_u16string(const std::string& input);
+// Convert a std::u16string (16-bit characters) to a std::string (8-bit characters)
 std::string u16string_to_string(const std::u16string& input);
 
+};  // extern "C"
 #endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_STRING_UTILS_HPP_

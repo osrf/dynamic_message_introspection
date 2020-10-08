@@ -25,13 +25,13 @@
 #include <rosidl_typesupport_introspection_c/field_types.h>
 #include <rcutils/logging_macros.h>
 
-// forward declare
 void yaml_to_rosmsg_impl(
   const YAML::Node& root,
   const TypeInfo* typeinfo,
   uint8_t* buffer
 );
 
+// Helper structures to make the code cleaner
 template<typename SequenceType>
 using SequenceInitFunc = bool (*)(SequenceType*, size_t);
 
@@ -174,6 +174,7 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING> {
     = rosidl_runtime_c__U16String__Sequence__init;
 };
 
+// Write an individual member into the binary message - generic
 template<int RosTypeId>
 void write_member_item(
   const YAML::Node& yaml,
@@ -183,6 +184,8 @@ void write_member_item(
   *reinterpret_cast<CppType*>(buffer) = yaml.as<CppType>();
 }
 
+
+// Write an individual member into the binary message - string
 template<>
 void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>(
   const YAML::Node& yaml,
@@ -196,6 +199,8 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>(
   }
 }
 
+
+// Write an individual member into the binary message - wstring
 template<>
 void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>(
   const YAML::Node& yaml,
@@ -212,6 +217,8 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>(
   }
 }
 
+
+// Write a sequence member into the binary message - generic
 template<int RosTypeId>
 void write_member_sequence(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
   using SequenceType = typename TypeMapping<RosTypeId>::SequenceType;
@@ -229,42 +236,49 @@ void write_member_sequence(const YAML::Node& yaml, uint8_t* buffer, const Member
   }
 }
 
+
+// Check if a field is a sequence of some kind
 bool is_sequence(const MemberInfo& member) {
-  // there isn't a "is_sequence" flag in the introspection data, from manual inspection, it looks
-  // like,
+  // There isn't a "is_sequence" flag in the introspection data. It has to be inferred from several
+  // flags:
   //
-  // array:
+  // fixed-length array:
   //   is_array == true
   //   array_size > 0
   //   is_upper_bound == false
-  // bounded_sequences:
+  // bounded_sequence (has a maximum size but may be smaller):
   //   is_array == true
   //   array_size > 0
   //   is_upper_bound == true
-  // unbounded_sequence:
+  // unbounded_sequence (no maximum size):
   //   is_array == true
   //   array_size == 0
   //   is_upper_bound == false
   //
-  // Qn: What if there is an array with size of 0?
+  // Unhandled is the case of an array with size 0
   if ((member.is_array_ && member.array_size_ == 0) || member.is_upper_bound_) {
     return true;
   }
   return false;
 }
 
+
+// Convert a YAML node into a field in the binary ROS message - generic
 template<int RosTypeId>
 void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
   using CppType = typename TypeMapping<RosTypeId>::CppType;
-  // arrays and sequences have different struct representation. An array is represented by a
-  // classic c array (pointer with byte size == sizeof(type) * array_size).
+  // Arrays and sequences have different struct representation. An array is represented by a
+  // classic C array (pointer with data size == sizeof(type) * array_size).
   //
-  // sequences on the other hand is a custom-defined struct with data, size and capacity members.
+  // Sequences on the other hand use a custom-defined struct with data, size and capacity members.
+
+  // Handle sequences
   if (is_sequence(member)) {
     write_member_sequence<RosTypeId>(yaml[member.name_], buffer + member.offset_, member);
     return;
   }
 
+  // Handle classic C arrays
   if (member.is_array_) {
     for (size_t i = 0; i < member.array_size_; i++) {
       write_member_item<RosTypeId>(
@@ -273,10 +287,13 @@ void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& mem
       );
     }
   } else {
+    // Handle single-item members
     write_member_item<RosTypeId>(yaml[member.name_], buffer + member.offset_);
   }
 }
 
+
+// Convert a YAML node into a field in the binary ROS message - string
 void write_member_sequence_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
   if (member.is_upper_bound_ && yaml.size() > member.array_size_) {
     throw std::runtime_error("yaml sequence is more than capacity");
@@ -293,6 +310,8 @@ void write_member_sequence_nested(const YAML::Node& yaml, uint8_t* buffer, const
   }
 }
 
+
+// Convert a YAML node into a field in the binary ROS message - wstring
 void write_member_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
   if (is_sequence(member)) {
     write_member_sequence_nested(yaml[member.name_], buffer + member.offset_, member);
@@ -312,6 +331,9 @@ void write_member_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberIn
   }
 }
 
+
+// Convert a YAML representation to a binary ROS message by looping over the expected fields of the
+// ROS message and getting their values from the YAML
 void yaml_to_rosmsg_impl(
   const YAML::Node& root,
   const TypeInfo* typeinfo,
@@ -404,13 +426,18 @@ void yaml_to_rosmsg_impl(
   }
 }
 
+
 RosMessage yaml_to_rosmsg(
   const InterfaceTypeName &interface_type,
   const std::string& yaml_str
 ) {
+  // Parse the YAML representation to an in-memory representation
   YAML::Node root = YAML::Load(yaml_str);
   RosMessage ros_msg;
+  // Load the introspection information and allocate space for the ROS message's binary
+  // representation
   ros_message_init(interface_type, &ros_msg);
+  // Convert the YAML representation to a binary representation
   yaml_to_rosmsg_impl(root, ros_msg.type_info, ros_msg.data);
   return ros_msg;
 }

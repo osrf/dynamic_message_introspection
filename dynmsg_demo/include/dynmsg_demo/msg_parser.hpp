@@ -19,25 +19,14 @@
 
 #include <vector>
 
-// Parse a YAML representation of a message into a ROS message and store it in a raw buffer.
-// The interface type must be specified as namespace and type, where a string representation would
-// be "namespace/Type", for example "example_interfaces/Int32".
+// Parse a YAML representation of a message into a ROS message and store it in a raw bytes buffer.
 //
-// This function will use the given type information to look for and open a type support library
-// and an introspection library for the interface type. These two libraries must be present on the
-// system and in the searched library paths. Typically if the interface type is being used on the
-// local system then these two libraries will be available (if they are not then standard ROS nodes
-// would also not be able to use that type).
+// The introspection information is used to convert the YAML representation into the correct binary
+// representation for the given ROS message.
 //
-// Once the type support libraries have been loaded, the introspection library is used to convert
-// the YAML representation into the correct binary representation for the given ROS message.
-//
-// Upon reception of a message, the introspection library is used to read the binary data and
-// convert it to a YAML representation. The YAML representation is a tree structure, with each node
-// in the tree being a field in the message. Each field is represented by two values: the ROS type
-// of the field, in a textual representation, and the value. For an example of the YAML structure,
-// run the CLI tool and echo a topic; the resulting YAML printed to the terminal is the structure
-// used.
+// It is an error for the YAML representation to contain a field that is not in the ROS message.
+// It is not an error for a field of the ROS message to not be specified in the YAML
+// representation; that field will be left uninitialised.
 extern "C"
 RosMessage yaml_to_rosmsg(const InterfaceTypeName &interface_type, const std::string& yaml_str);
 

@@ -31,18 +31,7 @@ struct RosMessage;
 // Each field is represented by two values: the ROS type of the field, in a textual representation,
 // and the value. For an example of the YAML structure, run the CLI tool and echo a topic; the
 // resulting YAML printed to the terminal is the structure used.
-//
-// This function will use the given type information to look for and open a type support library
-// and an introspection library for the interface type. These two libraries must be present on the
-// system and in the searched library paths. Typically if the interface type is being used on the
-// local system then these two libraries will be available (if they are not then standard ROS nodes
-// would also not be able to use that type).
-//
-// Once the type support libraries have been loaded, the type support library can be used to
-// receive a message, e.g. by subscribing to a topic.
-//
-// Upon reception of a message, this function uses the introspection library to read the binary
-// data and convert it to a YAML representation. 
+extern "C"
 YAML::Node message_to_yaml(const RosMessage &message);
 
 #endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_

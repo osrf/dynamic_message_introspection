@@ -44,7 +44,12 @@ public:
     NotImplemented() : std::logic_error("Not implemented") { };
 };
 
-
+// Read one message from a topic, convert it to YAML, and print it to the terminal.
+//
+// This function will look up the topic via the ROS graph information to find the interface type.
+// It then loads the type support and introspection information. The type support is used to
+// subscribe to the topic and wait for a message. Upon reception of a message, the introspection
+// library is used to read the binary data and convert it to a YAML representation.
 int
 echo_topic(
   rcl_node_t * node,
@@ -111,6 +116,15 @@ echo_topic(
 }
 
 
+// Write the given ROS message (in YAML representation) to the specified topic.
+//
+// This function requires the interface type be specified, because the topic may not exist until it
+// starts publishing data.
+//
+// This function will load the type support and introspection information for the provided
+// interface type. It then converts the given YAML representation into a binary ROS message and
+// stores it in a byte buffer. The type support is used to create a publisher to the given topic
+// with the correct type, and then the ROS message is published to that topic ten times.
 int publish_to_topic(
   rcl_node_t * node,
   const std::string & topic,
@@ -154,6 +168,11 @@ int publish_to_topic(
 }
 
 
+// Print all known nodes from the ROS graph to the terminal.
+//
+// Only nodes known about at the time this function is called will be printed. It is recommended
+// that some time be allowed to elapse (e.g. by calling a sleep) between calling rcl_init() and
+// this function. This gives the underlying discovery system some time to find other nodes.
 int print_nodes(const rcl_node_t* node) {
   auto names = rcutils_get_zero_initialized_string_array();
   auto namespaces = rcutils_get_zero_initialized_string_array();
@@ -180,6 +199,11 @@ int print_nodes(const rcl_node_t* node) {
 }
 
 
+// Print all known topics from the ROS graph to the terminal.
+//
+// Only topics known about at the time this function is called will be printed. It is recommended
+// that some time be allowed to elapse (e.g. by calling a sleep) between calling rcl_init() and
+// this function. This gives the underlying discovery system some time to find topics.
 int print_topics(const rcl_node_t* node) {
   auto topics = rcl_get_zero_initialized_names_and_types();
   auto allocator = rcl_get_default_allocator();
@@ -201,6 +225,11 @@ int print_topics(const rcl_node_t* node) {
 }
 
 
+// Print all known services from the ROS graph to the terminal.
+//
+// Only services known about at the time this function is called will be printed. It is recommended
+// that some time be allowed to elapse (e.g. by calling a sleep) between calling rcl_init() and
+// this function. This gives the underlying discovery system some time to find services.
 int print_services(const rcl_node_t* node) {
   auto services = rcl_get_zero_initialized_names_and_types();
   auto allocator = rcl_get_default_allocator();
@@ -224,6 +253,11 @@ int print_services(const rcl_node_t* node) {
 }
 
 
+// Print all known actions from the ROS graph to the terminal.
+//
+// Only actions known about at the time this function is called will be printed. It is recommended
+// that some time be allowed to elapse (e.g. by calling a sleep) between calling rcl_init() and
+// this function. This gives the underlying discovery system some time to find actions.
 int print_actions(const rcl_node_t* node) {
   auto actions = rcl_get_zero_initialized_names_and_types();
   auto allocator = rcl_get_default_allocator();
@@ -248,9 +282,11 @@ int print_actions(const rcl_node_t* node) {
 
 
 int
-main(int argc, char ** argv) {
+main(int argc, char ** argv)
+{
   auto args = parse_arguments(argc, argv);
 
+  // Initialise the options for ROS
   rcl_init_options_t options = rcl_get_zero_initialized_init_options();
   rcl_ret_t ret = rcl_init_options_init(&options, rcl_get_default_allocator());
   if (ret != RCL_RET_OK) {
@@ -258,6 +294,7 @@ main(int argc, char ** argv) {
     return 1;
   }
 
+  // Initialise ROS itself
   rcl_context_t context = rcl_get_zero_initialized_context();
   ret = rcl_init(argc, argv, &options, &context);
   if (ret != RCL_RET_OK) {
@@ -270,12 +307,13 @@ main(int argc, char ** argv) {
     return 1;
   }
 
-  RCUTILS_LOG_DEBUG_NAMED("dynmsg_demo", "Creating node");
+  // Create a node to get access to the ROS graph, topics, etc.
+  RCUTILS_LOG_DEBUG_NAMED("cli-tool", "Creating node");
   rcl_node_options_t node_options = rcl_node_get_default_options();
   rcl_node_t node = rcl_get_zero_initialized_node();
-  ret = rcl_node_init(&node, "dynmsg_test", "", &context, &node_options);
+  ret = rcl_node_init(&node, "cli-tool", "", &context, &node_options);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", "node init failed");
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "node init failed");
     return 1;
   }
 
@@ -283,7 +321,8 @@ main(int argc, char ** argv) {
     InterfaceTypeName interface_type;
     switch (args.cmd) {
       case Command::TopicEcho:
-        // need to sleep for abit for discovery to populate
+        // Need to sleep for abit for discovery to populate the ROS graph information so we can get
+        // the topic type automatically
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         interface_type = get_topic_type(&node, args.params["topic"]);
@@ -306,7 +345,7 @@ main(int argc, char ** argv) {
       case Command::ServiceHost:
         throw NotImplemented();
       case Command::Discover: {
-        // need to sleep for abit for discovery to populate
+        // Need to sleep for abit for discovery to populate the ROS graph information
         std::this_thread::sleep_for(std::chrono::seconds(1));
         return print_nodes(&node)
           || print_topics(&node)
@@ -318,11 +357,11 @@ main(int argc, char ** argv) {
         return 1;
     };
   } catch (const std::runtime_error& e) {
-    RCUTILS_LOG_ERROR_NAMED("dynmsg_demo", e.what());
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", e.what());
     return 1;
   }
 
-
+  // Shut down and clean up
   ret = rcl_node_fini(&node);
   if (ret != RCL_RET_OK) {
     RCUTILS_LOG_ERROR_NAMED("cli-tool", "node fini failed");
