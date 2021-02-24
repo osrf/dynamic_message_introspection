@@ -5,6 +5,8 @@ This code can convert any message from the in-memory representation into a YAML 
 All it needs is the compiled shared library that provides the message introspection information.
 (For message types included in a ROS 2 distribution, these libraries are already provided by the distribution.)
 
+The initial development of this code was graciously supported by [Rocos (@rocos.io)](https://www.rocos.io/).
+
 ## Quality Declaration
 
 This package claims to be in the **Quality Level 4** category, see the [Quality Declaration](QUALITY_DECLARATION.md) for more details.
