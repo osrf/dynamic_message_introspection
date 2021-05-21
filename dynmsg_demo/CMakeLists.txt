@@ -62,6 +62,7 @@ if(BUILD_TESTING)
   find_package(example_interfaces REQUIRED)
   find_package(dynmsg_msgs REQUIRED)
   find_package(geometry_msgs REQUIRED)
+  find_package(std_msgs REQUIRED)
 
   if (TEST_ASAN)
     set(asan_link_lib -fsanitize=address)
@@ -75,6 +76,7 @@ if(BUILD_TESTING)
   ament_target_dependencies(msg_parser_test
     rcl
     test_msgs
+    std_msgs
     dynmsg_msgs
     )
   ament_add_gtest(wide_strings test/test_wide_strings.cpp)
