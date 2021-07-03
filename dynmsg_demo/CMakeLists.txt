@@ -42,6 +42,28 @@ add_library(dynmsg_demo_library STATIC
   )
 ament_target_dependencies(dynmsg_demo_library rcl rcl_action)
 target_link_libraries(dynmsg_demo_library yaml-cpp)
+target_include_directories(dynmsg_demo_library PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include>"
+)
+ament_export_include_directories(include)
+ament_export_libraries(dynmsg_demo_library)
+ament_export_targets(dynmsg_demo_library HAS_LIBRARY_TARGET)
+ament_export_dependencies(rcl)
+ament_export_dependencies(rcl_action)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+install(
+  TARGETS dynmsg_demo_library yaml-cpp
+  EXPORT dynmsg_demo_library
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
 
 add_executable(clitool src/cli_tool.cpp)
 # should have been PRIVATE, but ament uses the old signature and we can't mix them
