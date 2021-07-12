@@ -14,6 +14,7 @@ endif()
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # -fPIC for building a static lib (yaml-cpp) that later gets linked into a dynamic lib
   add_compile_options(-Wall -Wextra -Wpedantic -fPIC)
+  set(FLAG_NO_WARNINGS "-w")
 endif()
 
 # find dependencies
@@ -28,10 +29,26 @@ FetchContent_Declare(yaml-cpp
   GIT_REPOSITORY https://github.com/jbeder/yaml-cpp
   GIT_TAG yaml-cpp-0.6.3
   GIT_SHALLOW true
-  CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DYAML_CPP_BUILD_TESTS=OFF -DYAML_CPP_INSTALL=OFF)
+)
+# Set policy to 'NEW' to allow options to be set through variables
+# (needed for cmake<=3.12): https://stackoverflow.com/a/66342383
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(YAML_CPP_BUILD_TESTS OFF)
 set(YAML_CPP_INSTALL OFF)
-FetchContent_MakeAvailable(yaml-cpp)
+set(CMAKE_BUILD_TYPE_PUSH "${CMAKE_BUILD_TYPE}")
+set(CMAKE_C_FLAGS_PUSH "${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_FLAGS_PUSH "${CMAKE_CXX_FLAGS}")
+set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FLAG_NO_WARNINGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAG_NO_WARNINGS}")
+FetchContent_GetProperties(yaml-cpp)
+if(NOT yaml-cpp_POPULATED)
+  FetchContent_Populate(yaml-cpp)
+  add_subdirectory(${yaml-cpp_SOURCE_DIR} ${yaml-cpp_BINARY_DIR})
+endif()
+set(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE_PUSH}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_PUSH}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_PUSH}")
 
 include_directories(include)
 add_library(dynmsg STATIC
