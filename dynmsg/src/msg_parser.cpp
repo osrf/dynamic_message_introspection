@@ -24,6 +24,7 @@
 #include <rosidl_runtime_c/primitives_sequence_functions.h>
 #include <rosidl_typesupport_introspection_c/field_types.h>
 #include <rcutils/logging_macros.h>
+#include <rcutils/allocator.h>
 
 void yaml_to_rosmsg_impl(
   const YAML::Node& root,
@@ -428,14 +429,17 @@ void yaml_to_rosmsg_impl(
 
 RosMessage yaml_to_rosmsg_(
   const TypeInfo * type_info,
-  const std::string& yaml_str
+  const std::string& yaml_str,
+  rcutils_allocator_t * allocator
 ) {
   // Parse the YAML representation to an in-memory representation
   YAML::Node root = YAML::Load(yaml_str);
   RosMessage ros_msg;
   // Load the introspection information and allocate space for the ROS message's binary
   // representation
-  ros_message_init_(type_info, &ros_msg);
+  if (0 != ros_message_init_(type_info, &ros_msg, allocator)) {
+    return {nullptr, nullptr};
+  }
   // Convert the YAML representation to a binary representation
   yaml_to_rosmsg_impl(root, ros_msg.type_info, ros_msg.data);
   return ros_msg;
@@ -450,5 +454,6 @@ RosMessage yaml_to_rosmsg(
   if (nullptr == type_info) {
     return {nullptr, nullptr};
   }
-  return yaml_to_rosmsg_(type_info, yaml_str);
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+  return yaml_to_rosmsg_(type_info, yaml_str, &allocator);
 }

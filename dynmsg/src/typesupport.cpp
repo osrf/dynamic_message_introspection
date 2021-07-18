@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "rcutils/allocator.h"
+
 #include "dynmsg/typesupport.hpp"
 
 #include <dlfcn.h>
@@ -66,14 +68,19 @@ const TypeInfo* get_type_info(const InterfaceTypeName &interface_type) {
 
 rcl_ret_t ros_message_init_(
   const TypeInfo * type_info,
-  RosMessage* ros_msg
+  RosMessage* ros_msg,
+  rcutils_allocator_t * allocator
 ) {
   RCUTILS_LOG_DEBUG_NAMED(
     "dynmsg",
     "Allocating message buffer of size %ld bytes",
     type_info->size_of_);
   // Allocate space to store the binary representation of the message
-  uint8_t* data = new uint8_t[type_info->size_of_];
+  // uint8_t* data = new uint8_t[type_info->size_of_];
+  uint8_t* data = static_cast<uint8_t *>(allocator->allocate(type_info->size_of_, allocator->state));
+  if (nullptr == data) {
+    return 1;
+  }
   // Initialise the message buffer according to the interface type
   type_info->init_function(data, ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY);
   *ros_msg = RosMessage{ type_info, data };
@@ -88,7 +95,14 @@ rcl_ret_t ros_message_init(
   if (type_info == nullptr) {
     return 1;
   }
-  return ros_message_init_(type_info, ros_msg);
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+  return ros_message_init_(type_info, ros_msg, &allocator);
+}
+
+extern "C"
+void ros_message_destroy_(RosMessage* ros_msg, rcutils_allocator_t * allocator) {
+  ros_msg->type_info->fini_function(ros_msg->data);
+  allocator->deallocate(ros_msg->data, allocator->state);
 }
 
 extern "C"

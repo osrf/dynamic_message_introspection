@@ -19,6 +19,7 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rosidl_runtime_c REQUIRED)
 find_package(rosidl_typesupport_introspection_c REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
@@ -31,6 +32,7 @@ add_library(dynmsg STATIC
   src/string_utils.cpp
 )
 ament_target_dependencies(dynmsg
+  rcutils
   rosidl_runtime_c
   rosidl_typesupport_introspection_c
   yaml_cpp_vendor
@@ -42,6 +44,7 @@ target_include_directories(dynmsg PUBLIC
 ament_export_include_directories(include)
 ament_export_libraries(dynmsg)
 ament_export_targets(dynmsg HAS_LIBRARY_TARGET)
+ament_export_dependencies(rcutils)
 ament_export_dependencies(rosidl_runtime_c)
 ament_export_dependencies(rosidl_typesupport_introspection_c)
 ament_export_dependencies(yaml_cpp_vendor)

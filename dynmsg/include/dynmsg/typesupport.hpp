@@ -18,6 +18,7 @@
 #include <utility>
 #include <string>
 
+#include <rcutils/allocator.h>
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
 
 // TODO(christophebedard) replace
@@ -66,10 +67,14 @@ const TypeInfo* get_type_info(const InterfaceTypeName &interface_type);
 rcl_ret_t ros_message_init(const InterfaceTypeName &interface_type, RosMessage* ros_msg);
 
 /// Version of ros_message_init() but with TypeInfo directly.
-rcl_ret_t ros_message_init_(const TypeInfo * type_info, RosMessage* ros_msg);
+rcl_ret_t ros_message_init_(
+  const TypeInfo * type_info,
+  RosMessage* ros_msg,
+  rcutils_allocator_t * allocator);
 
 // Clean up a RosMessage instance by freeing its resources.
 void ros_message_destroy(RosMessage* ros_msg);
+void ros_message_destroy_(RosMessage* ros_msg, rcutils_allocator_t * allocator);
 
 }  // extern "C"
 #endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_TYPESUPPORT_UTILS_HPP_

@@ -11,6 +11,7 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>rcutils</depend>
   <depend>rosidl_runtime_c</depend>
   <depend>rosidl_typesupport_introspection_c</depend>
   <!-- <depend>rosidl_typesupport_introspection_cpp</depend> -->
