@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg_demo/msg_parser.hpp"
-#include "dynmsg_demo/string_utils.hpp"
+#include "dynmsg/msg_parser.hpp"
+#include "dynmsg/string_utils.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -426,9 +426,8 @@ void yaml_to_rosmsg_impl(
   }
 }
 
-
-RosMessage yaml_to_rosmsg(
-  const InterfaceTypeName &interface_type,
+RosMessage yaml_to_rosmsg_(
+  const TypeInfo * type_info,
   const std::string& yaml_str
 ) {
   // Parse the YAML representation to an in-memory representation
@@ -436,8 +435,20 @@ RosMessage yaml_to_rosmsg(
   RosMessage ros_msg;
   // Load the introspection information and allocate space for the ROS message's binary
   // representation
-  ros_message_init(interface_type, &ros_msg);
+  ros_message_init_(type_info, &ros_msg);
   // Convert the YAML representation to a binary representation
   yaml_to_rosmsg_impl(root, ros_msg.type_info, ros_msg.data);
   return ros_msg;
+}
+
+
+RosMessage yaml_to_rosmsg(
+  const InterfaceTypeName &interface_type,
+  const std::string& yaml_str
+) {
+  const auto* type_info = get_type_info(interface_type);
+  if (nullptr == type_info) {
+    return {nullptr, nullptr};
+  }
+  return yaml_to_rosmsg_(type_info, yaml_str);
 }

@@ -17,6 +17,7 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(dynmsg REQUIRED)
 find_package(rcl REQUIRED)
 find_package(rcl_action REQUIRED)
 
@@ -35,12 +36,9 @@ FetchContent_MakeAvailable(yaml-cpp)
 include_directories(include)
 add_library(dynmsg_demo_library STATIC
   src/cli.cpp
-  src/msg_parser.cpp
-  src/message_reading.cpp
   src/typesupport_utils.cpp
-  src/string_utils.cpp
-  )
-ament_target_dependencies(dynmsg_demo_library rcl rcl_action)
+)
+ament_target_dependencies(dynmsg_demo_library dynmsg rcl rcl_action)
 target_link_libraries(dynmsg_demo_library yaml-cpp)
 target_include_directories(dynmsg_demo_library PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
@@ -49,6 +47,7 @@ target_include_directories(dynmsg_demo_library PUBLIC
 ament_export_include_directories(include)
 ament_export_libraries(dynmsg_demo_library)
 ament_export_targets(dynmsg_demo_library HAS_LIBRARY_TARGET)
+ament_export_dependencies(dynmsg)
 ament_export_dependencies(rcl)
 ament_export_dependencies(rcl_action)
 
@@ -68,7 +67,7 @@ install(
 add_executable(clitool src/cli_tool.cpp)
 # should have been PRIVATE, but ament uses the old signature and we can't mix them
 target_link_libraries(clitool dynmsg_demo_library yaml-cpp)
-ament_target_dependencies(clitool rcl)
+ament_target_dependencies(clitool dynmsg rcl)
 
 install(TARGETS clitool DESTINATION lib/${PROJECT_NAME})
 
@@ -100,9 +99,7 @@ if(BUILD_TESTING)
     test_msgs
     std_msgs
     dynmsg_msgs
-    )
-  ament_add_gtest(wide_strings test/test_wide_strings.cpp)
-  target_link_libraries(wide_strings dynmsg_demo_library)
+  )
   ament_add_gtest(read_msg_buffer test/test_read_msg_buffer.cpp)
   ament_target_dependencies(read_msg_buffer example_interfaces test_msgs)
   target_link_libraries(read_msg_buffer dynmsg_demo_library)

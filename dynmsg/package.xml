@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>dynmsg</name>
+  <version>1.0.0</version>
+  <description>Dynamic message type loading</description>
+  <maintainer email="geoff@openrobotics.org">Geoffrey Biggs</maintainer>
+  <author email="geoff@openrobotics.org">Geoffrey Biggs</author>
+  <author email="koonpeng@openrobotics.org">Koon Peng Teo</author>
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rosidl_runtime_c</depend>
+  <depend>rosidl_typesupport_introspection_c</depend>
+  <!-- <depend>rosidl_typesupport_introspection_cpp</depend> -->
+
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

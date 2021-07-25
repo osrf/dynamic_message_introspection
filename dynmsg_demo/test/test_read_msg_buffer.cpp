@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg_demo/message_reading.hpp"
+#include "dynmsg/message_reading.hpp"
+#include "dynmsg/string_utils.hpp"
 #include "dynmsg_demo/typesupport_utils.hpp"
-#include "dynmsg_demo/string_utils.hpp"
 
 #include <example_interfaces/msg/bool.h>
 #include <example_interfaces/msg/byte.h>

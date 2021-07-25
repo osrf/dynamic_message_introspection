@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg_demo/message_reading.hpp"
-#include "dynmsg_demo/string_utils.hpp"
-#include "dynmsg_demo/typesupport_utils.hpp"
+#include "dynmsg/message_reading.hpp"
+#include "dynmsg/string_utils.hpp"
+#include "dynmsg/typesupport.hpp"
 
 #include <dlfcn.h>
 
@@ -25,13 +25,13 @@
 #include <sstream>
 #include <vector>
 
-#include "rcl/context.h"
-#include "rcl/init_options.h"
-#include "rcl/node_options.h"
-#include "rcl/node.h"
-#include "rcl/rcl.h"
-#include "rcl/subscription.h"
-#include "rcl/types.h"
+// #include "rcl/context.h"
+// #include "rcl/init_options.h"
+// #include "rcl/node_options.h"
+// #include "rcl/node.h"
+// #include "rcl/rcl.h"
+// #include "rcl/subscription.h"
+// #include "rcl/types.h"
 #include "rcutils/logging_macros.h"
 #include "rosidl_runtime_c/primitives_sequence.h"
 #include "rosidl_runtime_c/string.h"
@@ -509,10 +509,10 @@ YAML::Node member_to_yaml(
   uint8_t * member_data)
 {
   YAML::Node member;
-  member["type"] = member_type_to_string(member_info);
-  if (member_info.default_value_ != nullptr) {
-    member["default"] = "default value here";
-  }
+  // member["type"] = member_type_to_string(member_info);
+  // if (member_info.default_value_ != nullptr) {
+  //   member["default"] = "default value here";
+  // }
 
   if (member_info.is_array_) {
     YAML::Node array;
@@ -521,15 +521,18 @@ YAML::Node member_to_yaml(
     } else {
       fixed_array_to_yaml(member_info, member_data, array);
     }
-    member["value"] = array;
+    // member["value"] = array;
+    return array;
   } else {
     if (member_info.type_id_ == rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE) {
       RosMessage nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
       nested_member.data = const_cast<uint8_t*>(member_data);
-      member["value"] = message_to_yaml(nested_member);
+      // member["value"] = message_to_yaml(nested_member);
+      return message_to_yaml(nested_member);
     } else {
       basic_value_to_yaml(member_info, member_data, member);
+      return member["value"];
     }
   }
 

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
-#define DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
+#ifndef DYNMSG_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
+#define DYNMSG_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
 
-#include "typesupport_utils.hpp"
+#include "typesupport.hpp"
 
 #include <vector>
 
@@ -30,4 +30,8 @@
 extern "C"
 RosMessage yaml_to_rosmsg(const InterfaceTypeName &interface_type, const std::string& yaml_str);
 
-#endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
+/// Version of yaml_to_rosmsg() but with TypeInfo directly.
+extern "C"
+RosMessage yaml_to_rosmsg_(const TypeInfo * type_info, const std::string& yaml_str);
+
+#endif  // DYNMSG_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_

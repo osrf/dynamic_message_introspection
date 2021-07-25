@@ -12,18 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg_demo/string_utils.hpp"
+#include "dynmsg/string_utils.hpp"
 
-#include <codecvt>
-#include <locale>
+#include <string>
 
-std::u16string string_to_u16string(const std::string& input) {
-  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
-  return converter.from_bytes(input);
+#include <gtest/gtest.h>
+
+using namespace std::string_literals;
+
+TEST(WideStrings, StringToU16) {
+  std::string utf8 = u8"z\u00df\u6c34\U0001d10b";  // "zß水𝄋"
+  EXPECT_EQ(string_to_u16string(utf8), u"z\u00df\u6c34\U0001d10b"s);
 }
 
-
-std::string u16string_to_string(const std::u16string& input) {
-  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
-  return converter.to_bytes(input);
+TEST(WideStrings, U16ToString) {
+  std::u16string u16 = u"z\u00df\u6c34\U0001d10b";  // "zß水𝄋"
+  EXPECT_EQ(u16string_to_string(u16), u8"z\u00df\u6c34\U0001d10b"s);
 }

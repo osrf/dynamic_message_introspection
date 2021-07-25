@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "dynmsg/message_reading.hpp"
+#include "dynmsg/msg_parser.hpp"
 #include "dynmsg_demo/cli.hpp"
-#include "dynmsg_demo/message_reading.hpp"
-#include "dynmsg_demo/msg_parser.hpp"
 #include "dynmsg_demo/typesupport_utils.hpp"
 
 #include <unistd.h>

@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_
-#define DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_
+#ifndef DYNMSG_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_
+#define DYNMSG_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_
 
 #include <yaml-cpp/yaml.h>
+
+#include "dynmsg/typesupport.hpp"
 
 // Forward declarations
 struct RosMessage;
@@ -34,4 +36,4 @@ struct RosMessage;
 extern "C"
 YAML::Node message_to_yaml(const RosMessage &message);
 
-#endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_
+#endif  // DYNMSG_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_
