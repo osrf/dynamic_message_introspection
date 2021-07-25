@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cmath>
+
 #include "dynmsg/message_reading.hpp"
 #include "dynmsg/string_utils.hpp"
 #include "dynmsg_demo/typesupport_utils.hpp"
@@ -290,9 +292,9 @@ void compare_basic_types_item(YAML::Node yaml, test_msgs__msg__BasicTypes &msg)
   EXPECT_EQ(yaml["char_value"]["type"].as<std::string>(), "uint8");
   EXPECT_EQ(yaml["char_value"]["value"].as<uint8_t>(), msg.char_value);
   EXPECT_EQ(yaml["float32_value"]["type"].as<std::string>(), "float");
-  EXPECT_EQ(yaml["float32_value"]["value"].as<float>(), msg.float32_value);
+  EXPECT_FLOAT_EQ(yaml["float32_value"]["value"].as<float>(), msg.float32_value);
   EXPECT_EQ(yaml["float64_value"]["type"].as<std::string>(), "double");
-  EXPECT_EQ(yaml["float64_value"]["value"].as<double>(), msg.float64_value);
+  EXPECT_FLOAT_EQ(yaml["float64_value"]["value"].as<double>(), msg.float64_value);
   EXPECT_EQ(yaml["int8_value"]["type"].as<std::string>(), "int8");
   EXPECT_EQ(yaml["int8_value"]["value"].as<int8_t>(), msg.int8_value);
   EXPECT_EQ(yaml["uint8_value"]["type"].as<std::string>(), "uint8");
