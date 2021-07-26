@@ -73,9 +73,14 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   find_package(ament_cmake_gtest REQUIRED)
+  find_package(std_msgs REQUIRED)
 
   ament_add_gtest(wide_strings test/test_wide_strings.cpp)
   target_link_libraries(wide_strings dynmsg)
+
+  ament_add_gtest(test_typesupport test/test_typesupport.cpp)
+  target_link_libraries(test_typesupport dynmsg)
+  ament_target_dependencies(test_typesupport std_msgs)
 endif()
 
 ament_package()
