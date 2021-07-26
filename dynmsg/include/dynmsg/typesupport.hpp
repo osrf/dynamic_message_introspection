@@ -1,4 +1,5 @@
 // Copyright 2020 Open Source Robotics Foundation, Inc.
+// Copyright 2021 Christophe Bedard
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@
 
 #include <rcutils/allocator.h>
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
+#include <rosidl_typesupport_introspection_cpp/message_introspection.hpp>
 
 // TODO(christophebedard) replace
 typedef int32_t rcl_ret_t;
@@ -30,19 +32,23 @@ extern "C"
 // Structure used to store the type support for a single interface type
 using TypeSupport = rosidl_message_type_support_t;
 // Structure used to store the introspection information for a single interface type
-using TypeInfo = rosidl_typesupport_introspection_c__MessageMembers;
+using TypeInfo_C = rosidl_typesupport_introspection_c__MessageMembers;
 // Structure used to store the introspection information for a single field of a interface type
-using MemberInfo = rosidl_typesupport_introspection_c__MessageMember;
+using MemberInfo_C = rosidl_typesupport_introspection_c__MessageMember;
 
 // An interface type can be identified by its namespace (i.e. the package that stores it) and its
 // type name
 using InterfaceTypeName = std::pair<std::string, std::string>;
 
 // A ROS message, stored in a binary buffer with attached introspection information
-typedef struct RosMessage {
-  const TypeInfo* type_info;
+typedef struct RosMessage_C {
+  const TypeInfo_C* type_info;
   uint8_t* data;
-} RosMessage;
+} RosMessage_C;
+
+using TypeInfo = TypeInfo_C;
+using MemberInfo = MemberInfo_C;
+using RosMessage = RosMessage_C;
 
 typedef const rosidl_message_type_support_t* (*get_message_ts_func)();
 
@@ -77,4 +83,15 @@ void ros_message_destroy(RosMessage* ros_msg);
 void ros_message_destroy_(RosMessage* ros_msg, rcutils_allocator_t * allocator);
 
 }  // extern "C"
+
+using TypeInfo_Cpp = rosidl_typesupport_introspection_cpp::MessageMembers;
+using MemberInfo_Cpp = rosidl_typesupport_introspection_cpp::MessageMember;
+
+typedef struct RosMessage_Cpp {
+  const TypeInfo_Cpp * type_info;
+  uint8_t * data;
+} RosMessage_Cpp;
+
+const TypeInfo_Cpp * get_type_info_cpp(const InterfaceTypeName & interface_type);
+
 #endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_TYPESUPPORT_UTILS_HPP_

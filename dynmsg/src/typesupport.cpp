@@ -1,4 +1,5 @@
 // Copyright 2020 Open Source Robotics Foundation, Inc.
+// Copyright 2021 Christophe Bedard
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -62,6 +63,70 @@ const TypeInfo* get_type_info(const InterfaceTypeName &interface_type) {
     introspection_ts->typesupport_identifier);
   const rosidl_typesupport_introspection_c__MessageMembers * type_info =
     reinterpret_cast<const rosidl_typesupport_introspection_c__MessageMembers *>(introspection_ts->data);
+
+  return type_info;
+}
+
+const TypeInfo_Cpp * get_type_info_cpp(const InterfaceTypeName & interface_type) {
+  const std::string pkg_name = interface_type.first;
+  const std::string msg_name = interface_type.second;
+  // Load the introspection library for the package containing the requested type
+  std::string ts_lib_name = "lib" + pkg_name + "__rosidl_typesupport_introspection_cpp.so";
+  RCUTILS_LOG_DEBUG_NAMED(
+    "dynmsg",
+    "Loading C++ introspection type support library %s",
+    ts_lib_name.c_str());
+  void * introspection_type_support_lib = dlopen(ts_lib_name.c_str(), RTLD_LAZY);
+  if (nullptr == introspection_type_support_lib) {
+    RCUTILS_LOG_ERROR_NAMED(
+      "dynmsg", "failed to load C++ introspection type support library: %s", dlerror());
+    return nullptr;
+  }
+
+  // Load the function that, when called, will give us the introspection information for the
+  // interface type we are interested in
+  // The name here is mangled since this is C++. However, the mangling is fairly simple since it's
+  // all the same. For example, we can get the symbols for a specific package this:
+  //    $ nm install/[pkg name]/lib/lib[pkg name]__rosidl_typesupport_introspection_cpp.so | grep get_message_type_support_handle
+  // for std_msgs:
+  //    $ nm install/std_msgs/lib/libstd_msgs__rosidl_typesupport_introspection_cpp.so | grep get_message_type_support_handle
+  // The first group is the unmangled C functions and the second one is the mangled C++ functions.
+  // Given a package name and a message name, the symbol is thus:
+  //    _ZN36rosidl_typesupport_introspection_cpp31get_message_type_support_handleIN[pkg name length][pkg name]3msg[msg name length + 1][msg name]_ISaIvEEEEEPK29rosidl_message_type_support_tv
+  // Example for std_msgs/msg/String:
+  //    _ZN36rosidl_typesupport_introspection_cpp31get_message_type_support_handleIN8std_msgs3msg7String_ISaIvEEEEEPK29rosidl_message_type_support_tv
+  //      where:
+  //        pkg name = std_msgs
+  //        pkg name length = 8
+  //        msg name = String
+  //        msg name length + 1 = 6 + 1 = 7
+  //          (this is because there is always a '_' in the internal name at the end, e.g. 'String_')
+  std::string ts_func_name =
+    "_ZN36rosidl_typesupport_introspection_cpp31get_message_type_support_handleIN" +
+    std::to_string(pkg_name.length()) + pkg_name + "3msg" +
+    std::to_string(msg_name.length() + 1) + msg_name +
+    "_ISaIvEEEEEPK29rosidl_message_type_support_tv";
+  RCUTILS_LOG_DEBUG_NAMED("dynmsg", "Loading C++ type support function %s", ts_func_name.c_str());
+
+  get_message_ts_func introspection_type_support_handle_func =
+    reinterpret_cast<get_message_ts_func>(dlsym(
+      introspection_type_support_lib,
+      ts_func_name.c_str()));
+  if (nullptr == introspection_type_support_handle_func) {
+    RCUTILS_LOG_ERROR_NAMED(
+      "dynmsg",
+      "failed to load C++ introspection type support function: %s",
+      dlerror());
+    return nullptr;
+  }
+
+  // Call the function to get the introspection information we want
+  const rosidl_message_type_support_t *introspection_ts = introspection_type_support_handle_func();
+  RCUTILS_LOG_DEBUG_NAMED(
+    "dynmsg",
+    "Loaded C++ type support %s",
+    introspection_ts->typesupport_identifier);
+  const TypeInfo_Cpp * type_info = reinterpret_cast<const TypeInfo_Cpp *>(introspection_ts->data);
 
   return type_info;
 }
