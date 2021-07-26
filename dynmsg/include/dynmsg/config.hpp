@@ -25,4 +25,10 @@
 // YAML object can be converted back into a message.
 #define DYNMSG_VALUE_ONLY
 
+// [u]int8_t is handled/parsed as a char by yaml-cpp, so force to an intermediate/other type.
+// We convert them to string for msg->YAML and then back from string for YAML->msg.
+// https://github.com/jbeder/yaml-cpp/issues/201
+// (does not appear to be fixed in 0.6.3 or 0.7.0)
+#define YAML_CPP_BAD_INT8_HANDLING
+
 #endif  // DYNMSG__CONFIG_HPP_

@@ -201,7 +201,11 @@ void member_to_yaml_array_item(
       array_node.push_back(*reinterpret_cast<const long double*>(member_data));
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_CHAR:
+#ifdef YAML_CPP_BAD_INT8_HANDLING
+      array_node.push_back(std::to_string(*reinterpret_cast<const uint8_t*>(member_data)));
+#else
       array_node.push_back(*reinterpret_cast<const uint8_t*>(member_data));
+#endif
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR:
       array_node.push_back(*reinterpret_cast<const uint16_t*>(member_data));
@@ -210,13 +214,25 @@ void member_to_yaml_array_item(
       array_node.push_back(*reinterpret_cast<const bool*>(member_data));
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_OCTET:
+#ifdef YAML_CPP_BAD_INT8_HANDLING
+      array_node.push_back(std::to_string(*reinterpret_cast<const uint8_t*>(member_data)));
+#else
       array_node.push_back(*reinterpret_cast<const uint8_t*>(member_data));
+#endif
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT8:
+#ifdef YAML_CPP_BAD_INT8_HANDLING
+      array_node.push_back(std::to_string(*reinterpret_cast<const uint8_t*>(member_data)));
+#else
       array_node.push_back(*reinterpret_cast<const uint8_t*>(member_data));
+#endif
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT8:
+#ifdef YAML_CPP_BAD_INT8_HANDLING
+      array_node.push_back(std::to_string(*reinterpret_cast<const int8_t*>(member_data)));
+#else
       array_node.push_back(*reinterpret_cast<const int8_t*>(member_data));
+#endif
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT16:
       array_node.push_back(*reinterpret_cast<const uint16_t*>(member_data));
@@ -278,7 +294,11 @@ void basic_value_to_yaml(
       member["value"] = *reinterpret_cast<const long double*>(member_data);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_CHAR:
+#ifdef YAML_CPP_BAD_INT8_HANDLING
+      member["value"] = std::to_string(*reinterpret_cast<const uint8_t*>(member_data));
+#else
       member["value"] = *reinterpret_cast<const uint8_t*>(member_data);
+#endif
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR:
       member["value"] = *reinterpret_cast<const uint16_t*>(member_data);
@@ -287,13 +307,25 @@ void basic_value_to_yaml(
       member["value"] = *reinterpret_cast<const bool*>(member_data);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_OCTET:
+#ifdef YAML_CPP_BAD_INT8_HANDLING
+      member["value"] = std::to_string(*reinterpret_cast<const uint8_t*>(member_data));
+#else
       member["value"] = *reinterpret_cast<const uint8_t*>(member_data);
+#endif
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT8:
+#ifdef YAML_CPP_BAD_INT8_HANDLING
+      member["value"] = std::to_string(*reinterpret_cast<const uint8_t*>(member_data));
+#else
       member["value"] = *reinterpret_cast<const uint8_t*>(member_data);
+#endif
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_INT8:
+#ifdef YAML_CPP_BAD_INT8_HANDLING
+      member["value"] = std::to_string(*reinterpret_cast<const int8_t*>(member_data));
+#else
       member["value"] = *reinterpret_cast<const int8_t*>(member_data);
+#endif
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_UINT16:
       member["value"] = *reinterpret_cast<const uint16_t*>(member_data);

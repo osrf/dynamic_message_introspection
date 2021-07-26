@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "dynmsg/config.hpp"
 #include "dynmsg/msg_parser.hpp"
 #include "dynmsg/string_utils.hpp"
 
@@ -185,6 +186,45 @@ void write_member_item(
   *reinterpret_cast<CppType*>(buffer) = yaml.as<CppType>();
 }
 
+#ifdef YAML_CPP_BAD_INT8_HANDLING
+// Write an individual member into the binary message - [u]int8_t (char, octet, uint8, int8)
+template<>
+void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_CHAR>(
+  const YAML::Node& yaml,
+  uint8_t* buffer
+) {
+  using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_CHAR>::CppType;
+  std::string s = yaml.as<std::string>();
+  *reinterpret_cast<CppType*>(buffer) = (uint8_t)std::stoul(s);
+}
+template<>
+void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_OCTET>(
+  const YAML::Node& yaml,
+  uint8_t* buffer
+) {
+  using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_OCTET>::CppType;
+  std::string s = yaml.as<std::string>();
+  *reinterpret_cast<CppType*>(buffer) = (uint8_t)std::stoul(s);
+}
+template<>
+void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_UINT8>(
+  const YAML::Node& yaml,
+  uint8_t* buffer
+) {
+  using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT8>::CppType;
+  std::string s = yaml.as<std::string>();
+  *reinterpret_cast<CppType*>(buffer) = (uint8_t)std::stoul(s);
+}
+template<>
+void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_INT8>(
+  const YAML::Node& yaml,
+  uint8_t* buffer
+) {
+  using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT8>::CppType;
+  std::string s = yaml.as<std::string>();
+  *reinterpret_cast<CppType*>(buffer) = (int8_t)std::stoi(s);
+}
+#endif  // YAML_CPP_BAD_INT8_HANDLING
 
 // Write an individual member into the binary message - string
 template<>
