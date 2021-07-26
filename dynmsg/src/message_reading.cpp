@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "dynmsg/config.hpp"
 #include "dynmsg/message_reading.hpp"
 #include "dynmsg/string_utils.hpp"
 #include "dynmsg/typesupport.hpp"
@@ -39,7 +40,7 @@
 #include "rosidl_typesupport_introspection_c/message_introspection.h"
 #include "rosidl_typesupport_introspection_c/field_types.h"
 
-
+#ifndef DYNMSG_VALUE_ONLY
 // Convert primitive ROS types to a string representation
 std::string
 member_type_to_string(const MemberInfo &member_info)
@@ -131,6 +132,7 @@ member_type_to_string(const MemberInfo &member_info)
   }
   return result.str();
 }
+#endif  // DYNMSG_VALUE_ONLY
 
 
 // Get the size of primitive types
@@ -509,10 +511,12 @@ YAML::Node member_to_yaml(
   uint8_t * member_data)
 {
   YAML::Node member;
-  // member["type"] = member_type_to_string(member_info);
-  // if (member_info.default_value_ != nullptr) {
-  //   member["default"] = "default value here";
-  // }
+#ifndef DYNMSG_VALUE_ONLY
+  member["type"] = member_type_to_string(member_info);
+  if (member_info.default_value_ != nullptr) {
+    member["default"] = "default value here";
+  }
+#endif
 
   if (member_info.is_array_) {
     YAML::Node array;
@@ -521,18 +525,26 @@ YAML::Node member_to_yaml(
     } else {
       fixed_array_to_yaml(member_info, member_data, array);
     }
-    // member["value"] = array;
+#ifdef DYNMSG_VALUE_ONLY
     return array;
+#else
+    member["value"] = array;
+#endif
   } else {
     if (member_info.type_id_ == rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE) {
       RosMessage nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
       nested_member.data = const_cast<uint8_t*>(member_data);
-      // member["value"] = message_to_yaml(nested_member);
+#ifdef DYNMSG_VALUE_ONLY
       return message_to_yaml(nested_member);
+#else
+      member["value"] = message_to_yaml(nested_member);
+#endif
     } else {
       basic_value_to_yaml(member_info, member_data, member);
+#ifdef DYNMSG_VALUE_ONLY
       return member["value"];
+#endif
     }
   }
 
