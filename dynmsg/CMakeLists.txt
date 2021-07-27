@@ -31,6 +31,7 @@ add_library(dynmsg STATIC
   src/msg_parser.cpp
   src/message_reading.cpp
   src/typesupport.cpp
+  src/vector_utils.cpp
   src/string_utils.cpp
 )
 ament_target_dependencies(dynmsg
@@ -77,6 +78,9 @@ if(BUILD_TESTING)
 
   ament_add_gtest(wide_strings test/test_wide_strings.cpp)
   target_link_libraries(wide_strings dynmsg)
+
+  ament_add_gtest(test_vector_utils test/test_vector_utils.cpp)
+  target_link_libraries(test_vector_utils dynmsg)
 
   ament_add_gtest(test_typesupport test/test_typesupport.cpp)
   target_link_libraries(test_typesupport dynmsg)
