@@ -14,6 +14,7 @@
 
 #include <codecvt>
 #include <locale>
+#include <string>
 
 #include "dynmsg/string_utils.hpp"
 

@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_
-#define DYNMSG_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_
+#ifndef DYNMSG__MESSAGE_READING_HPP_
+#define DYNMSG__MESSAGE_READING_HPP_
 
 #include <yaml-cpp/yaml.h>
 
@@ -61,6 +61,6 @@ YAML::Node message_to_yaml(const RosMessage_Cpp & message);
  * \see dynmsg::c::message_to_yaml()
  */
 extern "C"
-YAML::Node message_to_yaml(const RosMessage &message);
+YAML::Node message_to_yaml(const RosMessage & message);
 
-#endif  // DYNMSG_INCLUDE_DYNMSG_DEMO_MESSAGE_READING_HPP_
+#endif  // DYNMSG__MESSAGE_READING_HPP_

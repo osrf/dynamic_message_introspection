@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_INCLUDE_DYNMSG_DEMO_VECTOR_UTILS_HPP_
-#define DYNMSG_INCLUDE_DYNMSG_DEMO_VECTOR_UTILS_HPP_
+#ifndef DYNMSG__VECTOR_UTILS_HPP_
+#define DYNMSG__VECTOR_UTILS_HPP_
 
 #include <cstdint>
 
@@ -32,4 +32,4 @@ size_t get_vector_size(const uint8_t * vector, size_t element_size);
 
 }  // namespace dynmsg
 
-#endif  // DYNMSG_INCLUDE_DYNMSG_DEMO_VECTOR_UTILS_HPP_
+#endif  // DYNMSG__VECTOR_UTILS_HPP_

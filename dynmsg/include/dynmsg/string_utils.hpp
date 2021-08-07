@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_INCLUDE_DYNMSG_DEMO_STRING_UTILS_HPP_
-#define DYNMSG_INCLUDE_DYNMSG_DEMO_STRING_UTILS_HPP_
+#ifndef DYNMSG__STRING_UTILS_HPP_
+#define DYNMSG__STRING_UTILS_HPP_
 
 #include <string>
 
 extern "C"
 {
-
 /// Convert a std::string (8-bit characters) to a std::u16string (16-bit characters).
 std::u16string string_to_u16string(const std::string & input);
 
 /// Convert a std::u16string (16-bit characters) to a std::string (8-bit characters).
 std::string u16string_to_string(const std::u16string & input);
-
 }  // extern "C"
 
-#endif  // DYNMSG_INCLUDE_DYNMSG_DEMO_STRING_UTILS_HPP_
+#endif  // DYNMSG__STRING_UTILS_HPP_

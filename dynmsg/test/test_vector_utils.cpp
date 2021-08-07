@@ -15,10 +15,12 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <vector>
 
 #include "dynmsg/vector_utils.hpp"
 
-struct some_custom_object {
+struct some_custom_object
+{
   std::string str;
   int i;
   double d;

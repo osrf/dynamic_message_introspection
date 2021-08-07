@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
-#define DYNMSG_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
+#ifndef DYNMSG__MSG_PARSER_HPP_
+#define DYNMSG__MSG_PARSER_HPP_
 
 #include <string>
 
@@ -102,4 +102,4 @@ RosMessage yaml_to_rosmsg_typeinfo(
   const std::string & yaml_str,
   rcutils_allocator_t * allocator);
 
-#endif  // DYNMSG_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
+#endif  // DYNMSG__MSG_PARSER_HPP_

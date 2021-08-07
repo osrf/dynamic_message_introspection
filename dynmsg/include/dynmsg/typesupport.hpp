@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_INCLUDE_DYNMSG_DEMO_TYPESUPPORT_UTILS_HPP_
-#define DYNMSG_INCLUDE_DYNMSG_DEMO_TYPESUPPORT_UTILS_HPP_
+#ifndef DYNMSG__TYPESUPPORT_HPP_
+#define DYNMSG__TYPESUPPORT_HPP_
 
 #include <utility>
 #include <string>
@@ -28,7 +28,6 @@ typedef int32_t rcl_ret_t;
 
 extern "C"
 {
-
 // Structure used to store the type support for a single interface type
 using TypeSupport = rosidl_message_type_support_t;
 // Structure used to store the introspection information for a single interface type
@@ -56,12 +55,11 @@ using TypeInfo = TypeInfo_C;
 using MemberInfo = MemberInfo_C;
 using RosMessage = RosMessage_C;
 
-typedef const rosidl_message_type_support_t * (*get_message_ts_func)();
+typedef const rosidl_message_type_support_t * (* get_message_ts_func)();
 
 // An interface type can be identified by its namespace (i.e. the package that stores it) and its
 // type name
 using InterfaceTypeName = std::pair<std::string, std::string>;
-
 }  // extern "C"
 
 namespace dynmsg
@@ -141,7 +139,6 @@ rcl_ret_t ros_message_init_(
 
 extern "C"
 {
-
 /// Non-namespaced/C version of dynmsg::c::get_type_info()
 /**
  * \see dynmsg:c::get_type_info()
@@ -174,7 +171,6 @@ void ros_message_destroy(RosMessage * ros_msg);
  * \see dynmsg:c::ros_message_destroy_()
  */
 void ros_message_destroy_(RosMessage * ros_msg, rcutils_allocator_t * allocator);
-
 }  // extern "C"
 
-#endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_TYPESUPPORT_UTILS_HPP_
+#endif  // DYNMSG__TYPESUPPORT_HPP_

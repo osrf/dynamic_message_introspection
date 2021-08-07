@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg/string_utils.hpp"
+#include <gtest/gtest.h>
 
 #include <string>
 
-#include <gtest/gtest.h>
+#include "dynmsg/string_utils.hpp"
 
 using namespace std::string_literals;
 

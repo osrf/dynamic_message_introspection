@@ -178,7 +178,7 @@ void write_member_item(
 {
   DYNMSG_DEBUG(std::cout << "DEBUG: write_member_item<T>(): " << std::endl);
   using CppType = typename TypeMappingCpp<RosTypeId>::CppType;
-  *reinterpret_cast<CppType*>(buffer) = yaml.as<CppType>();
+  *reinterpret_cast<CppType *>(buffer) = yaml.as<CppType>();
 }
 
 #ifdef YAML_CPP_BAD_INT8_HANDLING
@@ -192,7 +192,7 @@ void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR>(
   using CppType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR>::CppType;
   std::string s = yaml.as<std::string>();
-  *reinterpret_cast<CppType*>(buffer) = (uint8_t)std::stoul(s);
+  *reinterpret_cast<CppType *>(buffer) = (uint8_t)std::stoul(s);
 }
 template<>
 void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET>(
@@ -203,7 +203,7 @@ void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET>(
   using CppType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET>::CppType;
   std::string s = yaml.as<std::string>();
-  *reinterpret_cast<CppType*>(buffer) = (uint8_t)std::stoul(s);
+  *reinterpret_cast<CppType *>(buffer) = (uint8_t)std::stoul(s);
 }
 template<>
 void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8>(
@@ -214,7 +214,7 @@ void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8>(
   using CppType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8>::CppType;
   std::string s = yaml.as<std::string>();
-  *reinterpret_cast<CppType*>(buffer) = (uint8_t)std::stoul(s);
+  *reinterpret_cast<CppType *>(buffer) = (uint8_t)std::stoul(s);
 }
 template<>
 void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8>(
@@ -225,7 +225,7 @@ void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8>(
   using CppType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8>::CppType;
   std::string s = yaml.as<std::string>();
-  *reinterpret_cast<CppType*>(buffer) = (int8_t)std::stoi(s);
+  *reinterpret_cast<CppType *>(buffer) = (int8_t)std::stoi(s);
 }
 #endif  // YAML_CPP_BAD_INT8_HANDLING
 
@@ -235,11 +235,11 @@ void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING>(
   const YAML::Node & yaml,
   uint8_t * buffer)
 {
-  DYNMSG_DEBUG(std::cout << "DEBUG: write_member_item<string>(): " <<
-    yaml.as<std::string>() << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: write_member_item<string>(): " << yaml.as<std::string>() << std::endl);
   using CppType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING>::CppType;
-  *reinterpret_cast<CppType*>(buffer) = yaml.as<std::string>();
+  *reinterpret_cast<CppType *>(buffer) = yaml.as<std::string>();
 }
 
 // Write an individual member into the binary message - wstring
@@ -248,11 +248,11 @@ void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING>(
   const YAML::Node & yaml,
   uint8_t * buffer)
 {
-  DYNMSG_DEBUG(std::cout << "DEBUG: write_member_item<wstring>(): " <<
-    yaml.as<std::string>() << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: write_member_item<wstring>(): " << yaml.as<std::string>() << std::endl);
   using CppType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING>::CppType;
-  *reinterpret_cast<CppType*>(buffer) = string_to_u16string(yaml.as<std::string>());
+  *reinterpret_cast<CppType *>(buffer) = string_to_u16string(yaml.as<std::string>());
 }
 
 // Write an individual sequence member into the binary message - generic
@@ -264,7 +264,7 @@ void write_sequence_member_item(
   DYNMSG_DEBUG(std::cout << "DEBUG: write_sequence_member_item<T>(): " << std::endl);
   using CppType = typename TypeMappingCpp<RosTypeId>::CppType;
   using SequenceType = typename TypeMappingCpp<RosTypeId>::SequenceType;
-  auto seq = reinterpret_cast<SequenceType*>(buffer);
+  auto seq = reinterpret_cast<SequenceType *>(buffer);
   seq->push_back(yaml.as<CppType>());
 }
 
@@ -279,7 +279,7 @@ void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_C
   using SequenceType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR>::SequenceType;
   std::string s = yaml.as<std::string>();
-  auto seq = reinterpret_cast<SequenceType*>(buffer);
+  auto seq = reinterpret_cast<SequenceType *>(buffer);
   seq->push_back((uint8_t)std::stoul(s));
 }
 template<>
@@ -291,7 +291,7 @@ void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_O
   using SequenceType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET>::SequenceType;
   std::string s = yaml.as<std::string>();
-  auto seq = reinterpret_cast<SequenceType*>(buffer);
+  auto seq = reinterpret_cast<SequenceType *>(buffer);
   seq->push_back((uint8_t)std::stoul(s));
 }
 template<>
@@ -303,7 +303,7 @@ void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_U
   using SequenceType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8>::SequenceType;
   std::string s = yaml.as<std::string>();
-  auto seq = reinterpret_cast<SequenceType*>(buffer);
+  auto seq = reinterpret_cast<SequenceType *>(buffer);
   seq->push_back((uint8_t)std::stoul(s));
 }
 template<>
@@ -315,7 +315,7 @@ void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_I
   using SequenceType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8>::SequenceType;
   std::string s = yaml.as<std::string>();
-  auto seq = reinterpret_cast<SequenceType*>(buffer);
+  auto seq = reinterpret_cast<SequenceType *>(buffer);
   seq->push_back((int8_t)std::stoi(s));
 }
 #endif  // YAML_CPP_BAD_INT8_HANDLING
@@ -326,11 +326,12 @@ void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_S
   const YAML::Node & yaml,
   uint8_t * buffer)
 {
-  DYNMSG_DEBUG(std::cout << "DEBUG: write_sequence_member_item<string>(): " <<
-    yaml.as<std::string>() << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: write_sequence_member_item<string>(): " <<
+      yaml.as<std::string>() << std::endl);
   using SequenceType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING>::SequenceType;
-  auto seq = reinterpret_cast<SequenceType*>(buffer);
+  auto seq = reinterpret_cast<SequenceType *>(buffer);
   seq->push_back(yaml.as<std::string>());
 }
 
@@ -340,11 +341,12 @@ void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_W
   const YAML::Node & yaml,
   uint8_t * buffer)
 {
-  DYNMSG_DEBUG(std::cout << "DEBUG: write_sequence_member_item<wstring>(): " <<
-    yaml.as<std::string>() << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: write_sequence_member_item<wstring>(): " <<
+      yaml.as<std::string>() << std::endl);
   using SequenceType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING>::SequenceType;
-  auto seq = reinterpret_cast<SequenceType*>(buffer);
+  auto seq = reinterpret_cast<SequenceType *>(buffer);
   seq->push_back(string_to_u16string(yaml.as<std::string>()));
 }
 
@@ -383,7 +385,7 @@ void write_member_sequence<rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOL>(
   // Just cast the sequence to std::vector<bool> and copy YAML node elements into it
   using SequenceType =
     typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOL>::SequenceType;
-  auto seq = reinterpret_cast<SequenceType*>(buffer);
+  auto seq = reinterpret_cast<SequenceType *>(buffer);
   for (size_t i = 0; i < yaml.size(); i++) {
     seq->push_back(yaml[i].as<bool>());
   }
@@ -463,7 +465,7 @@ void write_member_sequence_nested(
     yaml_to_rosmsg_impl(
       yaml[i],
       member_typeinfo,
-      reinterpret_cast<uint8_t*>(member.get_function(seq, i))
+      reinterpret_cast<uint8_t *>(member.get_function(seq, i))
     );
   }
 }
@@ -498,13 +500,14 @@ void write_member_nested(
 void yaml_to_rosmsg_impl(
   const YAML::Node & root,
   const TypeInfo_Cpp * typeinfo,
-  uint8_t * buffer
-) {
+  uint8_t * buffer)
+{
   DYNMSG_DEBUG(std::cout << "DEBUG: yaml_to_rosmsg_impl" << std::endl);
-  DYNMSG_DEBUG(std::cout << "DEBUG: type_info message_namespace_: " <<
-    typeinfo->message_namespace_ << std::endl);
-  DYNMSG_DEBUG(std::cout << "DEBUG: type_info message_name_: " <<
-    typeinfo->message_name_ << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: type_info message_namespace_: " <<
+      typeinfo->message_namespace_ << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: type_info message_name_: " << typeinfo->message_name_ << std::endl);
   for (uint32_t i = 0; i < typeinfo->member_count_; i++) {
     const auto & member = typeinfo->members_[i];
 
@@ -513,82 +516,63 @@ void yaml_to_rosmsg_impl(
     }
 
     switch (member.type_id_) {
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_DOUBLE: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_DOUBLE:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_DOUBLE>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_LONG_DOUBLE: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_LONG_DOUBLE:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_LONG_DOUBLE>(
           root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_WCHAR: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_WCHAR:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_WCHAR>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOLEAN: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOLEAN:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOLEAN>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT16: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT16:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT16>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT16: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT16:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT16>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT32: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT32:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT32>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT64: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT64:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT64>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT64: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT64:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT64>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING:
         write_member<rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING>(root, buffer, member);
         break;
-      }
-      case rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE: {
+      case rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE:
         write_member_nested(root, buffer, member);
         break;
-      }
-      default: {
+      default:
         throw std::runtime_error("unknown type");
-      }
     }
   }
 }

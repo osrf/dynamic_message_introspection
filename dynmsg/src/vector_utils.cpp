@@ -21,7 +21,8 @@
  * https://en.cppreference.com/w/cpp/container/vector
  * https://stackoverflow.com/a/52337100
  */
-struct fake_vector {
+struct fake_vector
+{
   void * begin;
   void * end;
   void * end_capacity;
@@ -51,7 +52,7 @@ size_t get_vector_size(const uint8_t * vector, size_t element_size)
   if (0ul == element_size) {
     return 0ul;
   }
-  vector_union v = {reinterpret_cast<std::vector<int> *>(const_cast<uint8_t * >(vector))};
+  vector_union v = {reinterpret_cast<std::vector<int> *>(const_cast<uint8_t *>(vector))};
   return (
     reinterpret_cast<uint64_t>(v.fake->end) - reinterpret_cast<uint64_t>(v.fake->begin)
   ) / element_size;

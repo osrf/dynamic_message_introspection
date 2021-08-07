@@ -184,69 +184,69 @@ void member_to_yaml_array_item(
   const uint8_t * member_data,
   YAML::Node & array_node)
 {
-  DYNMSG_DEBUG(std::cout << "DEBUG: member_to_yaml_array_item: " <<
-    (int)member_info.type_id_ << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: member_to_yaml_array_item: " << (int)member_info.type_id_ << std::endl);
   switch (member_info.type_id_) {
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT:
-      array_node.push_back(*reinterpret_cast<const float*>(member_data));
+      array_node.push_back(*reinterpret_cast<const float *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_DOUBLE:
-      array_node.push_back(*reinterpret_cast<const double*>(member_data));
+      array_node.push_back(*reinterpret_cast<const double *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_LONG_DOUBLE:
-      array_node.push_back(*reinterpret_cast<const long double*>(member_data));
+      array_node.push_back(*reinterpret_cast<const long double *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR:
 #ifdef YAML_CPP_BAD_INT8_HANDLING
-      array_node.push_back(std::to_string(*reinterpret_cast<const uint8_t*>(member_data)));
+      array_node.push_back(std::to_string(*reinterpret_cast<const uint8_t *>(member_data)));
 #else
-      array_node.push_back(*reinterpret_cast<const uint8_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const uint8_t *>(member_data));
 #endif
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_WCHAR:
-      array_node.push_back(*reinterpret_cast<const uint16_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const uint16_t *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOLEAN:
-      array_node.push_back(*reinterpret_cast<const bool*>(member_data));
+      array_node.push_back(*reinterpret_cast<const bool *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET:
 #ifdef YAML_CPP_BAD_INT8_HANDLING
-      array_node.push_back(std::to_string(*reinterpret_cast<const uint8_t*>(member_data)));
+      array_node.push_back(std::to_string(*reinterpret_cast<const uint8_t *>(member_data)));
 #else
-      array_node.push_back(*reinterpret_cast<const uint8_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const uint8_t *>(member_data));
 #endif
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8:
 #ifdef YAML_CPP_BAD_INT8_HANDLING
-      array_node.push_back(std::to_string(*reinterpret_cast<const uint8_t*>(member_data)));
+      array_node.push_back(std::to_string(*reinterpret_cast<const uint8_t *>(member_data)));
 #else
-      array_node.push_back(*reinterpret_cast<const uint8_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const uint8_t *>(member_data));
 #endif
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8:
 #ifdef YAML_CPP_BAD_INT8_HANDLING
-      array_node.push_back(std::to_string(*reinterpret_cast<const int8_t*>(member_data)));
+      array_node.push_back(std::to_string(*reinterpret_cast<const int8_t *>(member_data)));
 #else
-      array_node.push_back(*reinterpret_cast<const int8_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const int8_t *>(member_data));
 #endif
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT16:
-      array_node.push_back(*reinterpret_cast<const uint16_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const uint16_t *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT16:
-      array_node.push_back(*reinterpret_cast<const int16_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const int16_t *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT32:
-      array_node.push_back(*reinterpret_cast<const uint32_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const uint32_t *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32:
-      array_node.push_back(*reinterpret_cast<const int32_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const int32_t *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT64:
-      array_node.push_back(*reinterpret_cast<const uint64_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const uint64_t *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT64:
-      array_node.push_back(*reinterpret_cast<const int64_t*>(member_data));
+      array_node.push_back(*reinterpret_cast<const int64_t *>(member_data));
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING:
       array_node.push_back(*reinterpret_cast<const std::string *>(member_data));
@@ -261,7 +261,7 @@ void member_to_yaml_array_item(
       // nested type into the YAML.
       RosMessage_Cpp nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo_Cpp *>(member_info.members_->data);
-      nested_member.data = const_cast<uint8_t*>(member_data);
+      nested_member.data = const_cast<uint8_t *>(member_data);
       array_node.push_back(message_to_yaml(nested_member));
       break;
     default:
@@ -276,75 +276,77 @@ void basic_value_to_yaml(
   const uint8_t * member_data,
   YAML::Node & member)
 {
-  DYNMSG_DEBUG(std::cout << "DEBUG: basic_value_to_yaml: " << member_info.name_ << ":" <<
-    (int)member_info.type_id_ << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: basic_value_to_yaml: " <<
+      member_info.name_ << ":" << (int)member_info.type_id_ << std::endl);
   // return;
   switch (member_info.type_id_) {
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT:
-      member["value"] = *reinterpret_cast<const float*>(member_data);
+      member["value"] = *reinterpret_cast<const float *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_DOUBLE:
-      member["value"] = *reinterpret_cast<const double*>(member_data);
+      member["value"] = *reinterpret_cast<const double *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_LONG_DOUBLE:
-      member["value"] = *reinterpret_cast<const long double*>(member_data);
+      member["value"] = *reinterpret_cast<const long double *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR:
 #ifdef YAML_CPP_BAD_INT8_HANDLING
-      member["value"] = std::to_string(*reinterpret_cast<const uint8_t*>(member_data));
+      member["value"] = std::to_string(*reinterpret_cast<const uint8_t *>(member_data));
 #else
-      member["value"] = *reinterpret_cast<const uint8_t*>(member_data);
+      member["value"] = *reinterpret_cast<const uint8_t *>(member_data);
 #endif
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_WCHAR:
-      member["value"] = *reinterpret_cast<const uint16_t*>(member_data);
+      member["value"] = *reinterpret_cast<const uint16_t *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOLEAN:
-      member["value"] = *reinterpret_cast<const bool*>(member_data);
+      member["value"] = *reinterpret_cast<const bool *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET:
 #ifdef YAML_CPP_BAD_INT8_HANDLING
-      member["value"] = std::to_string(*reinterpret_cast<const uint8_t*>(member_data));
+      member["value"] = std::to_string(*reinterpret_cast<const uint8_t *>(member_data));
 #else
-      member["value"] = *reinterpret_cast<const uint8_t*>(member_data);
+      member["value"] = *reinterpret_cast<const uint8_t *>(member_data);
 #endif
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8:
 #ifdef YAML_CPP_BAD_INT8_HANDLING
-      member["value"] = std::to_string(*reinterpret_cast<const uint8_t*>(member_data));
+      member["value"] = std::to_string(*reinterpret_cast<const uint8_t *>(member_data));
 #else
-      member["value"] = *reinterpret_cast<const uint8_t*>(member_data);
+      member["value"] = *reinterpret_cast<const uint8_t *>(member_data);
 #endif
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8:
 #ifdef YAML_CPP_BAD_INT8_HANDLING
-      member["value"] = std::to_string(*reinterpret_cast<const int8_t*>(member_data));
+      member["value"] = std::to_string(*reinterpret_cast<const int8_t *>(member_data));
 #else
-      member["value"] = *reinterpret_cast<const int8_t*>(member_data);
+      member["value"] = *reinterpret_cast<const int8_t *>(member_data);
 #endif
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT16:
-      member["value"] = *reinterpret_cast<const uint16_t*>(member_data);
+      member["value"] = *reinterpret_cast<const uint16_t *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT16:
-      member["value"] = *reinterpret_cast<const int16_t*>(member_data);
+      member["value"] = *reinterpret_cast<const int16_t *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT32:
-      member["value"] = *reinterpret_cast<const uint32_t*>(member_data);
+      member["value"] = *reinterpret_cast<const uint32_t *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32:
-      member["value"] = *reinterpret_cast<const int32_t*>(member_data);
+      member["value"] = *reinterpret_cast<const int32_t *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT64:
-      member["value"] = *reinterpret_cast<const uint64_t*>(member_data);
+      member["value"] = *reinterpret_cast<const uint64_t *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT64:
-      member["value"] = *reinterpret_cast<const int64_t*>(member_data);
+      member["value"] = *reinterpret_cast<const int64_t *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING:
       DYNMSG_DEBUG(std::cout << "DEBUG: basic_value_to_yaml() string: " << std::flush);
-      DYNMSG_DEBUG(std::cout << (member_data == nullptr ? "NULL" : "not null") << std::flush <<
-        ", size=" << reinterpret_cast<const std::string *>(member_data)->size() << std::endl);
+      DYNMSG_DEBUG(
+        std::cout << (member_data == nullptr ? "NULL" : "not null") << std::flush <<
+          ", size=" << reinterpret_cast<const std::string *>(member_data)->size() << std::endl);
       member["value"] = *reinterpret_cast<const std::string *>(member_data);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING:
@@ -357,7 +359,7 @@ void basic_value_to_yaml(
       // nested type into the YAML.
       RosMessage_Cpp nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo_Cpp *>(member_info.members_->data);
-      nested_member.data = const_cast<uint8_t*>(member_data);
+      nested_member.data = const_cast<uint8_t *>(member_data);
       member["value"] = message_to_yaml(nested_member);
       break;
     default:
@@ -374,8 +376,8 @@ dynamic_array_to_yaml_impl(
   const std::vector<T> * v,
   YAML::Node & array_node)
 {
-  DYNMSG_DEBUG(std::cout << "DEBUG: dynamic_array_to_yaml_impl: " <<
-    (int)member_info.type_id_ << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: dynamic_array_to_yaml_impl: " << (int)member_info.type_id_ << std::endl);
   std::vector<T> * vn = const_cast<std::vector<T> *>(v);
   for (size_t ii = 0; ii < vn->size(); ++ii) {
     member_to_yaml_array_item(
@@ -408,8 +410,8 @@ dynamic_array_to_yaml(
   const uint8_t * member_data,
   YAML::Node & array_node)
 {
-  DYNMSG_DEBUG(std::cout << "DEBUG: dynamic_array_to_yaml: " <<
-    (int)member_info.type_id_ << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: dynamic_array_to_yaml: " << (int)member_info.type_id_ << std::endl);
   switch (member_info.type_id_) {
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT:
       dynamic_array_to_yaml_impl(
@@ -519,7 +521,7 @@ dynamic_array_to_yaml(
       RosMessage_Cpp nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo_Cpp *>(member_info.members_->data);
       uint8_t * element_data;
-      memcpy(&element_data, member_data, sizeof(void*));
+      memcpy(&element_data, member_data, sizeof(void *));
       size_t element_size;
       element_size = nested_member.type_info->size_of_;
       size_t element_count;
@@ -542,10 +544,10 @@ dynamic_array_to_yaml(
 void fixed_array_to_yaml(
   const MemberInfo_Cpp & member_info,
   uint8_t * member_data,
-  YAML::Node &array_node)
+  YAML::Node & array_node)
 {
-  DYNMSG_DEBUG(std::cout << "DEBUG: fixed_array_to_yaml: " <<
-    (int)member_info.type_id_ << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: fixed_array_to_yaml: " << (int)member_info.type_id_ << std::endl);
   size_t element_size(0);
   if (member_info.type_id_ == rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE) {
     element_size = reinterpret_cast<const TypeInfo_Cpp *>(member_info.members_->data)->size_of_;
@@ -560,7 +562,7 @@ void fixed_array_to_yaml(
 
 // Read one member of a message into a YAML node and return that node
 YAML::Node member_to_yaml(
-  const MemberInfo_Cpp &member_info,
+  const MemberInfo_Cpp & member_info,
   uint8_t * member_data)
 {
   DYNMSG_DEBUG(std::cout << "DEBUG: member_to_yaml: " << (int)member_info.type_id_ << std::endl);
@@ -588,7 +590,7 @@ YAML::Node member_to_yaml(
     if (member_info.type_id_ == rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE) {
       RosMessage_Cpp nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo_Cpp *>(member_info.members_->data);
-      nested_member.data = const_cast<uint8_t*>(member_data);
+      nested_member.data = const_cast<uint8_t *>(member_data);
 #ifdef DYNMSG_VALUE_ONLY
       return message_to_yaml(nested_member);
 #else
@@ -613,10 +615,12 @@ message_to_yaml(const RosMessage_Cpp & message)
   YAML::Node yaml_msg;
 
   DYNMSG_DEBUG(std::cout << "DEBUG: message_to_yaml" << std::endl);
-  DYNMSG_DEBUG(std::cout << "DEBUG: message.type_info message_namespace_: " <<
-    message.type_info->message_namespace_ << std::endl);
-  DYNMSG_DEBUG(std::cout << "DEBUG: message.type_info message_name_: " <<
-    message.type_info->message_name_ << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: message.type_info message_namespace_: " <<
+      message.type_info->message_namespace_ << std::endl);
+  DYNMSG_DEBUG(
+    std::cout << "DEBUG: message.type_info message_name_: " <<
+      message.type_info->message_name_ << std::endl);
 
   // Iterate over the members of the message, converting the binary data for each into a node in
   // the YAML representation
