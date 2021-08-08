@@ -26,7 +26,12 @@ find_package(rosidl_typesupport_introspection_c REQUIRED)
 find_package(rosidl_typesupport_introspection_cpp REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
-include_directories(include)
+# See config.hpp.in
+option(DYNMSG_VALUE_ONLY "Write message member value directly instead default+value" ON)
+option(DYNMSG_YAML_CPP_BAD_INT8_HANDLING "Work around buggy [u]int8_t handling by yaml-cpp" ON)
+option(DYNMSG_PARSER_DEBUG "Enable debugging-related logs for YAML->msg conversion" OFF)
+configure_file(include/${PROJECT_NAME}/config.hpp.in include/${PROJECT_NAME}/config.hpp)
+
 add_library(dynmsg STATIC
   src/msg_parser_c.cpp
   src/msg_parser_cpp.cpp
@@ -46,6 +51,7 @@ ament_target_dependencies(dynmsg
 )
 target_include_directories(dynmsg PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
   "$<INSTALL_INTERFACE:include>"
 )
 ament_export_include_directories(include)
@@ -59,8 +65,9 @@ ament_export_dependencies(rosidl_typesupport_introspection_cpp)
 ament_export_dependencies(yaml_cpp_vendor)
 
 install(
-  DIRECTORY include/
+  DIRECTORY include/ ${CMAKE_CURRENT_BINARY_DIR}/include/
   DESTINATION include
+  PATTERN "*.in" EXCLUDE
 )
 install(
   TARGETS dynmsg

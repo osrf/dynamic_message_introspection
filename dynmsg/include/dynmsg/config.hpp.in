@@ -23,17 +23,17 @@
 //      value: "my_frame"
 // This also means that, with DYNMSG_VALUE_ONLY, the resulting
 // YAML object can be converted back into a message.
-#define DYNMSG_VALUE_ONLY
+#cmakedefine DYNMSG_VALUE_ONLY
 
 // [u]int8_t is handled/parsed as a char by yaml-cpp, so force to an intermediate/other type.
 // We convert them to string for msg->YAML and then back from string for YAML->msg.
 // https://github.com/jbeder/yaml-cpp/issues/201
 // (does not appear to be fixed in 0.6.3 or 0.7.0)
-#define YAML_CPP_BAD_INT8_HANDLING
+#cmakedefine DYNMSG_YAML_CPP_BAD_INT8_HANDLING
 
 // If DYNMSG_PARSER_DEBUG is defined, some debugging-related stuff will be printed.
 // TODO(christophebedard) remove, or keep it in case conversion breaks and we need it
-#define DYNMSG_PARSER_DEBUG
+#cmakedefine DYNMSG_PARSER_DEBUG
 
 #ifdef DYNMSG_PARSER_DEBUG
 #  define DYNMSG_DEBUG(code) code

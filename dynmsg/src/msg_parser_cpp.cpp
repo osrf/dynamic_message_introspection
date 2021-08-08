@@ -181,7 +181,7 @@ void write_member_item(
   *reinterpret_cast<CppType *>(buffer) = yaml.as<CppType>();
 }
 
-#ifdef YAML_CPP_BAD_INT8_HANDLING
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
 // Write an individual member into the binary message - [u]int8_t (char, octet, uint8, int8)
 template<>
 void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR>(
@@ -227,7 +227,7 @@ void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8>(
   std::string s = yaml.as<std::string>();
   *reinterpret_cast<CppType *>(buffer) = (int8_t)std::stoi(s);
 }
-#endif  // YAML_CPP_BAD_INT8_HANDLING
+#endif  // DYNMSG_YAML_CPP_BAD_INT8_HANDLING
 
 // Write an individual member into the binary message - string
 template<>
@@ -268,7 +268,7 @@ void write_sequence_member_item(
   seq->push_back(yaml.as<CppType>());
 }
 
-#ifdef YAML_CPP_BAD_INT8_HANDLING
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
 // Write an individual sequence member into the binary message - [u]int8_t: char, octet, uint8/int8
 template<>
 void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR>(
@@ -318,7 +318,7 @@ void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_I
   auto seq = reinterpret_cast<SequenceType *>(buffer);
   seq->push_back((int8_t)std::stoi(s));
 }
-#endif  // YAML_CPP_BAD_INT8_HANDLING
+#endif  // DYNMSG_YAML_CPP_BAD_INT8_HANDLING
 
 // Write an individual sequence member into the binary message - string
 template<>
