@@ -40,6 +40,7 @@ add_library(dynmsg STATIC
   src/typesupport.cpp
   src/vector_utils.cpp
   src/string_utils.cpp
+  src/yaml_utils.cpp
 )
 ament_target_dependencies(dynmsg
   rcutils
