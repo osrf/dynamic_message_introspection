@@ -12,26 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <yaml-cpp/yaml.h>
+
+#include "rosidl_runtime_c/string.h"
+#include "rosidl_runtime_c/string_functions.h"
+#include "rosidl_runtime_c/u16string.h"
+#include "rosidl_runtime_c/u16string_functions.h"
+#include "rosidl_runtime_c/primitives_sequence_functions.h"
+#include "rosidl_typesupport_introspection_c/field_types.h"
+#include "rcutils/logging_macros.h"
+#include "rcutils/allocator.h"
+
 #include "dynmsg/config.hpp"
 #include "dynmsg/msg_parser.hpp"
 #include "dynmsg/string_utils.hpp"
 
-#include <yaml-cpp/yaml.h>
+namespace dynmsg
+{
+namespace c
+{
 
-#include <rosidl_runtime_c/string.h>
-#include <rosidl_runtime_c/string_functions.h>
-#include <rosidl_runtime_c/u16string.h>
-#include <rosidl_runtime_c/u16string_functions.h>
-#include <rosidl_runtime_c/primitives_sequence_functions.h>
-#include <rosidl_typesupport_introspection_c/field_types.h>
-#include <rcutils/logging_macros.h>
-#include <rcutils/allocator.h>
+namespace impl
+{
 
 void yaml_to_rosmsg_impl(
-  const YAML::Node& root,
-  const TypeInfo* typeinfo,
-  uint8_t* buffer
-);
+  const YAML::Node & root,
+  const TypeInfo * typeinfo,
+  uint8_t * buffer);
 
 // Helper structures to make the code cleaner
 template<typename SequenceType>
@@ -41,7 +48,8 @@ template<int RosTypeId>
 struct TypeMapping {};
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT>
+{
   using CppType = float;
   using SequenceType = rosidl_runtime_c__float32__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -49,7 +57,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE>
+{
   using CppType = double;
   using SequenceType = rosidl_runtime_c__double__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -57,7 +66,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE>
+{
   using CppType = long double;
   using SequenceType = rosidl_runtime_c__long_double__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -65,7 +75,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_CHAR> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_CHAR>
+{
   using CppType = signed char;
   using SequenceType = rosidl_runtime_c__char__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -73,7 +84,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_CHAR> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR>
+{
   using CppType = uint16_t;
   using SequenceType = rosidl_runtime_c__wchar__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -81,7 +93,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN>
+{
   using CppType = bool;
   using SequenceType = rosidl_runtime_c__bool__Sequence;
     static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -89,7 +102,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_OCTET> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_OCTET>
+{
   using CppType = uint8_t;
   using SequenceType = rosidl_runtime_c__octet__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -97,7 +111,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_OCTET> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT8> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT8>
+{
   using CppType = uint8_t;
   using SequenceType = rosidl_runtime_c__uint8__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -105,7 +120,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT8> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT8> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT8>
+{
   using CppType = int8_t;
   using SequenceType = rosidl_runtime_c__int8__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -113,7 +129,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT8> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT16> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT16>
+{
   using CppType = uint16_t;
   using SequenceType = rosidl_runtime_c__uint16__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -121,7 +138,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT16> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT16> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT16>
+{
   using CppType = int16_t;
   using SequenceType = rosidl_runtime_c__int16__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -129,7 +147,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT16> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT32> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT32>
+{
   using CppType = uint32_t;
   using SequenceType = rosidl_runtime_c__uint32__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -137,7 +156,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT32> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT32> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT32>
+{
   using CppType = int32_t;
   using SequenceType = rosidl_runtime_c__int32__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -145,7 +165,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT32> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT64> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT64>
+{
   using CppType = uint64_t;
   using SequenceType = rosidl_runtime_c__uint64__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -153,7 +174,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT64> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT64> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT64>
+{
   using CppType = int64_t;
   using SequenceType = rosidl_runtime_c__int64__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -161,7 +183,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT64> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_STRING> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>
+{
   using CppType = rosidl_runtime_c__String;
   using SequenceType = rosidl_runtime_c__String__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -169,7 +192,8 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_STRING> {
 };
 
 template<>
-struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING> {
+struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>
+{
   using CppType = rosidl_runtime_c__U16String;
   using SequenceType = rosidl_runtime_c__U16String__Sequence;
   static constexpr SequenceInitFunc<SequenceType> sequence_init
@@ -179,47 +203,48 @@ struct TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING> {
 // Write an individual member into the binary message - generic
 template<int RosTypeId>
 void write_member_item(
-  const YAML::Node& yaml,
-  uint8_t* buffer
-) {
+  const YAML::Node & yaml,
+  uint8_t * buffer)
+{
   using CppType = typename TypeMapping<RosTypeId>::CppType;
   *reinterpret_cast<CppType*>(buffer) = yaml.as<CppType>();
 }
 
 #ifdef YAML_CPP_BAD_INT8_HANDLING
 // Write an individual member into the binary message - [u]int8_t (char, octet, uint8, int8)
+// See config.hpp
 template<>
 void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_CHAR>(
-  const YAML::Node& yaml,
-  uint8_t* buffer
-) {
+  const YAML::Node & yaml,
+  uint8_t * buffer)
+{
   using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_CHAR>::CppType;
   std::string s = yaml.as<std::string>();
   *reinterpret_cast<CppType*>(buffer) = (uint8_t)std::stoul(s);
 }
 template<>
 void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_OCTET>(
-  const YAML::Node& yaml,
-  uint8_t* buffer
-) {
+  const YAML::Node & yaml,
+  uint8_t * buffer)
+{
   using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_OCTET>::CppType;
   std::string s = yaml.as<std::string>();
   *reinterpret_cast<CppType*>(buffer) = (uint8_t)std::stoul(s);
 }
 template<>
 void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_UINT8>(
-  const YAML::Node& yaml,
-  uint8_t* buffer
-) {
+  const YAML::Node & yaml,
+  uint8_t * buffer)
+{
   using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_UINT8>::CppType;
   std::string s = yaml.as<std::string>();
   *reinterpret_cast<CppType*>(buffer) = (uint8_t)std::stoul(s);
 }
 template<>
 void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_INT8>(
-  const YAML::Node& yaml,
-  uint8_t* buffer
-) {
+  const YAML::Node & yaml,
+  uint8_t * buffer)
+{
   using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_INT8>::CppType;
   std::string s = yaml.as<std::string>();
   *reinterpret_cast<CppType*>(buffer) = (int8_t)std::stoi(s);
@@ -229,9 +254,9 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_INT8>(
 // Write an individual member into the binary message - string
 template<>
 void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>(
-  const YAML::Node& yaml,
-  uint8_t* buffer
-) {
+  const YAML::Node & yaml,
+  uint8_t * buffer)
+{
   using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>::CppType;
   std::string s = yaml.as<std::string>();
   CppType* ros_string = reinterpret_cast<CppType*>(buffer);
@@ -240,13 +265,12 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_STRING>(
   }
 }
 
-
 // Write an individual member into the binary message - wstring
 template<>
 void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>(
-  const YAML::Node& yaml,
-  uint8_t* buffer
-) {
+  const YAML::Node & yaml,
+  uint8_t * buffer)
+{
   using CppType = typename TypeMapping<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>::CppType;
   std::u16string u16s = string_to_u16string(yaml.as<std::string>());
   CppType* ros_string = reinterpret_cast<CppType*>(buffer);
@@ -258,10 +282,10 @@ void write_member_item<rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING>(
   }
 }
 
-
 // Write a sequence member into the binary message - generic
 template<int RosTypeId>
-void write_member_sequence(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
+void write_member_sequence(const YAML::Node & yaml, uint8_t * buffer, const MemberInfo & member)
+{
   using SequenceType = typename TypeMapping<RosTypeId>::SequenceType;
 
   if (member.is_upper_bound_ && yaml.size() > member.array_size_) {
@@ -277,9 +301,9 @@ void write_member_sequence(const YAML::Node& yaml, uint8_t* buffer, const Member
   }
 }
 
-
 // Check if a field is a sequence of some kind
-bool is_sequence(const MemberInfo& member) {
+bool is_sequence(const MemberInfo & member)
+{
   // There isn't a "is_sequence" flag in the introspection data. It has to be inferred from several
   // flags:
   //
@@ -303,10 +327,10 @@ bool is_sequence(const MemberInfo& member) {
   return false;
 }
 
-
 // Convert a YAML node into a field in the binary ROS message - generic
 template<int RosTypeId>
-void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
+void write_member(const YAML::Node & yaml, uint8_t * buffer, const MemberInfo & member)
+{
   using CppType = typename TypeMapping<RosTypeId>::CppType;
   // Arrays and sequences have different struct representation. An array is represented by a
   // classic C array (pointer with data size == sizeof(type) * array_size).
@@ -333,9 +357,9 @@ void write_member(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& mem
   }
 }
 
-
-// Convert a YAML node into a field in the binary ROS message - string
-void write_member_sequence_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
+// Convert a nested YAML sequence node
+void write_member_sequence_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member)
+{
   if (member.is_upper_bound_ && yaml.size() > member.array_size_) {
     throw std::runtime_error("yaml sequence is more than capacity");
   }
@@ -351,9 +375,9 @@ void write_member_sequence_nested(const YAML::Node& yaml, uint8_t* buffer, const
   }
 }
 
-
-// Convert a YAML node into a field in the binary ROS message - wstring
-void write_member_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member) {
+// Convert a nested YAML node
+void write_member_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberInfo& member)
+{
   if (is_sequence(member)) {
     write_member_sequence_nested(yaml[member.name_], buffer + member.offset_, member);
     return;
@@ -376,10 +400,10 @@ void write_member_nested(const YAML::Node& yaml, uint8_t* buffer, const MemberIn
 // Convert a YAML representation to a binary ROS message by looping over the expected fields of the
 // ROS message and getting their values from the YAML
 void yaml_to_rosmsg_impl(
-  const YAML::Node& root,
-  const TypeInfo* typeinfo,
-  uint8_t* buffer
-) {
+  const YAML::Node & root,
+  const TypeInfo * typeinfo,
+  uint8_t * buffer)
+{
   for (uint32_t i = 0; i < typeinfo->member_count_; i++) {
     const auto& member = typeinfo->members_[i];
 
@@ -467,33 +491,55 @@ void yaml_to_rosmsg_impl(
   }
 }
 
-RosMessage yaml_to_rosmsg_(
+}  // namespace impl
+
+RosMessage yaml_to_rosmsg_typeinfo(
   const TypeInfo * type_info,
-  const std::string& yaml_str,
-  rcutils_allocator_t * allocator
-) {
+  const std::string & yaml_str,
+  rcutils_allocator_t * allocator)
+{
+  rcutils_allocator_t default_allocator = rcutils_get_default_allocator();
+  if (!allocator) {
+    allocator = &default_allocator;
+  }
   // Parse the YAML representation to an in-memory representation
   YAML::Node root = YAML::Load(yaml_str);
   RosMessage ros_msg;
   // Load the introspection information and allocate space for the ROS message's binary
   // representation
-  if (0 != ros_message_init_(type_info, &ros_msg, allocator)) {
+  if (0 != dynmsg::c::ros_message_init_typeinfo(type_info, &ros_msg, allocator)) {
     return {nullptr, nullptr};
   }
   // Convert the YAML representation to a binary representation
-  yaml_to_rosmsg_impl(root, ros_msg.type_info, ros_msg.data);
+  impl::yaml_to_rosmsg_impl(root, ros_msg.type_info, ros_msg.data);
   return ros_msg;
 }
 
-
 RosMessage yaml_to_rosmsg(
-  const InterfaceTypeName &interface_type,
-  const std::string& yaml_str
-) {
-  const auto* type_info = get_type_info(interface_type);
+  const InterfaceTypeName & interface_type,
+  const std::string & yaml_str)
+{
+  const auto * type_info = dynmsg::c::get_type_info(interface_type);
   if (nullptr == type_info) {
     return {nullptr, nullptr};
   }
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-  return yaml_to_rosmsg_(type_info, yaml_str, &allocator);
+  return dynmsg::c::yaml_to_rosmsg_typeinfo(type_info, yaml_str, nullptr);
+}
+
+}  // namespace c
+}  // namespace dynmsg
+
+RosMessage yaml_to_rosmsg_typeinfo(
+  const TypeInfo * type_info,
+  const std::string & yaml_str,
+  rcutils_allocator_t * allocator)
+{
+  return dynmsg::c::yaml_to_rosmsg_typeinfo(type_info, yaml_str, allocator);
+}
+
+RosMessage yaml_to_rosmsg(
+  const InterfaceTypeName & interface_type,
+  const std::string & yaml_str)
+{
+  return dynmsg::c::yaml_to_rosmsg(interface_type, yaml_str);
 }

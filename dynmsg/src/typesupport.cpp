@@ -13,17 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rcutils/allocator.h"
-
-#include "dynmsg/typesupport.hpp"
-
 #include <dlfcn.h>
 
 #include <sstream>
 
-#include <rcutils/logging_macros.h>
+#include "rcutils/allocator.h"
+#include "rcutils/logging_macros.h"
 
-const TypeInfo* get_type_info(const InterfaceTypeName &interface_type) {
+#include "dynmsg/typesupport.hpp"
+
+namespace dynmsg
+{
+
+namespace c
+{
+
+const TypeInfo * get_type_info(const InterfaceTypeName & interface_type)
+{
   // Load the introspection library for the package containing the requested type
   std::stringstream ts_lib_name;
   ts_lib_name << "lib" << interface_type.first << "__rosidl_typesupport_introspection_c.so";
@@ -56,7 +62,7 @@ const TypeInfo* get_type_info(const InterfaceTypeName &interface_type) {
   }
 
   // Call the function to get the introspection information we want
-  const rosidl_message_type_support_t *introspection_ts = introspection_type_support_handle_func();
+  const rosidl_message_type_support_t * introspection_ts = introspection_type_support_handle_func();
   RCUTILS_LOG_DEBUG_NAMED(
     "dynmsg",
     "Loaded type support %s",
@@ -67,7 +73,61 @@ const TypeInfo* get_type_info(const InterfaceTypeName &interface_type) {
   return type_info;
 }
 
-const TypeInfo_Cpp * get_type_info_cpp(const InterfaceTypeName & interface_type) {
+rcl_ret_t ros_message_init_typeinfo(
+  const TypeInfo * type_info,
+  RosMessage * ros_msg,
+  rcutils_allocator_t * allocator)
+{
+  rcutils_allocator_t default_allocator = rcutils_get_default_allocator();
+  if (!allocator) {
+    allocator = &default_allocator;
+  }
+  RCUTILS_LOG_DEBUG_NAMED(
+    "dynmsg",
+    "Allocating message buffer of size %ld bytes",
+    type_info->size_of_);
+  // Allocate space to store the binary representation of the message
+  uint8_t * data = static_cast<uint8_t *>(allocator->allocate(type_info->size_of_, allocator->state));
+  if (nullptr == data) {
+    return 1;
+  }
+  // Initialise the message buffer according to the interface type
+  // type_info->init_function(data, ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY);
+  type_info->init_function(data, ROSIDL_RUNTIME_C_MSG_INIT_ALL);
+  *ros_msg = RosMessage{ type_info, data };
+  return 0;
+}
+
+rcl_ret_t ros_message_init(
+  const InterfaceTypeName & interface_type,
+  RosMessage * ros_msg)
+{
+  const auto * type_info = get_type_info(interface_type);
+  if (nullptr == type_info) {
+    return 1;
+  }
+  return dynmsg::c::ros_message_init_typeinfo(type_info, ros_msg, nullptr);
+}
+
+void ros_message_destroy_(RosMessage * ros_msg, rcutils_allocator_t * allocator)
+{
+  ros_msg->type_info->fini_function(ros_msg->data);
+  allocator->deallocate(ros_msg->data, allocator->state);
+}
+
+void ros_message_destroy(RosMessage * ros_msg)
+{
+  ros_msg->type_info->fini_function(ros_msg->data);
+  delete[] ros_msg->data;
+}
+
+}  // namespace c
+
+namespace cpp
+{
+
+const TypeInfo_Cpp * get_type_info(const InterfaceTypeName & interface_type)
+{
   const std::string pkg_name = interface_type.first;
   const std::string msg_name = interface_type.second;
   // Load the introspection library for the package containing the requested type
@@ -100,7 +160,7 @@ const TypeInfo_Cpp * get_type_info_cpp(const InterfaceTypeName & interface_type)
   //        pkg name length = 8
   //        msg name = String
   //        msg name length + 1 = 6 + 1 = 7
-  //          (this is because there is always a '_' in the internal name at the end, e.g. 'String_')
+  //          (this is because there is always a '_' in the internal template name at the end, e.g. 'String_')
   std::string ts_func_name =
     "_ZN36rosidl_typesupport_introspection_cpp31get_message_type_support_handleIN" +
     std::to_string(pkg_name.length()) + pkg_name + "3msg" +
@@ -121,7 +181,7 @@ const TypeInfo_Cpp * get_type_info_cpp(const InterfaceTypeName & interface_type)
   }
 
   // Call the function to get the introspection information we want
-  const rosidl_message_type_support_t *introspection_ts = introspection_type_support_handle_func();
+  const rosidl_message_type_support_t * introspection_ts = introspection_type_support_handle_func();
   RCUTILS_LOG_DEBUG_NAMED(
     "dynmsg",
     "Loaded C++ type support %s",
@@ -132,46 +192,57 @@ const TypeInfo_Cpp * get_type_info_cpp(const InterfaceTypeName & interface_type)
 }
 
 rcl_ret_t ros_message_init_(
-  const TypeInfo * type_info,
-  RosMessage* ros_msg,
-  rcutils_allocator_t * allocator
-) {
+  const TypeInfo_Cpp * type_info,
+  RosMessage_Cpp * ros_msg,
+  rcutils_allocator_t * allocator)
+{
   RCUTILS_LOG_DEBUG_NAMED(
     "dynmsg",
     "Allocating message buffer of size %ld bytes",
     type_info->size_of_);
   // Allocate space to store the binary representation of the message
-  // uint8_t* data = new uint8_t[type_info->size_of_];
-  uint8_t* data = static_cast<uint8_t *>(allocator->allocate(type_info->size_of_, allocator->state));
+  // uint8_t * data = new uint8_t[type_info->size_of_];
+  uint8_t * data = static_cast<uint8_t *>(allocator->allocate(type_info->size_of_, allocator->state));
   if (nullptr == data) {
     return 1;
   }
   // Initialise the message buffer according to the interface type
-  type_info->init_function(data, ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY);
-  *ros_msg = RosMessage{ type_info, data };
+  // type_info->init_function(data, rosidl_runtime_cpp::MessageInitialization::DEFAULTS_ONLY);
+  type_info->init_function(data, rosidl_runtime_cpp::MessageInitialization::ALL);
+  *ros_msg = RosMessage_Cpp{ type_info, data };
   return 0;
 }
 
+}  // namespace cpp
+
+}  // namespace dynmsg
+
+const TypeInfo * get_type_info(const InterfaceTypeName & interface_type)
+{
+  return dynmsg::c::get_type_info(interface_type);
+}
+
+rcl_ret_t ros_message_init_typeinfo(
+  const TypeInfo * type_info,
+  RosMessage * ros_msg,
+  rcutils_allocator_t * allocator)
+{
+  return dynmsg::c::ros_message_init_typeinfo(type_info, ros_msg, allocator);
+}
+
 rcl_ret_t ros_message_init(
-  const InterfaceTypeName &interface_type,
-  RosMessage* ros_msg
-) {
-  const auto* type_info = get_type_info(interface_type);
-  if (type_info == nullptr) {
-    return 1;
-  }
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-  return ros_message_init_(type_info, ros_msg, &allocator);
+  const InterfaceTypeName & interface_type,
+  RosMessage * ros_msg)
+{
+  return dynmsg::c::ros_message_init(interface_type, ros_msg);
 }
 
-extern "C"
-void ros_message_destroy_(RosMessage* ros_msg, rcutils_allocator_t * allocator) {
-  ros_msg->type_info->fini_function(ros_msg->data);
-  allocator->deallocate(ros_msg->data, allocator->state);
+void ros_message_destroy_(RosMessage * ros_msg, rcutils_allocator_t * allocator)
+{
+  return dynmsg::c::ros_message_destroy_(ros_msg, allocator);
 }
 
-extern "C"
-void ros_message_destroy(RosMessage* ros_msg) {
-  ros_msg->type_info->fini_function(ros_msg->data);
-  delete[] ros_msg->data;
+void ros_message_destroy(RosMessage * ros_msg)
+{
+  return dynmsg::c::ros_message_destroy(ros_msg);
 }

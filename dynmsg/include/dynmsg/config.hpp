@@ -31,4 +31,14 @@
 // (does not appear to be fixed in 0.6.3 or 0.7.0)
 #define YAML_CPP_BAD_INT8_HANDLING
 
+// If DYNMSG_PARSER_DEBUG is defined, some debugging-related stuff will be printed.
+// TODO(christophebedard) remove, or keep it in case conversion breaks and we need it
+#define DYNMSG_PARSER_DEBUG
+
+#ifdef DYNMSG_PARSER_DEBUG
+#  define DYNMSG_DEBUG(code) code
+#else
+#  define DYNMSG_DEBUG(code) ((void) (0))
+#endif  // DYNMSG_PARSER_DEBUG
+
 #endif  // DYNMSG__CONFIG_HPP_

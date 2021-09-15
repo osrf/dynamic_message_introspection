@@ -1,4 +1,5 @@
 // Copyright 2020 Open Source Robotics Foundation, Inc.
+// Copyright 2021 Christophe Bedard
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,28 +16,90 @@
 #ifndef DYNMSG_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
 #define DYNMSG_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_
 
+#include <string>
+
 #include "rcutils/allocator.h"
 
 #include "typesupport.hpp"
 
-#include <vector>
+namespace dynmsg
+{
 
-// Parse a YAML representation of a message into a ROS message and store it in a raw bytes buffer.
-//
-// The introspection information is used to convert the YAML representation into the correct binary
-// representation for the given ROS message.
-//
-// It is an error for the YAML representation to contain a field that is not in the ROS message.
-// It is not an error for a field of the ROS message to not be specified in the YAML
-// representation; that field will be left uninitialised.
-extern "C"
-RosMessage yaml_to_rosmsg(const InterfaceTypeName &interface_type, const std::string& yaml_str);
+namespace c
+{
+
+/// Parse a YAML representation of a message into a ROS message and store it in a raw bytes buffer.
+/**
+ * The introspection information is used to convert the YAML representation into the correct binary
+ * representation for the given ROS message.
+ *
+ * It is an error for the YAML representation to contain a field that is not in the ROS message.
+ * It is not an error for a field of the ROS message to not be specified in the YAML
+ * representation; that field will be left uninitialised.
+ */
+RosMessage yaml_to_rosmsg(const InterfaceTypeName & interface_type, const std::string & yaml_str);
 
 /// Version of yaml_to_rosmsg() but with TypeInfo directly and an allocator.
-extern "C"
-RosMessage yaml_to_rosmsg_(
+/**
+ * \see dynmsg::c::yaml_to_rosmsg()
+ */
+RosMessage yaml_to_rosmsg_typeinfo(
   const TypeInfo * type_info,
-  const std::string& yaml_str,
+  const std::string & yaml_str,
+  rcutils_allocator_t * allocator);
+
+}  // namespace c
+
+namespace cpp
+{
+
+/// C++ version of dynmsg::c::yaml_to_rosmsg().
+/**
+ * \see dynmsg::c::yaml_to_rosmsg()
+ */
+RosMessage_Cpp yaml_to_rosmsg(
+  const InterfaceTypeName & interface_type,
+  const std::string & yaml_str);
+
+/// C++ version of dynmsg::c::yaml_to_rosmsg_typeinfo().
+/**
+ * \see dynmsg::c::yaml_to_rosmsg_typeinfo()
+ */
+RosMessage_Cpp yaml_to_rosmsg_typeinfo(
+  const TypeInfo_Cpp * type_info,
+  const std::string & yaml_str,
+  rcutils_allocator_t * allocator);
+
+/// Version of dynmsg::cpp::yaml_to_rosmsg_typeinfo() using an existing empty message.
+/**
+ * Takes a pointer to an existing empty message.
+ *
+ * \see dynmsg::cpp::yaml_to_rosmsg_typeinfo()
+ */
+void yaml_to_rosmsg_typeinfo(
+  const TypeInfo_Cpp * type_info,
+  const std::string & yaml_str,
+  void * ros_message);
+
+}  // namespace cpp
+
+}  // namespace dynmsg
+
+/// Non-namespaced/C version of dynmsg::c::yaml_to_rosmsg()
+/**
+ * \see dynmsg::c::yaml_to_rosmsg()
+ */
+extern "C"
+RosMessage yaml_to_rosmsg(const InterfaceTypeName & interface_type, const std::string & yaml_str);
+
+/// Non-namespaced/C version of dynmsg::c::yaml_to_rosmsg_typeinfo()
+/**
+ * \see dynmsg::c::yaml_to_rosmsg_typeinfo()
+ */
+extern "C"
+RosMessage yaml_to_rosmsg_typeinfo(
+  const TypeInfo * type_info,
+  const std::string & yaml_str,
   rcutils_allocator_t * allocator);
 
 #endif  // DYNMSG_INCLUDE_DYNMSG_DEMO_MSG_PARSER_HPP_

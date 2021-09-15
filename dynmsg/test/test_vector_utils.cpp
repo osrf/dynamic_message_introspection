@@ -28,7 +28,7 @@ struct some_custom_object {
 template<typename T>
 size_t _get_vector_size(std::vector<T> & vector)
 {
-  return get_vector_size(reinterpret_cast<uint8_t *>(&vector), sizeof(T));
+  return dynmsg::get_vector_size(reinterpret_cast<uint8_t *>(&vector), sizeof(T));
 }
 
 TEST(TestVectorUtils, get_vector_size)

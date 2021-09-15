@@ -17,6 +17,9 @@
 
 #include <cstdint>
 
+namespace dynmsg
+{
+
 /// Get the number of elements in/size of a vector given a pointer to it and its element size.
 /**
  * This uses some knowledge/assumption about the std::vector implementation.
@@ -26,5 +29,7 @@
  * specialization and the "trick" used in get_vector_size() does not work.
  */
 size_t get_vector_size(const uint8_t * vector, size_t element_size);
+
+}  // namespace dynmsg
 
 #endif  // DYNMSG_INCLUDE_DYNMSG_DEMO_VECTOR_UTILS_HPP_

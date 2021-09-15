@@ -18,16 +18,16 @@
 
 TEST(TestTypesupport, c)
 {
-  const TypeInfo * info = get_type_info({"std_msgs", "String"});
+  const TypeInfo * info = dynmsg::c::get_type_info({"std_msgs", "String"});
   EXPECT_NE(nullptr, info);
-  const TypeInfo * info_bad = get_type_info({"super_msgs", "SuperRealMsg"});
+  const TypeInfo * info_bad = dynmsg::c::get_type_info({"super_msgs", "SuperRealMsg"});
   EXPECT_EQ(nullptr, info_bad);
 }
 
 TEST(TestTypesupport, cpp)
 {
-  const TypeInfo_Cpp * info = get_type_info_cpp({"std_msgs", "String"});
+  const TypeInfo_Cpp * info = dynmsg::cpp::get_type_info({"std_msgs", "String"});
   EXPECT_NE(nullptr, info);
-  const TypeInfo_Cpp * info_bad = get_type_info_cpp({"super_msgs", "SuperRealMsg"});
+  const TypeInfo_Cpp * info_bad = dynmsg::cpp::get_type_info({"super_msgs", "SuperRealMsg"});
   EXPECT_EQ(nullptr, info_bad);
 }

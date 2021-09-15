@@ -28,8 +28,10 @@ find_package(yaml_cpp_vendor REQUIRED)
 
 include_directories(include)
 add_library(dynmsg STATIC
-  src/msg_parser.cpp
-  src/message_reading.cpp
+  src/msg_parser_c.cpp
+  src/msg_parser_cpp.cpp
+  src/message_reading_c.cpp
+  src/message_reading_cpp.cpp
   src/typesupport.cpp
   src/vector_utils.cpp
   src/string_utils.cpp

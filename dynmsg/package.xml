@@ -3,11 +3,12 @@
 <package format="3">
   <name>dynmsg</name>
   <version>1.0.0</version>
-  <description>Dynamic message type loading</description>
+  <description>Introspection tools for message to/from YAML conversions</description>
   <maintainer email="geoff@openrobotics.org">Geoffrey Biggs</maintainer>
+  <license>Apache 2.0</license>
+  <author email="bedard.christophe@gmail.com">Christophe Bedard</author>
   <author email="geoff@openrobotics.org">Geoffrey Biggs</author>
   <author email="koonpeng@openrobotics.org">Koon Peng Teo</author>
-  <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

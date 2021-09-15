@@ -34,6 +34,9 @@ union vector_union {
   fake_vector * fake;
 };
 
+namespace dynmsg
+{
+
 /**
  * This uses the fact that std::vector<T> is a contiguous container, therefore
  *    vector_size = (end - begin) / element_size
@@ -53,3 +56,5 @@ size_t get_vector_size(const uint8_t * vector, size_t element_size)
     reinterpret_cast<uint64_t>(v.fake->end) - reinterpret_cast<uint64_t>(v.fake->begin)
   ) / element_size;
 }
+
+}  // namespace dynmsg
