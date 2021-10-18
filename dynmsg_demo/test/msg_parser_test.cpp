@@ -87,10 +87,11 @@ void check_basic_types_values(
 
 TEST(MsgParser, String) {
   auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"std_msgs", "String"}, "{ data: hello }");
+  char hello[] = "hello";
 
   std_msgs__msg__String ros_msg{
     {
-      "hello",
+      hello,
       5,
       6
     },
@@ -118,6 +119,7 @@ TEST(MsgParser, WideString) {
       12
     },
   };
+  (void)ros_msg;  // unused, get checking construction
 
   rosidl_runtime_c__U16String* created_msg =
     reinterpret_cast<rosidl_runtime_c__U16String*>(generic_msg.data);
@@ -359,15 +361,15 @@ TEST(MsgParser, BoundedSequences) {
   test_msgs__msg__BoundedSequences* converted =
     reinterpret_cast<test_msgs__msg__BoundedSequences*>(generic_msg.data);
 
-  EXPECT_EQ(converted->byte_values.size, 0);
-  EXPECT_EQ(converted->byte_values.capacity, 0);
+  EXPECT_EQ(converted->byte_values.size, 0u);
+  EXPECT_EQ(converted->byte_values.capacity, 0u);
 
-  EXPECT_EQ(converted->bool_values.size, 1);
-  EXPECT_EQ(converted->bool_values.capacity, 1);
+  EXPECT_EQ(converted->bool_values.size, 1u);
+  EXPECT_EQ(converted->bool_values.capacity, 1u);
   EXPECT_EQ(converted->bool_values.data[0], ros_msg->bool_values.data[0]);
 
-  EXPECT_EQ(converted->string_values.size, 2);
-  EXPECT_EQ(converted->string_values.capacity, 2);
+  EXPECT_EQ(converted->string_values.size, 2u);
+  EXPECT_EQ(converted->string_values.capacity, 2u);
   EXPECT_STREQ(converted->string_values.data[0].data, ros_msg->string_values.data[0].data);
   EXPECT_STREQ(converted->string_values.data[1].data, ros_msg->string_values.data[1].data);
 
@@ -409,15 +411,15 @@ TEST(MsgParser, UnboundedSequences) {
   test_msgs__msg__UnboundedSequences* converted =
     reinterpret_cast<test_msgs__msg__UnboundedSequences*>(generic_msg.data);
 
-  EXPECT_EQ(converted->byte_values.size, 0);
-  EXPECT_EQ(converted->byte_values.capacity, 0);
+  EXPECT_EQ(converted->byte_values.size, 0u);
+  EXPECT_EQ(converted->byte_values.capacity, 0u);
 
-  EXPECT_EQ(converted->bool_values.size, 1);
-  EXPECT_EQ(converted->bool_values.capacity, 1);
+  EXPECT_EQ(converted->bool_values.size, 1u);
+  EXPECT_EQ(converted->bool_values.capacity, 1u);
   EXPECT_EQ(converted->bool_values.data[0], ros_msg->bool_values.data[0]);
 
-  EXPECT_EQ(converted->string_values.size, 2);
-  EXPECT_EQ(converted->string_values.capacity, 2);
+  EXPECT_EQ(converted->string_values.size, 2u);
+  EXPECT_EQ(converted->string_values.capacity, 2u);
   EXPECT_STREQ(converted->string_values.data[0].data, ros_msg->string_values.data[0].data);
   EXPECT_STREQ(converted->string_values.data[1].data, ros_msg->string_values.data[1].data);
 

@@ -178,7 +178,7 @@ int print_nodes(const rcl_node_t* node) {
   auto namespaces = rcutils_get_zero_initialized_string_array();
   auto ret = rcl_get_node_names(node, rcl_get_default_allocator(), &names, &namespaces);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   std::cout << "nodes:" << std::endl;
@@ -187,12 +187,12 @@ int print_nodes(const rcl_node_t* node) {
   }
   ret = rcutils_string_array_fini(&names);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
-  rcutils_string_array_fini(&namespaces);
+  ret = rcutils_string_array_fini(&namespaces);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   return 0;
@@ -209,7 +209,7 @@ int print_topics(const rcl_node_t* node) {
   auto allocator = rcl_get_default_allocator();
   auto ret = rcl_get_topic_names_and_types(node, &allocator, false, &topics);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   std::cout << "topics:" << std::endl;
@@ -218,7 +218,7 @@ int print_topics(const rcl_node_t* node) {
   }
   ret = rcl_names_and_types_fini(&topics);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   return 0;
@@ -235,7 +235,7 @@ int print_services(const rcl_node_t* node) {
   auto allocator = rcl_get_default_allocator();
   auto ret = rcl_get_service_names_and_types(node, &allocator, &services);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   std::cout << "services:" << std::endl;
@@ -246,7 +246,7 @@ int print_services(const rcl_node_t* node) {
   }
   ret = rcl_names_and_types_fini(&services);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   return 0;
@@ -263,7 +263,7 @@ int print_actions(const rcl_node_t* node) {
   auto allocator = rcl_get_default_allocator();
   auto ret = rcl_action_get_names_and_types(node, &allocator, &actions);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   std::cout << "actions:" << std::endl;
@@ -274,7 +274,7 @@ int print_actions(const rcl_node_t* node) {
   }
   ret = rcl_names_and_types_fini(&actions);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   return 0;

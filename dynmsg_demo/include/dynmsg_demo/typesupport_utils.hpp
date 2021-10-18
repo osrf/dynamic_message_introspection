@@ -22,7 +22,7 @@
 
 #include <rcl/node.h>
 #include <rcl/types.h>
-
+#include <rcl/node.h>
 
 extern "C"
 {
