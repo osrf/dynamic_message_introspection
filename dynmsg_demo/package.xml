@@ -11,6 +11,7 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>dynmsg</depend>
   <depend>rcl</depend>
   <depend>rcl_action</depend>
   <depend>yaml_cpp_vendor</depend>

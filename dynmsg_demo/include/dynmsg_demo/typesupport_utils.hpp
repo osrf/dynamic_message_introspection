@@ -20,13 +20,12 @@
 
 #include "dynmsg/typesupport.hpp"
 
+#include <rcl/node.h>
 #include <rcl/types.h>
 
 
 extern "C"
 {
-
-struct rcl_node_t;
 
 // Get the type name of an existing topic.
 // The topic must be being published or subscribed to by at least one node. If it is not, then the
@@ -49,5 +48,5 @@ InterfaceTypeName get_topic_type_from_string_type(const std::string &type);
 // rcl_subscription_init().
 const TypeSupport* get_type_support(const InterfaceTypeName &interface_type);
 
-};  // extern "C"
+}  // extern "C"
 #endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_TYPESUPPORT_UTILS_HPP_
