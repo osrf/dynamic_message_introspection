@@ -39,7 +39,7 @@ namespace c
  */
 RosMessage yaml_to_rosmsg(const InterfaceTypeName & interface_type, const std::string & yaml_str);
 
-/// Version of yaml_to_rosmsg() but with TypeInfo directly and an allocator.
+/// Version of yaml_to_rosmsg() with TypeInfo provided directly, and an allocator.
 /**
  * \see dynmsg::c::yaml_to_rosmsg()
  */

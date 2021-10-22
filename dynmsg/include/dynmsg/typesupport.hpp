@@ -23,7 +23,7 @@
 #include "rosidl_typesupport_introspection_c/message_introspection.h"
 #include "rosidl_typesupport_introspection_cpp/message_introspection.hpp"
 
-// TODO(christophebedard) replace
+// TODO(christophebedard) replace this with our own return type
 typedef int32_t rcl_ret_t;
 
 extern "C"

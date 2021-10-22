@@ -17,7 +17,7 @@
 
 // If DYNMSG_VALUE_ONLY is defined, the member's value will be used directly, e.g.
 //    frame_id: "my_frame"
-// instead of prodiving the type name as well as the value, e.g.
+// instead of providing the type name as well as the value, e.g.
 //    frame_id:
 //      type: "string"
 //      value: "my_frame"
@@ -32,7 +32,6 @@
 #cmakedefine DYNMSG_YAML_CPP_BAD_INT8_HANDLING
 
 // If DYNMSG_PARSER_DEBUG is defined, some debugging-related stuff will be printed.
-// TODO(christophebedard) remove, or keep it in case conversion breaks and we need it
 #cmakedefine DYNMSG_PARSER_DEBUG
 
 #ifdef DYNMSG_PARSER_DEBUG
