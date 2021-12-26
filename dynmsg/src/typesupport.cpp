@@ -98,7 +98,6 @@ rcl_ret_t ros_message_with_typeinfo_init(
     return 1;
   }
   // Initialise the message buffer according to the interface type
-  // type_info->init_function(data, ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY);
   type_info->init_function(data, ROSIDL_RUNTIME_C_MSG_INIT_ALL);
   *ros_msg = RosMessage{type_info, data};
   return 0;
@@ -198,7 +197,7 @@ const TypeInfo_Cpp * get_type_info(const InterfaceTypeName & interface_type)
   return type_info;
 }
 
-rcl_ret_t ros_message_init_(
+rcl_ret_t ros_message_with_typeinfo_init(
   const TypeInfo_Cpp * type_info,
   RosMessage_Cpp * ros_msg,
   rcutils_allocator_t * allocator)
@@ -214,10 +213,15 @@ rcl_ret_t ros_message_init_(
     return 1;
   }
   // Initialise the message buffer according to the interface type
-  // type_info->init_function(data, rosidl_runtime_cpp::MessageInitialization::DEFAULTS_ONLY);
   type_info->init_function(data, rosidl_runtime_cpp::MessageInitialization::ALL);
   *ros_msg = RosMessage_Cpp{type_info, data};
   return 0;
+}
+
+void ros_message_destroy_with_allocator(RosMessage_Cpp * ros_msg, rcutils_allocator_t * allocator)
+{
+  ros_msg->type_info->fini_function(ros_msg->data);
+  allocator->deallocate(ros_msg->data, allocator->state);
 }
 
 }  // namespace cpp

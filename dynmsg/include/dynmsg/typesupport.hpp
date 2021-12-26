@@ -120,18 +120,22 @@ namespace cpp
  * \see dynmsg::c::get_type_info()
  */
 const TypeInfo_Cpp * get_type_info(const InterfaceTypeName & interface_type);
-// rcl_ret_t ros_message_init(const InterfaceTypeName & interface_type, RosMessage_Cpp * ros_msg);
 
-/// C++ version of dynmsg::c::ros_message_init_()
+/// C++ version of dynmsg::c::ros_message_with_typeinfo_init()
 /**
- * \see dynmsg::c::ros_message_init_()
+ * \see dynmsg::c::ros_message_with_typeinfo_init()
  */
-rcl_ret_t ros_message_init_(
+rcl_ret_t ros_message_with_typeinfo_init(
   const TypeInfo_Cpp * type_info,
   RosMessage_Cpp * ros_msg,
   rcutils_allocator_t * allocator);
-// void ros_message_destroy(RosMessage_Cpp * ros_msg);
-// void ros_message_destroy_with_allocator(RosMessage_Cpp * ros_msg, rcutils_allocator_t * allocator);
+
+
+/// C++ version of dynmsg::c::ros_message_destroy_with_allocator()
+/**
+ * \see dynmsg::c::ros_message_destroy_with_allocator()
+ */
+void ros_message_destroy_with_allocator(RosMessage_Cpp * ros_msg, rcutils_allocator_t * allocator);
 
 }  // namespace cpp
 
