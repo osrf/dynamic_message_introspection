@@ -12,27 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg/msg_parser.hpp"
-#include "dynmsg_demo/typesupport_utils.hpp"
-
-#include <dynmsg_msgs/msg/wide_string.h>
-#include <std_msgs/msg/string.h>
-#include <test_msgs/msg/basic_types.h>
-#include <test_msgs/msg/defaults.h>
-#include <test_msgs/msg/nested.h>
-#include <test_msgs/msg/arrays.h>
-#include <test_msgs/msg/bounded_sequences.h>
-#include <test_msgs/msg/unbounded_sequences.h>
-#include <rosidl_runtime_c/primitives_sequence_functions.h>
-#include <rosidl_runtime_c/string_functions.h>
-
+#include <gtest/gtest.h>
 #include <yaml-cpp/yaml.h>
 
 #include <limits>
+#include <string>
+#include <vector>
 
-#include <gtest/gtest.h>
+#include "dynmsg/msg_parser.hpp"
+#include "dynmsg_demo/typesupport_utils.hpp"
 
-YAML::Node basic_types_node() {
+#include "dynmsg_msgs/msg/wide_string.h"
+#include "std_msgs/msg/string.h"
+#include "test_msgs/msg/basic_types.h"
+#include "test_msgs/msg/defaults.h"
+#include "test_msgs/msg/nested.h"
+#include "test_msgs/msg/arrays.h"
+#include "test_msgs/msg/bounded_sequences.h"
+#include "test_msgs/msg/unbounded_sequences.h"
+#include "rosidl_runtime_c/primitives_sequence_functions.h"
+#include "rosidl_runtime_c/string_functions.h"
+
+YAML::Node basic_types_node()
+{
   YAML::Node msg;
   msg["bool_value"] = true;
   msg["byte_value"] = std::numeric_limits<uint8_t>::max();
@@ -50,10 +52,11 @@ YAML::Node basic_types_node() {
   return msg;
 }
 
-void set_basic_types(test_msgs__msg__BasicTypes& msg) {
+void set_basic_types(test_msgs__msg__BasicTypes & msg)
+{
   msg.bool_value = true;
   msg.byte_value = std::numeric_limits<uint8_t>::max();
-  msg.char_value =  std::numeric_limits<uint8_t>::min();
+  msg.char_value = std::numeric_limits<uint8_t>::min();
   msg.float32_value = 1.1;
   msg.float64_value = 2.1;
   msg.int8_value = std::numeric_limits<int8_t>::min();
@@ -67,9 +70,9 @@ void set_basic_types(test_msgs__msg__BasicTypes& msg) {
 }
 
 void check_basic_types_values(
-    const test_msgs__msg__BasicTypes* converted,
-    const test_msgs__msg__BasicTypes* ros_msg
-) {
+  const test_msgs__msg__BasicTypes * converted,
+  const test_msgs__msg__BasicTypes * ros_msg)
+{
   EXPECT_EQ(converted->bool_value, ros_msg->bool_value);
   EXPECT_EQ(converted->byte_value, ros_msg->byte_value);
   EXPECT_EQ(converted->char_value, ros_msg->char_value);
@@ -86,7 +89,8 @@ void check_basic_types_values(
 }
 
 TEST(MsgParser, String) {
-  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"std_msgs", "String"}, "{ data: hello }");
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(
+    InterfaceTypeName{"std_msgs", "String"}, "{ data: hello }");
   char hello[] = "hello";
 
   std_msgs__msg__String ros_msg{
@@ -97,8 +101,8 @@ TEST(MsgParser, String) {
     },
   };
 
-  rosidl_runtime_c__String* created_msg =
-    reinterpret_cast<rosidl_runtime_c__String*>(generic_msg.data);
+  rosidl_runtime_c__String * created_msg =
+    reinterpret_cast<rosidl_runtime_c__String *>(generic_msg.data);
 
   EXPECT_STREQ(created_msg->data, ros_msg.data.data);
 
@@ -113,7 +117,7 @@ TEST(MsgParser, WideString) {
   std::u16string ws(u"hello");
   dynmsg_msgs__msg__WideString ros_msg{
     {
-      reinterpret_cast<uint_least16_t*>(const_cast<char16_t*>(ws.data())),
+      reinterpret_cast<uint_least16_t *>(const_cast<char16_t *>(ws.data())),
       // should these by the number of codepoints or the number of bytes?
       10,
       12
@@ -121,10 +125,10 @@ TEST(MsgParser, WideString) {
   };
   (void)ros_msg;  // unused, get checking construction
 
-  rosidl_runtime_c__U16String* created_msg =
-    reinterpret_cast<rosidl_runtime_c__U16String*>(generic_msg.data);
+  rosidl_runtime_c__U16String * created_msg =
+    reinterpret_cast<rosidl_runtime_c__U16String *>(generic_msg.data);
 
-  std::u16string converted(reinterpret_cast<char16_t*>(created_msg->data));
+  std::u16string converted(reinterpret_cast<char16_t *>(created_msg->data));
   EXPECT_EQ(converted, ws);
 
   dynmsg::c::ros_message_destroy(&generic_msg);
@@ -134,13 +138,14 @@ TEST(MsgParser, BasicTypes) {
   YAML::Node msg = basic_types_node();
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "BasicTypes"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(
+    InterfaceTypeName{"test_msgs", "BasicTypes"}, emitter.c_str());
 
   test_msgs__msg__BasicTypes ros_msg;
   set_basic_types(ros_msg);
 
-  test_msgs__msg__BasicTypes* converted =
-    reinterpret_cast<test_msgs__msg__BasicTypes*>(generic_msg.data);
+  test_msgs__msg__BasicTypes * converted =
+    reinterpret_cast<test_msgs__msg__BasicTypes *>(generic_msg.data);
 
   check_basic_types_values(converted, &ros_msg);
 
@@ -166,8 +171,8 @@ TEST(MsgParser, Defaults) {
     50000000,
   };
 
-  test_msgs__msg__BasicTypes* converted =
-    reinterpret_cast<test_msgs__msg__BasicTypes*>(generic_msg.data);
+  test_msgs__msg__BasicTypes * converted =
+    reinterpret_cast<test_msgs__msg__BasicTypes *>(generic_msg.data);
 
   EXPECT_EQ(converted->bool_value, ros_msg.bool_value);
   EXPECT_EQ(converted->byte_value, ros_msg.byte_value);
@@ -191,7 +196,8 @@ TEST(MsgParser, Nested) {
   msg["basic_types_value"] = basic_types_node();
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Nested"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(
+    InterfaceTypeName{"test_msgs", "Nested"}, emitter.c_str());
 
   test_msgs__msg__Nested ros_msg{{
     true,
@@ -209,8 +215,8 @@ TEST(MsgParser, Nested) {
     std::numeric_limits<uint64_t>::max()
   }};
 
-  test_msgs__msg__Nested* converted =
-    reinterpret_cast<test_msgs__msg__Nested*>(generic_msg.data);
+  test_msgs__msg__Nested * converted =
+    reinterpret_cast<test_msgs__msg__Nested *>(generic_msg.data);
 
   EXPECT_EQ(converted->basic_types_value.bool_value, ros_msg.basic_types_value.bool_value);
   EXPECT_EQ(converted->basic_types_value.byte_value, ros_msg.basic_types_value.byte_value);
@@ -232,7 +238,7 @@ TEST(MsgParser, Nested) {
 TEST(MsgParser, Arrays) {
   YAML::Node msg;
   msg["bool_values"] = std::vector<bool>{true, true, false};
-  msg["byte_values"] = std::vector<uint8_t>{1 ,2 ,3};
+  msg["byte_values"] = std::vector<uint8_t>{1, 2, 3};
   msg["char_values"] = std::vector<uint8_t>{1, 2, 3};
   msg["float32_values"] = std::vector<float>{1, 2, 3};
   msg["float64_values"] = std::vector<double>{10, 20, 30};
@@ -245,12 +251,14 @@ TEST(MsgParser, Arrays) {
   msg["int64_values"] = std::vector<int64_t>{1000, 2000, 3000};
   msg["uint64_values"] = std::vector<uint64_t>{4000, 5000, 6000};
   msg["string_values"] = std::vector<std::string>{"hello", "world", "!"};
-  msg["basic_types_values"] = std::vector<YAML::Node>{basic_types_node(), basic_types_node(), basic_types_node()};
+  msg["basic_types_values"] = std::vector<YAML::Node>{
+    basic_types_node(), basic_types_node(), basic_types_node()};
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Arrays"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(
+    InterfaceTypeName{"test_msgs", "Arrays"}, emitter.c_str());
 
-  test_msgs__msg__Arrays* ros_msg = test_msgs__msg__Arrays__create();
+  test_msgs__msg__Arrays * ros_msg = test_msgs__msg__Arrays__create();
   ros_msg->bool_values[0] = true;
   ros_msg->bool_values[1] = true;
   ros_msg->bool_values[2] = false;
@@ -298,8 +306,8 @@ TEST(MsgParser, Arrays) {
   rosidl_runtime_c__String__assign(&ros_msg->string_values[1], "world");
   rosidl_runtime_c__String__assign(&ros_msg->string_values[2], "!");
 
-  test_msgs__msg__Arrays* converted =
-    reinterpret_cast<test_msgs__msg__Arrays*>(generic_msg.data);
+  test_msgs__msg__Arrays * converted =
+    reinterpret_cast<test_msgs__msg__Arrays *>(generic_msg.data);
 
   for (size_t i = 0; i < 3; i++) {
     EXPECT_EQ(converted->bool_values[i], ros_msg->bool_values[i]);
@@ -341,12 +349,14 @@ TEST(MsgParser, BoundedSequences) {
   YAML::Node msg;
   msg["bool_values"] = std::vector<bool>{true};
   msg["string_values"] = std::vector<std::string>{"hello", "world"};
-  msg["basic_types_values"] = std::vector<YAML::Node>{basic_types_node(), basic_types_node(), basic_types_node()};
+  msg["basic_types_values"] = std::vector<YAML::Node>{
+    basic_types_node(), basic_types_node(), basic_types_node()};
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "BoundedSequences"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(
+    InterfaceTypeName{"test_msgs", "BoundedSequences"}, emitter.c_str());
 
-  test_msgs__msg__BoundedSequences* ros_msg = test_msgs__msg__BoundedSequences__create();
+  test_msgs__msg__BoundedSequences * ros_msg = test_msgs__msg__BoundedSequences__create();
   rosidl_runtime_c__boolean__Sequence__init(&ros_msg->bool_values, 1);
   ros_msg->bool_values.data[0] = true;
   test_msgs__msg__BasicTypes__Sequence__init(&ros_msg->basic_types_values, 3);
@@ -358,8 +368,8 @@ TEST(MsgParser, BoundedSequences) {
   rosidl_runtime_c__String__assign(&ros_msg->string_values.data[0], "hello");
   rosidl_runtime_c__String__assign(&ros_msg->string_values.data[1], "world");
 
-  test_msgs__msg__BoundedSequences* converted =
-    reinterpret_cast<test_msgs__msg__BoundedSequences*>(generic_msg.data);
+  test_msgs__msg__BoundedSequences * converted =
+    reinterpret_cast<test_msgs__msg__BoundedSequences *>(generic_msg.data);
 
   EXPECT_EQ(converted->byte_values.size, 0u);
   EXPECT_EQ(converted->byte_values.capacity, 0u);
@@ -373,15 +383,21 @@ TEST(MsgParser, BoundedSequences) {
   EXPECT_STREQ(converted->string_values.data[0].data, ros_msg->string_values.data[0].data);
   EXPECT_STREQ(converted->string_values.data[1].data, ros_msg->string_values.data[1].data);
 
-  check_basic_types_values(&converted->basic_types_values.data[0], &ros_msg->basic_types_values.data[0]);
-  check_basic_types_values(&converted->basic_types_values.data[1], &ros_msg->basic_types_values.data[1]);
-  check_basic_types_values(&converted->basic_types_values.data[2], &ros_msg->basic_types_values.data[2]);
+  check_basic_types_values(
+    &converted->basic_types_values.data[0], &ros_msg->basic_types_values.data[0]);
+  check_basic_types_values(
+    &converted->basic_types_values.data[1], &ros_msg->basic_types_values.data[1]);
+  check_basic_types_values(
+    &converted->basic_types_values.data[2], &ros_msg->basic_types_values.data[2]);
 
   EXPECT_EQ(converted->string_values_default.size, ros_msg->string_values_default.size);
   EXPECT_EQ(converted->string_values_default.capacity, ros_msg->string_values_default.capacity);
-  EXPECT_STREQ(converted->string_values_default.data[0].data, ros_msg->string_values_default.data[0].data);
-  EXPECT_STREQ(converted->string_values_default.data[1].data, ros_msg->string_values_default.data[1].data);
-  EXPECT_STREQ(converted->string_values_default.data[2].data, ros_msg->string_values_default.data[2].data);
+  EXPECT_STREQ(
+    converted->string_values_default.data[0].data, ros_msg->string_values_default.data[0].data);
+  EXPECT_STREQ(
+    converted->string_values_default.data[1].data, ros_msg->string_values_default.data[1].data);
+  EXPECT_STREQ(
+    converted->string_values_default.data[2].data, ros_msg->string_values_default.data[2].data);
 
   test_msgs__msg__BoundedSequences__destroy(ros_msg);
   dynmsg::c::ros_message_destroy(&generic_msg);
@@ -391,12 +407,14 @@ TEST(MsgParser, UnboundedSequences) {
   YAML::Node msg;
   msg["bool_values"] = std::vector<bool>{true};
   msg["string_values"] = std::vector<std::string>{"hello", "world"};
-  msg["basic_types_values"] = std::vector<YAML::Node>{basic_types_node(), basic_types_node(), basic_types_node()};
+  msg["basic_types_values"] = std::vector<YAML::Node>{
+    basic_types_node(), basic_types_node(), basic_types_node()};
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "UnboundedSequences"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(
+    InterfaceTypeName{"test_msgs", "UnboundedSequences"}, emitter.c_str());
 
-  test_msgs__msg__UnboundedSequences* ros_msg = test_msgs__msg__UnboundedSequences__create();
+  test_msgs__msg__UnboundedSequences * ros_msg = test_msgs__msg__UnboundedSequences__create();
   rosidl_runtime_c__boolean__Sequence__init(&ros_msg->bool_values, 1);
   ros_msg->bool_values.data[0] = true;
   test_msgs__msg__BasicTypes__Sequence__init(&ros_msg->basic_types_values, 3);
@@ -408,8 +426,8 @@ TEST(MsgParser, UnboundedSequences) {
   rosidl_runtime_c__String__assign(&ros_msg->string_values.data[0], "hello");
   rosidl_runtime_c__String__assign(&ros_msg->string_values.data[1], "world");
 
-  test_msgs__msg__UnboundedSequences* converted =
-    reinterpret_cast<test_msgs__msg__UnboundedSequences*>(generic_msg.data);
+  test_msgs__msg__UnboundedSequences * converted =
+    reinterpret_cast<test_msgs__msg__UnboundedSequences *>(generic_msg.data);
 
   EXPECT_EQ(converted->byte_values.size, 0u);
   EXPECT_EQ(converted->byte_values.capacity, 0u);
@@ -423,15 +441,21 @@ TEST(MsgParser, UnboundedSequences) {
   EXPECT_STREQ(converted->string_values.data[0].data, ros_msg->string_values.data[0].data);
   EXPECT_STREQ(converted->string_values.data[1].data, ros_msg->string_values.data[1].data);
 
-  check_basic_types_values(&converted->basic_types_values.data[0], &ros_msg->basic_types_values.data[0]);
-  check_basic_types_values(&converted->basic_types_values.data[1], &ros_msg->basic_types_values.data[1]);
-  check_basic_types_values(&converted->basic_types_values.data[2], &ros_msg->basic_types_values.data[2]);
+  check_basic_types_values(
+    &converted->basic_types_values.data[0], &ros_msg->basic_types_values.data[0]);
+  check_basic_types_values(
+    &converted->basic_types_values.data[1], &ros_msg->basic_types_values.data[1]);
+  check_basic_types_values(
+    &converted->basic_types_values.data[2], &ros_msg->basic_types_values.data[2]);
 
   EXPECT_EQ(converted->string_values_default.size, ros_msg->string_values_default.size);
   EXPECT_EQ(converted->string_values_default.capacity, ros_msg->string_values_default.capacity);
-  EXPECT_STREQ(converted->string_values_default.data[0].data, ros_msg->string_values_default.data[0].data);
-  EXPECT_STREQ(converted->string_values_default.data[1].data, ros_msg->string_values_default.data[1].data);
-  EXPECT_STREQ(converted->string_values_default.data[2].data, ros_msg->string_values_default.data[2].data);
+  EXPECT_STREQ(
+    converted->string_values_default.data[0].data, ros_msg->string_values_default.data[0].data);
+  EXPECT_STREQ(
+    converted->string_values_default.data[1].data, ros_msg->string_values_default.data[1].data);
+  EXPECT_STREQ(
+    converted->string_values_default.data[2].data, ros_msg->string_values_default.data[2].data);
 
   test_msgs__msg__UnboundedSequences__destroy(ros_msg);
   dynmsg::c::ros_message_destroy(&generic_msg);

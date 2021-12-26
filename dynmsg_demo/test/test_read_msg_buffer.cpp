@@ -12,48 +12,50 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <gtest/gtest.h>
+
 #include <cmath>
+#include <limits>
+#include <string>
+#include <vector>
 
 #include "dynmsg/message_reading.hpp"
 #include "dynmsg/string_utils.hpp"
 #include "dynmsg_demo/typesupport_utils.hpp"
 
-#include <example_interfaces/msg/bool.h>
-#include <example_interfaces/msg/byte.h>
-#include <example_interfaces/msg/char.h>
-#include <example_interfaces/msg/float32.h>
-#include <example_interfaces/msg/float64.h>
-#include <example_interfaces/msg/int8.h>
-#include <example_interfaces/msg/u_int8.h>
-#include <example_interfaces/msg/int16.h>
-#include <example_interfaces/msg/u_int16.h>
-#include <example_interfaces/msg/int32.h>
-#include <example_interfaces/msg/u_int32.h>
-#include <example_interfaces/msg/int64.h>
-#include <example_interfaces/msg/u_int64.h>
-#include <example_interfaces/msg/string.h>
-#include <example_interfaces/msg/w_string.h>
-#include <test_msgs/msg/arrays.h>
-#include <test_msgs/msg/basic_types.h>
-#include <test_msgs/msg/bounded_sequences.h>
-#include <test_msgs/msg/unbounded_sequences.h>
-#include <test_msgs/msg/nested.h>
-#include <test_msgs/msg/strings.h>
-#include <test_msgs/msg/w_strings.h>
+#include "example_interfaces/msg/bool.h"
+#include "example_interfaces/msg/byte.h"
+#include "example_interfaces/msg/char.h"
+#include "example_interfaces/msg/float32.h"
+#include "example_interfaces/msg/float64.h"
+#include "example_interfaces/msg/int8.h"
+#include "example_interfaces/msg/u_int8.h"
+#include "example_interfaces/msg/int16.h"
+#include "example_interfaces/msg/u_int16.h"
+#include "example_interfaces/msg/int32.h"
+#include "example_interfaces/msg/u_int32.h"
+#include "example_interfaces/msg/int64.h"
+#include "example_interfaces/msg/u_int64.h"
+#include "example_interfaces/msg/string.h"
+#include "example_interfaces/msg/w_string.h"
+#include "test_msgs/msg/arrays.h"
+#include "test_msgs/msg/basic_types.h"
+#include "test_msgs/msg/bounded_sequences.h"
+#include "test_msgs/msg/unbounded_sequences.h"
+#include "test_msgs/msg/nested.h"
+#include "test_msgs/msg/strings.h"
+#include "test_msgs/msg/w_strings.h"
 
-#include <rosidl_runtime_c/primitives_sequence_functions.h>
-#include <rosidl_runtime_c/string_functions.h>
-#include <rosidl_runtime_c/u16string_functions.h>
-
-#include <gtest/gtest.h>
-#include <limits>
+#include "rosidl_runtime_c/primitives_sequence_functions.h"
+#include "rosidl_runtime_c/string_functions.h"
+#include "rosidl_runtime_c/u16string_functions.h"
 
 template<class T>
 typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
-  almost_equal(T x, T y, int ulp)
+almost_equal(T x, T y, int ulp)
 {
-  return std::fabs(x-y) <= std::numeric_limits<T>::epsilon() * std::fabs(x+y) * ulp ||
-    std::fabs(x-y) < std::numeric_limits<T>::min();
+  return std::fabs(x - y) <= std::numeric_limits<T>::epsilon() * std::fabs(x + y) * ulp ||
+         std::fabs(x - y) < std::numeric_limits<T>::min();
 }
 
 
@@ -283,7 +285,7 @@ void populate_basic_types(test_msgs__msg__BasicTypes * msg)
   msg->uint64_value = 424242424242;
 }
 
-void compare_basic_types_item(YAML::Node yaml, test_msgs__msg__BasicTypes &msg)
+void compare_basic_types_item(YAML::Node yaml, test_msgs__msg__BasicTypes & msg)
 {
   EXPECT_EQ(yaml["bool_value"]["type"].as<std::string>(), "boolean");
   EXPECT_EQ(yaml["bool_value"]["value"].as<bool>(), msg.bool_value);
@@ -595,7 +597,8 @@ TEST(ReadMsgBuffer, ReadBoundedSequences)
     yaml_msg["basic_types_values"]["type"].as<std::string>(),
     "test_msgs__msg/BasicTypes[<=3]");
   for (size_t ii = 0; ii < 3; ++ii) {
-    compare_basic_types_item(yaml_msg["basic_types_values"]["value"][ii], msg->basic_types_values.data[ii]);
+    compare_basic_types_item(
+      yaml_msg["basic_types_values"]["value"][ii], msg->basic_types_values.data[ii]);
   }
   EXPECT_EQ(yaml_msg["alignment_check"]["type"].as<std::string>(), "int32");
   EXPECT_EQ(yaml_msg["alignment_check"]["value"].as<int32_t>(), 42);
@@ -655,7 +658,8 @@ TEST(ReadMsgBuffer, ReadUnboundedSequences)
   msg->alignment_check = 42;
 
   RosMessage message;
-  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"test_msgs", "UnboundedSequences"});
+  message.type_info = dynmsg::c::get_type_info(
+    InterfaceTypeName{"test_msgs", "UnboundedSequences"});
   message.data = reinterpret_cast<uint8_t *>(msg);
   auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
@@ -784,40 +788,40 @@ TEST(ReadMsgBuffer, WStrings)
   test_msgs__msg__WStrings * msg = test_msgs__msg__WStrings__create();
   rosidl_runtime_c__U16String__assign(
     &msg->wstring_value,
-    reinterpret_cast<const uint16_t*>(u"四十二"));
-  //rosidl_runtime_c__U16String__assign(
-    //&msg->bounded_wstring_value,
-    //reinterpret_cast<const uint16_t*>(u"二十二字以内の文字列"));
+    reinterpret_cast<const uint16_t *>(u"四十二"));
+  // rosidl_runtime_c__U16String__assign(
+  // &msg->bounded_wstring_value,
+  // reinterpret_cast<const uint16_t *>(u"二十二字以内の文字列"));
   rosidl_runtime_c__U16String__assign(
     &msg->array_of_wstrings[0],
-    reinterpret_cast<const uint16_t*>(u"ワン"));
+    reinterpret_cast<const uint16_t *>(u"ワン"));
   rosidl_runtime_c__U16String__assign(
     &msg->array_of_wstrings[1],
-    reinterpret_cast<const uint16_t*>(u"ツー"));
+    reinterpret_cast<const uint16_t *>(u"ツー"));
   rosidl_runtime_c__U16String__assign(
     &msg->array_of_wstrings[2],
-    reinterpret_cast<const uint16_t*>(u"スリー"));
+    reinterpret_cast<const uint16_t *>(u"スリー"));
   rosidl_runtime_c__U16String__Sequence__init(
     &msg->bounded_sequence_of_wstrings,
     test_msgs__msg__WStrings__bounded_sequence_of_wstrings__MAX_SIZE);
   rosidl_runtime_c__U16String__assign(
     &msg->bounded_sequence_of_wstrings.data[0],
-    reinterpret_cast<const uint16_t*>(u"ワン"));
+    reinterpret_cast<const uint16_t *>(u"ワン"));
   rosidl_runtime_c__U16String__assign(
     &msg->bounded_sequence_of_wstrings.data[1],
-    reinterpret_cast<const uint16_t*>(u"ツー"));
+    reinterpret_cast<const uint16_t *>(u"ツー"));
   rosidl_runtime_c__U16String__assign(
     &msg->bounded_sequence_of_wstrings.data[2],
-    reinterpret_cast<const uint16_t*>(u"スリー"));
+    reinterpret_cast<const uint16_t *>(u"スリー"));
   rosidl_runtime_c__U16String__Sequence__init(
     &msg->unbounded_sequence_of_wstrings,
     2);
   rosidl_runtime_c__U16String__assign(
     &msg->unbounded_sequence_of_wstrings.data[0],
-    reinterpret_cast<const uint16_t*>(u"ワン"));
+    reinterpret_cast<const uint16_t *>(u"ワン"));
   rosidl_runtime_c__U16String__assign(
     &msg->unbounded_sequence_of_wstrings.data[1],
-    reinterpret_cast<const uint16_t*>(u"ツー"));
+    reinterpret_cast<const uint16_t *>(u"ツー"));
 
   RosMessage message;
   message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"test_msgs", "WStrings"});

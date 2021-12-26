@@ -12,17 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg_demo/typesupport_utils.hpp"
-
 #include <dlfcn.h>
 
 #include <sstream>
+#include <string>
 
-#include <rcl/error_handling.h>
-#include <rcl/graph.h>
-#include <rcutils/logging_macros.h>
+#include "dynmsg_demo/typesupport_utils.hpp"
 
-InterfaceTypeName get_topic_type(const rcl_node_t *node, const std::string &topic) {
+#include "rcl/error_handling.h"
+#include "rcl/graph.h"
+#include "rcutils/logging_macros.h"
+
+InterfaceTypeName get_topic_type(const rcl_node_t * node, const std::string & topic)
+{
   auto pubs = rcl_get_zero_initialized_topic_endpoint_info_array();
   auto allocator = rcl_get_default_allocator();
   // Find a publisher for the requested topic
@@ -48,7 +50,8 @@ InterfaceTypeName get_topic_type(const rcl_node_t *node, const std::string &topi
 }
 
 
-InterfaceTypeName get_topic_type_from_string_type(const std::string &type) {
+InterfaceTypeName get_topic_type_from_string_type(const std::string & type)
+{
   std::string::size_type split_at = type.find('/');
   if (split_at == std::string::npos) {
     throw std::runtime_error("invalid type specification");
@@ -56,7 +59,8 @@ InterfaceTypeName get_topic_type_from_string_type(const std::string &type) {
   return InterfaceTypeName(type.substr(0, split_at), type.substr(split_at + 1));
 }
 
-const TypeSupport* get_type_support(const InterfaceTypeName &interface_type) {
+const TypeSupport * get_type_support(const InterfaceTypeName & interface_type)
+{
   // Load the type support library for the package containing the requested type
   std::string ts_lib_name;
   ts_lib_name = "lib" + interface_type.first + "__rosidl_typesupport_c.so";

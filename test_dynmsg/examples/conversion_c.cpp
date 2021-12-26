@@ -58,8 +58,8 @@ int main()
   // Prints:
   //   my_frame
   //   4 s, 20 ns
-  printf("%s\n",  msg_from_yaml->frame_id.data);
-  printf("%d s, %d ns\n",  msg_from_yaml->stamp.sec, msg_from_yaml->stamp.nanosec);
+  printf("%s\n", msg_from_yaml->frame_id.data);
+  printf("%d s, %d ns\n", msg_from_yaml->stamp.sec, msg_from_yaml->stamp.nanosec);
 
   return 0;
 }

@@ -5,9 +5,9 @@
   <version>1.0.0</version>
   <description>Demo of dynamic message type loading</description>
   <maintainer email="geoff@openrobotics.org">Geoffrey Biggs</maintainer>
+  <license>Apache 2.0</license>
   <author email="geoff@openrobotics.org">Geoffrey Biggs</author>
   <author email="koonpeng@openrobotics.org">Koon Peng Teo</author>
-  <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
