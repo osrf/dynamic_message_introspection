@@ -108,7 +108,7 @@ void ros_message_destroy(RosMessage * ros_msg);
 /**
  * \see ros_message_destroy()
  */
-void ros_message_destroy_(RosMessage * ros_msg, rcutils_allocator_t * allocator);
+void ros_message_destroy_with_allocator(RosMessage * ros_msg, rcutils_allocator_t * allocator);
 
 }  // namespace c
 
@@ -131,7 +131,7 @@ rcl_ret_t ros_message_init_(
   RosMessage_Cpp * ros_msg,
   rcutils_allocator_t * allocator);
 // void ros_message_destroy(RosMessage_Cpp * ros_msg);
-// void ros_message_destroy_(RosMessage_Cpp * ros_msg, rcutils_allocator_t * allocator);
+// void ros_message_destroy_with_allocator(RosMessage_Cpp * ros_msg, rcutils_allocator_t * allocator);
 
 }  // namespace cpp
 

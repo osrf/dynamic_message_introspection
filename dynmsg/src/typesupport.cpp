@@ -115,7 +115,7 @@ rcl_ret_t ros_message_init(
   return dynmsg::c::ros_message_with_typeinfo_init(type_info, ros_msg, nullptr);
 }
 
-void ros_message_destroy_(RosMessage * ros_msg, rcutils_allocator_t * allocator)
+void ros_message_destroy_with_allocator(RosMessage * ros_msg, rcutils_allocator_t * allocator)
 {
   ros_msg->type_info->fini_function(ros_msg->data);
   allocator->deallocate(ros_msg->data, allocator->state);
