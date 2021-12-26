@@ -92,11 +92,11 @@ const TypeInfo * get_type_info(const InterfaceTypeName & interface_type);
  */
 rcl_ret_t ros_message_init(const InterfaceTypeName & interface_type, RosMessage * ros_msg);
 
-/// Version of ros_message_init() but with TypeInfo directly and an allcoator.
+/// Version of ros_message_init() but with TypeInfo directly and an allocator.
 /**
  * \see ros_message_init()
  */
-rcl_ret_t ros_message_init_typeinfo(
+rcl_ret_t ros_message_with_typeinfo_init(
   const TypeInfo * type_info,
   RosMessage * ros_msg,
   rcutils_allocator_t * allocator);

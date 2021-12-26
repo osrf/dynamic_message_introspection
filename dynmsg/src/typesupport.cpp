@@ -78,7 +78,7 @@ const TypeInfo * get_type_info(const InterfaceTypeName & interface_type)
   return type_info;
 }
 
-rcl_ret_t ros_message_init_typeinfo(
+rcl_ret_t ros_message_with_typeinfo_init(
   const TypeInfo * type_info,
   RosMessage * ros_msg,
   rcutils_allocator_t * allocator)
@@ -112,7 +112,7 @@ rcl_ret_t ros_message_init(
   if (nullptr == type_info) {
     return 1;
   }
-  return dynmsg::c::ros_message_init_typeinfo(type_info, ros_msg, nullptr);
+  return dynmsg::c::ros_message_with_typeinfo_init(type_info, ros_msg, nullptr);
 }
 
 void ros_message_destroy_(RosMessage * ros_msg, rcutils_allocator_t * allocator)
