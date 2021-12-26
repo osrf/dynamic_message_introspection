@@ -498,7 +498,7 @@ RosMessage yaml_and_typeinfo_to_rosmsg(
   RosMessage ros_msg;
   // Load the introspection information and allocate space for the ROS message's binary
   // representation
-  if (0 != dynmsg::c::ros_message_with_typeinfo_init(type_info, &ros_msg, allocator)) {
+  if (DYNMSG_RET_OK != dynmsg::c::ros_message_with_typeinfo_init(type_info, &ros_msg, allocator)) {
     return {nullptr, nullptr};
   }
   // Convert the YAML representation to a binary representation

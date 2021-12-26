@@ -603,7 +603,9 @@ RosMessage_Cpp yaml_and_typeinfo_to_rosmsg(
   RosMessage_Cpp ros_msg;
   // Load the introspection information and allocate space for the ROS message's binary
   // representation
-  if (0 != dynmsg::cpp::ros_message_with_typeinfo_init(type_info, &ros_msg, allocator)) {
+  if (DYNMSG_RET_OK !=
+    dynmsg::cpp::ros_message_with_typeinfo_init(type_info, &ros_msg, allocator))
+  {
     return {nullptr, nullptr};
   }
   yaml_and_typeinfo_to_rosmsg(type_info, yaml_str, reinterpret_cast<void *>(ros_msg.data));

@@ -59,7 +59,7 @@ echo_topic(
     interface_type.first << '/' << interface_type.second << '\n';
 
   RosMessage message;
-  if (dynmsg::c::ros_message_init(interface_type, &message) != RCL_RET_OK) {
+  if (DYNMSG_RET_OK != dynmsg::c::ros_message_init(interface_type, &message)) {
     RCUTILS_LOG_ERROR_NAMED("cli-tool", "Message init failed");
     return 1;
   }

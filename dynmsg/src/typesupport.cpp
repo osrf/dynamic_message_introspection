@@ -21,6 +21,7 @@
 #include "rcutils/allocator.h"
 #include "rcutils/logging_macros.h"
 
+#include "dynmsg/types.h"
 #include "dynmsg/typesupport.hpp"
 
 namespace dynmsg
@@ -78,7 +79,7 @@ const TypeInfo * get_type_info(const InterfaceTypeName & interface_type)
   return type_info;
 }
 
-rcl_ret_t ros_message_with_typeinfo_init(
+dynmsg_ret_t ros_message_with_typeinfo_init(
   const TypeInfo * type_info,
   RosMessage * ros_msg,
   rcutils_allocator_t * allocator)
@@ -95,21 +96,21 @@ rcl_ret_t ros_message_with_typeinfo_init(
   uint8_t * data =
     static_cast<uint8_t *>(allocator->allocate(type_info->size_of_, allocator->state));
   if (nullptr == data) {
-    return 1;
+    return DYNMSG_RET_ERROR;
   }
   // Initialise the message buffer according to the interface type
   type_info->init_function(data, ROSIDL_RUNTIME_C_MSG_INIT_ALL);
   *ros_msg = RosMessage{type_info, data};
-  return 0;
+  return DYNMSG_RET_OK;
 }
 
-rcl_ret_t ros_message_init(
+dynmsg_ret_t ros_message_init(
   const InterfaceTypeName & interface_type,
   RosMessage * ros_msg)
 {
   const auto * type_info = get_type_info(interface_type);
   if (nullptr == type_info) {
-    return 1;
+    return DYNMSG_RET_ERROR;
   }
   return dynmsg::c::ros_message_with_typeinfo_init(type_info, ros_msg, nullptr);
 }
@@ -197,7 +198,7 @@ const TypeInfo_Cpp * get_type_info(const InterfaceTypeName & interface_type)
   return type_info;
 }
 
-rcl_ret_t ros_message_with_typeinfo_init(
+dynmsg_ret_t ros_message_with_typeinfo_init(
   const TypeInfo_Cpp * type_info,
   RosMessage_Cpp * ros_msg,
   rcutils_allocator_t * allocator)
@@ -210,12 +211,12 @@ rcl_ret_t ros_message_with_typeinfo_init(
   uint8_t * data =
     static_cast<uint8_t *>(allocator->allocate(type_info->size_of_, allocator->state));
   if (nullptr == data) {
-    return 1;
+    return DYNMSG_RET_ERROR;
   }
   // Initialise the message buffer according to the interface type
   type_info->init_function(data, rosidl_runtime_cpp::MessageInitialization::ALL);
   *ros_msg = RosMessage_Cpp{type_info, data};
-  return 0;
+  return DYNMSG_RET_OK;
 }
 
 void ros_message_destroy_with_allocator(RosMessage_Cpp * ros_msg, rcutils_allocator_t * allocator)

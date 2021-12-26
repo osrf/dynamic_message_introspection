@@ -23,8 +23,7 @@
 #include "rosidl_typesupport_introspection_c/message_introspection.h"
 #include "rosidl_typesupport_introspection_cpp/message_introspection.hpp"
 
-// TODO(christophebedard) replace this with our own return type
-typedef int32_t rcl_ret_t;
+#include "dynmsg/types.h"
 
 extern "C"
 {
@@ -90,13 +89,13 @@ const TypeInfo * get_type_info(const InterfaceTypeName & interface_type);
  * When finshed with the RosMessage instance, call ros_message_destroy() to clean up allocated
  * memory.
  */
-rcl_ret_t ros_message_init(const InterfaceTypeName & interface_type, RosMessage * ros_msg);
+dynmsg_ret_t ros_message_init(const InterfaceTypeName & interface_type, RosMessage * ros_msg);
 
 /// Version of ros_message_init() but with TypeInfo directly and an allocator.
 /**
  * \see ros_message_init()
  */
-rcl_ret_t ros_message_with_typeinfo_init(
+dynmsg_ret_t ros_message_with_typeinfo_init(
   const TypeInfo * type_info,
   RosMessage * ros_msg,
   rcutils_allocator_t * allocator);
@@ -125,7 +124,7 @@ const TypeInfo_Cpp * get_type_info(const InterfaceTypeName & interface_type);
 /**
  * \see dynmsg::c::ros_message_with_typeinfo_init()
  */
-rcl_ret_t ros_message_with_typeinfo_init(
+dynmsg_ret_t ros_message_with_typeinfo_init(
   const TypeInfo_Cpp * type_info,
   RosMessage_Cpp * ros_msg,
   rcutils_allocator_t * allocator);
