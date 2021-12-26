@@ -484,7 +484,7 @@ void yaml_to_rosmsg_impl(
 
 }  // namespace impl
 
-RosMessage yaml_to_rosmsg_typeinfo(
+RosMessage yaml_and_typeinfo_to_rosmsg(
   const TypeInfo * type_info,
   const std::string & yaml_str,
   rcutils_allocator_t * allocator)
@@ -514,7 +514,7 @@ RosMessage yaml_to_rosmsg(
   if (nullptr == type_info) {
     return {nullptr, nullptr};
   }
-  return dynmsg::c::yaml_to_rosmsg_typeinfo(type_info, yaml_str, nullptr);
+  return dynmsg::c::yaml_and_typeinfo_to_rosmsg(type_info, yaml_str, nullptr);
 }
 
 }  // namespace c

@@ -43,7 +43,7 @@ RosMessage yaml_to_rosmsg(const InterfaceTypeName & interface_type, const std::s
 /**
  * \see dynmsg::c::yaml_to_rosmsg()
  */
-RosMessage yaml_to_rosmsg_typeinfo(
+RosMessage yaml_and_typeinfo_to_rosmsg(
   const TypeInfo * type_info,
   const std::string & yaml_str,
   rcutils_allocator_t * allocator);
@@ -61,22 +61,22 @@ RosMessage_Cpp yaml_to_rosmsg(
   const InterfaceTypeName & interface_type,
   const std::string & yaml_str);
 
-/// C++ version of dynmsg::c::yaml_to_rosmsg_typeinfo().
+/// C++ version of dynmsg::c::yaml_and_typeinfo_to_rosmsg().
 /**
- * \see dynmsg::c::yaml_to_rosmsg_typeinfo()
+ * \see dynmsg::c::yaml_and_typeinfo_to_rosmsg()
  */
-RosMessage_Cpp yaml_to_rosmsg_typeinfo(
+RosMessage_Cpp yaml_and_typeinfo_to_rosmsg(
   const TypeInfo_Cpp * type_info,
   const std::string & yaml_str,
   rcutils_allocator_t * allocator);
 
-/// Version of dynmsg::cpp::yaml_to_rosmsg_typeinfo() using an existing empty message.
+/// Version of dynmsg::cpp::yaml_and_typeinfo_to_rosmsg() using an existing empty message.
 /**
  * Takes a pointer to an existing empty message.
  *
- * \see dynmsg::cpp::yaml_to_rosmsg_typeinfo()
+ * \see dynmsg::cpp::yaml_and_typeinfo_to_rosmsg()
  */
-void yaml_to_rosmsg_typeinfo(
+void yaml_and_typeinfo_to_rosmsg(
   const TypeInfo_Cpp * type_info,
   const std::string & yaml_str,
   void * ros_message);

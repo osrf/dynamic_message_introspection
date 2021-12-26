@@ -510,7 +510,7 @@ TEST(TestConversion, test_msgs__BasicTypes_cpp)
   // Convert YAML string back to a ROS message
   test_msgs::msg::BasicTypes msg_from_yaml;
   void * ros_message = reinterpret_cast<void *>(&msg_from_yaml);
-  dynmsg::cpp::yaml_to_rosmsg_typeinfo(ros_msg.type_info, yaml_string, ros_message);
+  dynmsg::cpp::yaml_and_typeinfo_to_rosmsg(ros_msg.type_info, yaml_string, ros_message);
 
   compare_basic_types(&msg_from_yaml);
 }
@@ -568,7 +568,7 @@ TEST(TestConversion, test_msgs__UnboundedSequences_cpp)
   // Convert YAML string back to a ROS message
   test_msgs::msg::UnboundedSequences msg_from_yaml;
   void * ros_message = reinterpret_cast<void *>(&msg_from_yaml);
-  dynmsg::cpp::yaml_to_rosmsg_typeinfo(ros_msg.type_info, yaml_string, ros_message);
+  dynmsg::cpp::yaml_and_typeinfo_to_rosmsg(ros_msg.type_info, yaml_string, ros_message);
 
   compare_unbounded_sequences(&msg_from_yaml);
 }
@@ -624,7 +624,7 @@ TEST(TestConversion, test_msgs__Nested_cpp)
   // Convert YAML string back to a ROS message
   test_msgs::msg::Nested msg_from_yaml;
   void * ros_message = reinterpret_cast<void *>(&msg_from_yaml);
-  dynmsg::cpp::yaml_to_rosmsg_typeinfo(ros_msg.type_info, yaml_string, ros_message);
+  dynmsg::cpp::yaml_and_typeinfo_to_rosmsg(ros_msg.type_info, yaml_string, ros_message);
 
   compare_nested(&msg_from_yaml);
 }
@@ -681,7 +681,7 @@ TEST(TestConversion, test_msgs__Arrays_cpp)
   // Convert YAML string back to a ROS message
   test_msgs::msg::Arrays msg_from_yaml;
   void * ros_message = reinterpret_cast<void *>(&msg_from_yaml);
-  dynmsg::cpp::yaml_to_rosmsg_typeinfo(ros_msg.type_info, yaml_string, ros_message);
+  dynmsg::cpp::yaml_and_typeinfo_to_rosmsg(ros_msg.type_info, yaml_string, ros_message);
 
   compare_arrays(&msg_from_yaml);
 }
@@ -741,7 +741,7 @@ TEST(TestConversion, std_msgs__String_cpp)
   // Convert YAML string back to a ROS message
   std_msgs::msg::String msg_from_yaml;
   void * ros_message = reinterpret_cast<void *>(&msg_from_yaml);
-  dynmsg::cpp::yaml_to_rosmsg_typeinfo(ros_msg.type_info, yaml_string, ros_message);
+  dynmsg::cpp::yaml_and_typeinfo_to_rosmsg(ros_msg.type_info, yaml_string, ros_message);
 
   EXPECT_STREQ(msg_from_yaml.data.c_str(), "hello world");
 }
@@ -818,7 +818,7 @@ frame_id: my_frame)");
   // Convert YAML string back to a ROS message
   std_msgs::msg::Header msg_from_yaml;
   void * ros_message = reinterpret_cast<void *>(&msg_from_yaml);
-  dynmsg::cpp::yaml_to_rosmsg_typeinfo(ros_msg.type_info, yaml_string, ros_message);
+  dynmsg::cpp::yaml_and_typeinfo_to_rosmsg(ros_msg.type_info, yaml_string, ros_message);
 
   EXPECT_EQ(msg_from_yaml.stamp.sec, 4);
   EXPECT_EQ(msg_from_yaml.stamp.nanosec, 20u);
@@ -922,7 +922,7 @@ TEST(TestConversion, rcl_interfaces__ParameterEvent_cpp)
   // Convert YAML string back to a ROS message
   rcl_interfaces::msg::ParameterEvent msg_from_yaml;
   void * ros_message = reinterpret_cast<void *>(&msg_from_yaml);
-  dynmsg::cpp::yaml_to_rosmsg_typeinfo(ros_msg.type_info, yaml_string, ros_message);
+  dynmsg::cpp::yaml_and_typeinfo_to_rosmsg(ros_msg.type_info, yaml_string, ros_message);
 
   EXPECT_STREQ(msg_from_yaml.node.c_str(), "/my/node");
   EXPECT_EQ(msg_from_yaml.stamp.sec, 4);

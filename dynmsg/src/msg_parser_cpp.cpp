@@ -579,7 +579,7 @@ void yaml_to_rosmsg_impl(
 
 }  // namespace impl
 
-void yaml_to_rosmsg_typeinfo(
+void yaml_and_typeinfo_to_rosmsg(
   const TypeInfo_Cpp * type_info,
   const std::string & yaml_str,
   void * ros_message)
@@ -591,7 +591,7 @@ void yaml_to_rosmsg_typeinfo(
   impl::yaml_to_rosmsg_impl(root, type_info, buffer);
 }
 
-RosMessage_Cpp yaml_to_rosmsg_typeinfo(
+RosMessage_Cpp yaml_and_typeinfo_to_rosmsg(
   const TypeInfo_Cpp * type_info,
   const std::string & yaml_str,
   rcutils_allocator_t * allocator)
@@ -606,7 +606,7 @@ RosMessage_Cpp yaml_to_rosmsg_typeinfo(
   if (0 != dynmsg::cpp::ros_message_init_(type_info, &ros_msg, allocator)) {
     return {nullptr, nullptr};
   }
-  yaml_to_rosmsg_typeinfo(type_info, yaml_str, reinterpret_cast<void *>(ros_msg.data));
+  yaml_and_typeinfo_to_rosmsg(type_info, yaml_str, reinterpret_cast<void *>(ros_msg.data));
   return ros_msg;
 }
 
@@ -619,7 +619,7 @@ RosMessage_Cpp yaml_to_rosmsg(
     return {nullptr, nullptr};
   }
   rcutils_allocator_t * allocator = nullptr;
-  return yaml_to_rosmsg_typeinfo(type_info, yaml_str, allocator);
+  return yaml_and_typeinfo_to_rosmsg(type_info, yaml_str, allocator);
 }
 
 }  // namespace cpp
