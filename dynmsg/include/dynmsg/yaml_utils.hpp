@@ -39,7 +39,4 @@ std::string yaml_to_string(
 
 }  // namespace dynmsg
 
-extern "C"
-std::string yaml_to_string(const YAML::Node & yaml);
-
 #endif  // DYNMSG__YAML_UTILS_HPP_

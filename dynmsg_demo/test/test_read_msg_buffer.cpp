@@ -63,9 +63,9 @@ TEST(ReadMsgBuffer, ReadBool)
   msg->data = true;
 
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "Bool"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "Bool"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<bool>(), true);
 
@@ -79,9 +79,9 @@ TEST(ReadMsgBuffer, ReadByte)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "Byte"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "Byte"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<uint8_t>(), 0x42);
 
@@ -95,9 +95,9 @@ TEST(ReadMsgBuffer, ReadChar)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "Char"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "Char"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<uint8_t>(), 97);
 
@@ -111,9 +111,9 @@ TEST(ReadMsgBuffer, ReadFloat32)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "Float32"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "Float32"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_TRUE(almost_equal(yaml_msg["data"]["value"].as<float>(), 42.42f, 2));
 
@@ -127,10 +127,10 @@ TEST(ReadMsgBuffer, ReadFloat64)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "Float64"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "Float64"});
   message.data = reinterpret_cast<uint8_t *>(msg);
   output << std::fixed << std::setprecision(2);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_TRUE(almost_equal(yaml_msg["data"]["value"].as<double>(), 42424242424242.42, 2));
 
@@ -145,9 +145,9 @@ TEST(ReadMsgBuffer, ReadInt8)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "Int8"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "Int8"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<int8_t>(), -42);
 
@@ -161,9 +161,9 @@ TEST(ReadMsgBuffer, ReadUInt8)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "UInt8"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "UInt8"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<uint8_t>(), 142);
 
@@ -177,9 +177,9 @@ TEST(ReadMsgBuffer, ReadInt16)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "Int16"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "Int16"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<int16_t>(), -4242);
 
@@ -193,9 +193,9 @@ TEST(ReadMsgBuffer, ReadUInt16)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "UInt16"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "UInt16"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<uint16_t>(), 4242);
 
@@ -209,9 +209,9 @@ TEST(ReadMsgBuffer, ReadInt32)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "Int32"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "Int32"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<int32_t>(), -42424242);
 
@@ -225,9 +225,9 @@ TEST(ReadMsgBuffer, ReadUInt32)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "UInt32"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "UInt32"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<uint32_t>(), 4242424242);
 
@@ -241,9 +241,9 @@ TEST(ReadMsgBuffer, ReadInt64)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "Int64"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "Int64"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<int64_t>(), -424242424242l);
 
@@ -257,9 +257,9 @@ TEST(ReadMsgBuffer, ReadUInt64)
 
   std::stringstream output;
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"example_interfaces", "UInt64"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"example_interfaces", "UInt64"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["data"]["value"].as<uint64_t>(), 424242424242ul);
 
@@ -362,9 +362,9 @@ TEST(ReadMsgBuffer, ReadArrays)
   msg->alignment_check = 42;
 
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"test_msgs", "Arrays"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"test_msgs", "Arrays"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["bool_values"]["type"].as<std::string>(), "boolean[3]");
   EXPECT_EQ(
@@ -531,9 +531,9 @@ TEST(ReadMsgBuffer, ReadBoundedSequences)
 
 
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"test_msgs", "BoundedSequences"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"test_msgs", "BoundedSequences"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["bool_values"]["type"].as<std::string>(), "boolean[<=3]");
   EXPECT_EQ(
@@ -655,9 +655,9 @@ TEST(ReadMsgBuffer, ReadUnboundedSequences)
   msg->alignment_check = 42;
 
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"test_msgs", "UnboundedSequences"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"test_msgs", "UnboundedSequences"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["bool_values"]["type"].as<std::string>(), "boolean[]");
   EXPECT_EQ(
@@ -734,9 +734,9 @@ TEST(ReadMsgBuffer, Strings)
   rosidl_runtime_c__String__assign(&msg->bounded_string_value, "1234567890123456789012");
 
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"test_msgs", "Strings"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"test_msgs", "Strings"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["string_value"]["type"].as<std::string>(), "string");
   EXPECT_EQ(
@@ -820,9 +820,9 @@ TEST(ReadMsgBuffer, WStrings)
     reinterpret_cast<const uint16_t*>(u"ツー"));
 
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"test_msgs", "WStrings"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"test_msgs", "WStrings"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["wstring_value"]["type"].as<std::string>(), "wstring");
   EXPECT_EQ(
@@ -880,9 +880,9 @@ TEST(ReadMsgBuffer, ReadNested)
   populate_basic_types(&msg->basic_types_value);
 
   RosMessage message;
-  message.type_info = get_type_info(InterfaceTypeName{"test_msgs", "Nested"});
+  message.type_info = dynmsg::c::get_type_info(InterfaceTypeName{"test_msgs", "Nested"});
   message.data = reinterpret_cast<uint8_t *>(msg);
-  auto yaml_msg = message_to_yaml(message);
+  auto yaml_msg = dynmsg::c::message_to_yaml(message);
 
   EXPECT_EQ(yaml_msg["basic_types_value"]["type"].as<std::string>(), "test_msgs__msg/BasicTypes");
   compare_basic_types_item(yaml_msg["basic_types_value"]["value"], msg->basic_types_value);

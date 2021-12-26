@@ -85,21 +85,4 @@ void yaml_to_rosmsg_typeinfo(
 
 }  // namespace dynmsg
 
-/// Non-namespaced/C version of dynmsg::c::yaml_to_rosmsg()
-/**
- * \see dynmsg::c::yaml_to_rosmsg()
- */
-extern "C"
-RosMessage yaml_to_rosmsg(const InterfaceTypeName & interface_type, const std::string & yaml_str);
-
-/// Non-namespaced/C version of dynmsg::c::yaml_to_rosmsg_typeinfo()
-/**
- * \see dynmsg::c::yaml_to_rosmsg_typeinfo()
- */
-extern "C"
-RosMessage yaml_to_rosmsg_typeinfo(
-  const TypeInfo * type_info,
-  const std::string & yaml_str,
-  rcutils_allocator_t * allocator);
-
 #endif  // DYNMSG__MSG_PARSER_HPP_

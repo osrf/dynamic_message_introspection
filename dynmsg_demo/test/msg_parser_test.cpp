@@ -86,7 +86,7 @@ void check_basic_types_values(
 }
 
 TEST(MsgParser, String) {
-  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"std_msgs", "String"}, "{ data: hello }");
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"std_msgs", "String"}, "{ data: hello }");
   char hello[] = "hello";
 
   std_msgs__msg__String ros_msg{
@@ -102,11 +102,11 @@ TEST(MsgParser, String) {
 
   EXPECT_STREQ(created_msg->data, ros_msg.data.data);
 
-  ros_message_destroy(&generic_msg);
+  dynmsg::c::ros_message_destroy(&generic_msg);
 }
 
 TEST(MsgParser, WideString) {
-  auto generic_msg = yaml_to_rosmsg(
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(
     InterfaceTypeName{"dynmsg_msgs", "WideString"},
     "{ data: hello }");
 
@@ -127,14 +127,14 @@ TEST(MsgParser, WideString) {
   std::u16string converted(reinterpret_cast<char16_t*>(created_msg->data));
   EXPECT_EQ(converted, ws);
 
-  ros_message_destroy(&generic_msg);
+  dynmsg::c::ros_message_destroy(&generic_msg);
 }
 
 TEST(MsgParser, BasicTypes) {
   YAML::Node msg = basic_types_node();
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "BasicTypes"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "BasicTypes"}, emitter.c_str());
 
   test_msgs__msg__BasicTypes ros_msg;
   set_basic_types(ros_msg);
@@ -144,11 +144,11 @@ TEST(MsgParser, BasicTypes) {
 
   check_basic_types_values(converted, &ros_msg);
 
-  ros_message_destroy(&generic_msg);
+  dynmsg::c::ros_message_destroy(&generic_msg);
 }
 
 TEST(MsgParser, Defaults) {
-  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Defaults"}, "");
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Defaults"}, "");
 
   test_msgs__msg__Defaults ros_msg{
     true,
@@ -183,7 +183,7 @@ TEST(MsgParser, Defaults) {
   EXPECT_EQ(converted->int64_value, ros_msg.int64_value);
   EXPECT_EQ(converted->uint64_value, ros_msg.uint64_value);
 
-  ros_message_destroy(&generic_msg);
+  dynmsg::c::ros_message_destroy(&generic_msg);
 }
 
 TEST(MsgParser, Nested) {
@@ -191,7 +191,7 @@ TEST(MsgParser, Nested) {
   msg["basic_types_value"] = basic_types_node();
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Nested"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Nested"}, emitter.c_str());
 
   test_msgs__msg__Nested ros_msg{{
     true,
@@ -226,7 +226,7 @@ TEST(MsgParser, Nested) {
   EXPECT_EQ(converted->basic_types_value.int64_value, ros_msg.basic_types_value.int64_value);
   EXPECT_EQ(converted->basic_types_value.uint64_value, ros_msg.basic_types_value.uint64_value);
 
-  ros_message_destroy(&generic_msg);
+  dynmsg::c::ros_message_destroy(&generic_msg);
 }
 
 TEST(MsgParser, Arrays) {
@@ -248,7 +248,7 @@ TEST(MsgParser, Arrays) {
   msg["basic_types_values"] = std::vector<YAML::Node>{basic_types_node(), basic_types_node(), basic_types_node()};
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Arrays"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "Arrays"}, emitter.c_str());
 
   test_msgs__msg__Arrays* ros_msg = test_msgs__msg__Arrays__create();
   ros_msg->bool_values[0] = true;
@@ -334,7 +334,7 @@ TEST(MsgParser, Arrays) {
   }
 
   test_msgs__msg__Arrays__destroy(ros_msg);
-  ros_message_destroy(&generic_msg);
+  dynmsg::c::ros_message_destroy(&generic_msg);
 }
 
 TEST(MsgParser, BoundedSequences) {
@@ -344,7 +344,7 @@ TEST(MsgParser, BoundedSequences) {
   msg["basic_types_values"] = std::vector<YAML::Node>{basic_types_node(), basic_types_node(), basic_types_node()};
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "BoundedSequences"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "BoundedSequences"}, emitter.c_str());
 
   test_msgs__msg__BoundedSequences* ros_msg = test_msgs__msg__BoundedSequences__create();
   rosidl_runtime_c__boolean__Sequence__init(&ros_msg->bool_values, 1);
@@ -384,7 +384,7 @@ TEST(MsgParser, BoundedSequences) {
   EXPECT_STREQ(converted->string_values_default.data[2].data, ros_msg->string_values_default.data[2].data);
 
   test_msgs__msg__BoundedSequences__destroy(ros_msg);
-  ros_message_destroy(&generic_msg);
+  dynmsg::c::ros_message_destroy(&generic_msg);
 }
 
 TEST(MsgParser, UnboundedSequences) {
@@ -394,7 +394,7 @@ TEST(MsgParser, UnboundedSequences) {
   msg["basic_types_values"] = std::vector<YAML::Node>{basic_types_node(), basic_types_node(), basic_types_node()};
   YAML::Emitter emitter;
   emitter << msg;
-  auto generic_msg = yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "UnboundedSequences"}, emitter.c_str());
+  auto generic_msg = dynmsg::c::yaml_to_rosmsg(InterfaceTypeName{"test_msgs", "UnboundedSequences"}, emitter.c_str());
 
   test_msgs__msg__UnboundedSequences* ros_msg = test_msgs__msg__UnboundedSequences__create();
   rosidl_runtime_c__boolean__Sequence__init(&ros_msg->bool_values, 1);
@@ -434,5 +434,5 @@ TEST(MsgParser, UnboundedSequences) {
   EXPECT_STREQ(converted->string_values_default.data[2].data, ros_msg->string_values_default.data[2].data);
 
   test_msgs__msg__UnboundedSequences__destroy(ros_msg);
-  ros_message_destroy(&generic_msg);
+  dynmsg::c::ros_message_destroy(&generic_msg);
 }

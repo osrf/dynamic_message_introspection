@@ -267,7 +267,7 @@ void member_to_yaml_array_item(
       RosMessage nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
       nested_member.data = const_cast<uint8_t *>(member_data);
-      array_node.push_back(::message_to_yaml(nested_member));
+      array_node.push_back(dynmsg::c::message_to_yaml(nested_member));
       break;
     default:
       array_node.push_back("Unknown value for unknown type");
@@ -359,7 +359,7 @@ void basic_value_to_yaml(
       RosMessage nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
       nested_member.data = const_cast<uint8_t *>(member_data);
-      member["value"] = ::message_to_yaml(nested_member);
+      member["value"] = dynmsg::c::message_to_yaml(nested_member);
       break;
     default:
       member["value"] = "Unknown value for unknown type";
@@ -505,7 +505,7 @@ dynamic_array_to_yaml(
       for (size_t ii = 0; ii < element_count; ++ii) {
         nested_member.data = element_data + ii * element_size;
         // Recursively read the nested type into the array element in the YAML representation
-        array_node.push_back(::message_to_yaml(nested_member));
+        array_node.push_back(dynmsg::c::message_to_yaml(nested_member));
       }
       break;
     default:
@@ -563,7 +563,7 @@ YAML::Node member_to_yaml(
       nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
       nested_member.data = const_cast<uint8_t *>(member_data);
 #ifdef DYNMSG_VALUE_ONLY
-      return ::message_to_yaml(nested_member);
+      return dynmsg::c::message_to_yaml(nested_member);
 #else
       member["value"] = ::message_to_yaml(nested_member);
 #endif
@@ -600,9 +600,3 @@ message_to_yaml(const RosMessage & message)
 
 }  // namespace c
 }  // namespace dynmsg
-
-YAML::Node
-message_to_yaml(const RosMessage & message)
-{
-  return dynmsg::c::message_to_yaml(message);
-}

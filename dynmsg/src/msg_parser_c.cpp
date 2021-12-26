@@ -519,18 +519,3 @@ RosMessage yaml_to_rosmsg(
 
 }  // namespace c
 }  // namespace dynmsg
-
-RosMessage yaml_to_rosmsg_typeinfo(
-  const TypeInfo * type_info,
-  const std::string & yaml_str,
-  rcutils_allocator_t * allocator)
-{
-  return dynmsg::c::yaml_to_rosmsg_typeinfo(type_info, yaml_str, allocator);
-}
-
-RosMessage yaml_to_rosmsg(
-  const InterfaceTypeName & interface_type,
-  const std::string & yaml_str)
-{
-  return dynmsg::c::yaml_to_rosmsg(interface_type, yaml_str);
-}

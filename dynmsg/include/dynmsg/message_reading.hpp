@@ -56,11 +56,4 @@ YAML::Node message_to_yaml(const RosMessage_Cpp & message);
 
 }  // namespace dynmsg
 
-/// Non-namespaced/C version of dynmsg::c::message_to_yaml()
-/**
- * \see dynmsg::c::message_to_yaml()
- */
-extern "C"
-YAML::Node message_to_yaml(const RosMessage & message);
-
 #endif  // DYNMSG__MESSAGE_READING_HPP_

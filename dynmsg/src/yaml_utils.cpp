@@ -38,8 +38,3 @@ std::string yaml_to_string(
 }
 
 }  // namespace dynmsg
-
-std::string yaml_to_string(const YAML::Node & yaml)
-{
-  return dynmsg::yaml_to_string(yaml);
-}

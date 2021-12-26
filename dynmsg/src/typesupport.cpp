@@ -223,33 +223,3 @@ rcl_ret_t ros_message_init_(
 }  // namespace cpp
 
 }  // namespace dynmsg
-
-const TypeInfo * get_type_info(const InterfaceTypeName & interface_type)
-{
-  return dynmsg::c::get_type_info(interface_type);
-}
-
-rcl_ret_t ros_message_init_typeinfo(
-  const TypeInfo * type_info,
-  RosMessage * ros_msg,
-  rcutils_allocator_t * allocator)
-{
-  return dynmsg::c::ros_message_init_typeinfo(type_info, ros_msg, allocator);
-}
-
-rcl_ret_t ros_message_init(
-  const InterfaceTypeName & interface_type,
-  RosMessage * ros_msg)
-{
-  return dynmsg::c::ros_message_init(interface_type, ros_msg);
-}
-
-void ros_message_destroy_(RosMessage * ros_msg, rcutils_allocator_t * allocator)
-{
-  return dynmsg::c::ros_message_destroy_(ros_msg, allocator);
-}
-
-void ros_message_destroy(RosMessage * ros_msg)
-{
-  return dynmsg::c::ros_message_destroy(ros_msg);
-}

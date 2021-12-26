@@ -137,40 +137,4 @@ rcl_ret_t ros_message_init_(
 
 }  // namespace dynmsg
 
-extern "C"
-{
-/// Non-namespaced/C version of dynmsg::c::get_type_info()
-/**
- * \see dynmsg:c::get_type_info()
- */
-const TypeInfo * get_type_info(const InterfaceTypeName & interface_type);
-
-/// Non-namespaced/C version of dynmsg::c::ros_message_init()
-/**
- * \see dynmsg:c::ros_message_init()
- */
-rcl_ret_t ros_message_init(const InterfaceTypeName & interface_type, RosMessage * ros_msg);
-
-/// Non-namespaced/C version of dynmsg::c::ros_message_init_typeinfo()
-/**
- * \see dynmsg:c::ros_message_init_typeinfo()
- */
-rcl_ret_t ros_message_init_typeinfo(
-  const TypeInfo * type_info,
-  RosMessage * ros_msg,
-  rcutils_allocator_t * allocator);
-
-/// Non-namespaced/C version of dynmsg::c::ros_message_destroy()
-/**
- * \see dynmsg:c::ros_message_destroy()
- */
-void ros_message_destroy(RosMessage * ros_msg);
-
-/// Non-namespaced/C version of dynmsg::c::ros_message_destroy_()
-/**
- * \see dynmsg:c::ros_message_destroy_()
- */
-void ros_message_destroy_(RosMessage * ros_msg, rcutils_allocator_t * allocator);
-}  // extern "C"
-
 #endif  // DYNMSG__TYPESUPPORT_HPP_

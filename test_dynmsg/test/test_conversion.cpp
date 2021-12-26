@@ -470,7 +470,7 @@ TEST(TestConversion, test_msgs__BasicTypes_c)
   RosMessage ros_msg;
   ros_msg.type_info = dynmsg::c::get_type_info(interface);
   ros_msg.data = reinterpret_cast<uint8_t *>(msg);
-  YAML::Node yaml_msg = message_to_yaml(ros_msg);
+  YAML::Node yaml_msg = dynmsg::c::message_to_yaml(ros_msg);
   std::cout << "message to YAML:" << std::endl;
   std::cout << yaml_msg << std::endl << std::endl;
 

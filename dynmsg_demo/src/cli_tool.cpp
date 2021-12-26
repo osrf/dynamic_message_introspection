@@ -59,7 +59,7 @@ echo_topic(
     interface_type.first << '/' << interface_type.second << '\n';
 
   RosMessage message;
-  if (ros_message_init(interface_type, &message) != RCL_RET_OK) {
+  if (dynmsg::c::ros_message_init(interface_type, &message) != RCL_RET_OK) {
     RCUTILS_LOG_ERROR_NAMED("cli-tool", "Message init failed");
     return 1;
   }
@@ -105,7 +105,7 @@ echo_topic(
     }
   }
 
-  std::cout << message_to_yaml(message) << '\n';
+  std::cout << dynmsg::c::message_to_yaml(message) << '\n';
 
   ret = rcl_subscription_fini(&sub, node);
   if (ret != RCL_RET_OK) {
@@ -134,7 +134,7 @@ int publish_to_topic(
   std::cout << "Publishing message on topic '" << topic << "' with type " <<
     interface_type.first << '/' << interface_type.second << '\n';
 
-  RosMessage message = yaml_to_rosmsg(interface_type, message_yaml);
+  RosMessage message = dynmsg::c::yaml_to_rosmsg(interface_type, message_yaml);
 
   RCUTILS_LOG_DEBUG_NAMED("cli-tool", "Creating publisher");
   rcl_publisher_t pub = rcl_get_zero_initialized_publisher();
