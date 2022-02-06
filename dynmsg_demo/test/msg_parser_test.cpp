@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "dynmsg/config.hpp"
 #include "dynmsg/msg_parser.hpp"
 #include "dynmsg_demo/typesupport_utils.hpp"
 
@@ -37,12 +38,28 @@ YAML::Node basic_types_node()
 {
   YAML::Node msg;
   msg["bool_value"] = true;
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
+  msg["byte_value"] = std::to_string(std::numeric_limits<uint8_t>::max());
+#else
   msg["byte_value"] = std::numeric_limits<uint8_t>::max();
+#endif
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
+  msg["char_value"] = std::to_string(std::numeric_limits<uint8_t>::min());
+#else
   msg["char_value"] = std::numeric_limits<uint8_t>::min();
+#endif
   msg["float32_value"] = 1.1;
   msg["float64_value"] = 2.1;
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
+  msg["int8_value"] = std::to_string(std::numeric_limits<int8_t>::min());
+#else
   msg["int8_value"] = std::numeric_limits<int8_t>::min();
+#endif
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
+  msg["uint8_value"] = std::to_string(std::numeric_limits<uint8_t>::max());
+#else
   msg["uint8_value"] = std::numeric_limits<uint8_t>::max();
+#endif
   msg["int16_value"] = std::numeric_limits<int16_t>::min();
   msg["uint16_value"] = std::numeric_limits<uint16_t>::max();
   msg["int32_value"] = std::numeric_limits<int32_t>::min();
@@ -238,12 +255,28 @@ TEST(MsgParser, Nested) {
 TEST(MsgParser, Arrays) {
   YAML::Node msg;
   msg["bool_values"] = std::vector<bool>{true, true, false};
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
+  msg["byte_values"] = std::vector<std::string>{"1", "2", "3"};
+#else
   msg["byte_values"] = std::vector<uint8_t>{1, 2, 3};
+#endif
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
+  msg["char_values"] = std::vector<std::string>{"1", "2", "3"};
+#else
   msg["char_values"] = std::vector<uint8_t>{1, 2, 3};
+#endif
   msg["float32_values"] = std::vector<float>{1, 2, 3};
   msg["float64_values"] = std::vector<double>{10, 20, 30};
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
+  msg["int8_values"] = std::vector<std::string>{"1", "2", "3"};
+#else
   msg["int8_values"] = std::vector<int8_t>{1, 2, 3};
+#endif
+#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
+  msg["uint8_values"] = std::vector<std::string>{"4", "5", "6"};
+#else
   msg["uint8_values"] = std::vector<uint8_t>{4, 5, 6};
+#endif
   msg["int16_values"] = std::vector<int16_t>{10, 20, 30};
   msg["uint16_values"] = std::vector<uint16_t>{40, 50, 60};
   msg["int32_values"] = std::vector<int32_t>{100, 200, 300};
