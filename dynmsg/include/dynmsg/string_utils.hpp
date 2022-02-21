@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg_demo/string_utils.hpp"
+#ifndef DYNMSG__STRING_UTILS_HPP_
+#define DYNMSG__STRING_UTILS_HPP_
 
 #include <string>
 
-#include <gtest/gtest.h>
+extern "C"
+{
+/// Convert a std::string (8-bit characters) to a std::u16string (16-bit characters).
+std::u16string string_to_u16string(const std::string & input);
 
-using namespace std::string_literals;
+/// Convert a std::u16string (16-bit characters) to a std::string (8-bit characters).
+std::string u16string_to_string(const std::u16string & input);
+}  // extern "C"
 
-TEST(WideStrings, StringToU16) {
-  std::string utf8 = u8"z\u00df\u6c34\U0001d10b";  // "zß水𝄋"
-  EXPECT_EQ(string_to_u16string(utf8), u"z\u00df\u6c34\U0001d10b"s);
-}
-
-TEST(WideStrings, U16ToString) {
-  std::u16string u16 = u"z\u00df\u6c34\U0001d10b";  // "zß水𝄋"
-  EXPECT_EQ(u16string_to_string(u16), u8"z\u00df\u6c34\U0001d10b"s);
-}
+#endif  // DYNMSG__STRING_UTILS_HPP_

@@ -12,16 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg_demo/cli.hpp"
-#include "dynmsg_demo/message_reading.hpp"
-#include "dynmsg_demo/msg_parser.hpp"
-#include "dynmsg_demo/typesupport_utils.hpp"
-
 #include <unistd.h>
 
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
+#include <string>
 #include <thread>
+
+#include "dynmsg/message_reading.hpp"
+#include "dynmsg/msg_parser.hpp"
+#include "dynmsg_demo/cli.hpp"
+#include "dynmsg_demo/typesupport_utils.hpp"
 
 #include "rcl/context.h"
 #include "rcl/error_handling.h"
@@ -36,12 +38,11 @@
 
 #include "rcutils/logging_macros.h"
 
-
-#include <stdexcept>
 class NotImplemented : public std::logic_error
 {
 public:
-    NotImplemented() : std::logic_error("Not implemented") { };
+  NotImplemented()
+  : std::logic_error("Not implemented") {}
 };
 
 // Read one message from a topic, convert it to YAML, and print it to the terminal.
@@ -54,12 +55,13 @@ int
 echo_topic(
   rcl_node_t * node,
   const std::string & topic,
-  const InterfaceTypeName &interface_type) {
+  const InterfaceTypeName & interface_type)
+{
   std::cout << "Waiting for message on topic '" << topic << "' with type " <<
     interface_type.first << '/' << interface_type.second << '\n';
 
   RosMessage message;
-  if (ros_message_init(interface_type, &message) != RCL_RET_OK) {
+  if (DYNMSG_RET_OK != dynmsg::c::ros_message_init(interface_type, &message)) {
     RCUTILS_LOG_ERROR_NAMED("cli-tool", "Message init failed");
     return 1;
   }
@@ -67,7 +69,7 @@ echo_topic(
   RCUTILS_LOG_DEBUG_NAMED("cli-tool", "Creating subscription");
   rcl_subscription_t sub = rcl_get_zero_initialized_subscription();
   rcl_subscription_options_t sub_options = rcl_subscription_get_default_options();
-  const auto* type_support = get_type_support(interface_type);
+  const auto * type_support = get_type_support(interface_type);
   if (type_support == nullptr) {
     return 1;
   }
@@ -105,7 +107,7 @@ echo_topic(
     }
   }
 
-  std::cout << message_to_yaml(message) << '\n';
+  std::cout << dynmsg::c::message_to_yaml(message) << '\n';
 
   ret = rcl_subscription_fini(&sub, node);
   if (ret != RCL_RET_OK) {
@@ -128,18 +130,18 @@ echo_topic(
 int publish_to_topic(
   rcl_node_t * node,
   const std::string & topic,
-  const InterfaceTypeName &interface_type,
+  const InterfaceTypeName & interface_type,
   const std::string & message_yaml)
 {
   std::cout << "Publishing message on topic '" << topic << "' with type " <<
     interface_type.first << '/' << interface_type.second << '\n';
 
-  RosMessage message = yaml_to_rosmsg(interface_type, message_yaml);
+  RosMessage message = dynmsg::c::yaml_to_rosmsg(interface_type, message_yaml);
 
   RCUTILS_LOG_DEBUG_NAMED("cli-tool", "Creating publisher");
   rcl_publisher_t pub = rcl_get_zero_initialized_publisher();
   rcl_publisher_options_t pub_options = rcl_publisher_get_default_options();
-  const auto* type_support = get_type_support(interface_type);
+  const auto * type_support = get_type_support(interface_type);
   if (type_support == nullptr) {
     return 1;
   }
@@ -173,12 +175,13 @@ int publish_to_topic(
 // Only nodes known about at the time this function is called will be printed. It is recommended
 // that some time be allowed to elapse (e.g. by calling a sleep) between calling rcl_init() and
 // this function. This gives the underlying discovery system some time to find other nodes.
-int print_nodes(const rcl_node_t* node) {
+int print_nodes(const rcl_node_t * node)
+{
   auto names = rcutils_get_zero_initialized_string_array();
   auto namespaces = rcutils_get_zero_initialized_string_array();
   auto ret = rcl_get_node_names(node, rcl_get_default_allocator(), &names, &namespaces);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   std::cout << "nodes:" << std::endl;
@@ -187,12 +190,12 @@ int print_nodes(const rcl_node_t* node) {
   }
   ret = rcutils_string_array_fini(&names);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
-  rcutils_string_array_fini(&namespaces);
+  ret = rcutils_string_array_fini(&namespaces);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   return 0;
@@ -204,21 +207,23 @@ int print_nodes(const rcl_node_t* node) {
 // Only topics known about at the time this function is called will be printed. It is recommended
 // that some time be allowed to elapse (e.g. by calling a sleep) between calling rcl_init() and
 // this function. This gives the underlying discovery system some time to find topics.
-int print_topics(const rcl_node_t* node) {
+int print_topics(const rcl_node_t * node)
+{
   auto topics = rcl_get_zero_initialized_names_and_types();
   auto allocator = rcl_get_default_allocator();
   auto ret = rcl_get_topic_names_and_types(node, &allocator, false, &topics);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   std::cout << "topics:" << std::endl;
   for (size_t i = 0; i < topics.names.size; i++) {
-    std::cout << "  " << topics.names.data[i] << " [" << topics.types[i].data[0] << "]" << std::endl;
+    std::cout << "  " << topics.names.data[i]
+              << " [" << topics.types[i].data[0] << "]" << std::endl;
   }
   ret = rcl_names_and_types_fini(&topics);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   return 0;
@@ -230,23 +235,24 @@ int print_topics(const rcl_node_t* node) {
 // Only services known about at the time this function is called will be printed. It is recommended
 // that some time be allowed to elapse (e.g. by calling a sleep) between calling rcl_init() and
 // this function. This gives the underlying discovery system some time to find services.
-int print_services(const rcl_node_t* node) {
+int print_services(const rcl_node_t * node)
+{
   auto services = rcl_get_zero_initialized_names_and_types();
   auto allocator = rcl_get_default_allocator();
   auto ret = rcl_get_service_names_and_types(node, &allocator, &services);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   std::cout << "services:" << std::endl;
   for (size_t i = 0; i < services.names.size; i++) {
     std::cout << "  " << services.names.data[i]
-      << " [" << services.types[i].data[0] << "]"
-      << std::endl;
+              << " [" << services.types[i].data[0] << "]"
+              << std::endl;
   }
   ret = rcl_names_and_types_fini(&services);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   return 0;
@@ -258,23 +264,24 @@ int print_services(const rcl_node_t* node) {
 // Only actions known about at the time this function is called will be printed. It is recommended
 // that some time be allowed to elapse (e.g. by calling a sleep) between calling rcl_init() and
 // this function. This gives the underlying discovery system some time to find actions.
-int print_actions(const rcl_node_t* node) {
+int print_actions(const rcl_node_t * node)
+{
   auto actions = rcl_get_zero_initialized_names_and_types();
   auto allocator = rcl_get_default_allocator();
   auto ret = rcl_action_get_names_and_types(node, &allocator, &actions);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   std::cout << "actions:" << std::endl;
   for (size_t i = 0; i < actions.names.size; i++) {
     std::cout << "  " << actions.names.data[i]
-      << " [" << actions.types[i].data[0] << "]"
-      << std::endl;
+              << " [" << actions.types[i].data[0] << "]"
+              << std::endl;
   }
   ret = rcl_names_and_types_fini(&actions);
   if (ret != RCL_RET_OK) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", rcl_get_error_string().str);
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "%s", rcl_get_error_string().str);
     return 1;
   }
   return 0;
@@ -345,18 +352,18 @@ main(int argc, char ** argv)
       case Command::ServiceHost:
         throw NotImplemented();
       case Command::Discover: {
-        // Need to sleep for abit for discovery to populate the ROS graph information
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        return print_nodes(&node)
-          || print_topics(&node)
-          || print_services(&node)
-          || print_actions(&node);
-      }
+          // Need to sleep for abit for discovery to populate the ROS graph information
+          std::this_thread::sleep_for(std::chrono::seconds(1));
+          return print_nodes(&node) ||
+                 print_topics(&node) ||
+                 print_services(&node) ||
+                 print_actions(&node);
+        }
       case Command::Unknown:
         std::cout << "Unknown command\n";
         return 1;
-    };
-  } catch (const std::runtime_error& e) {
+    }
+  } catch (const std::runtime_error & e) {
     RCUTILS_LOG_ERROR_NAMED("cli-tool", e.what());
     return 1;
   }

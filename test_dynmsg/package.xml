@@ -1,27 +1,25 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>dynmsg_demo</name>
+  <name>test_dynmsg</name>
   <version>1.0.0</version>
-  <description>Demo of dynamic message type loading</description>
-  <maintainer email="geoff@openrobotics.org">Geoffrey Biggs</maintainer>
+  <description>Tests for the dynmsg package</description>
+  <maintainer email="bedard.christophe@gmail.com">Christophe Bedard</maintainer>
   <license>Apache 2.0</license>
+  <author email="bedard.christophe@gmail.com">Christophe Bedard</author>
   <author email="geoff@openrobotics.org">Geoffrey Biggs</author>
   <author email="koonpeng@openrobotics.org">Koon Peng Teo</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>dynmsg</depend>
-  <depend>rcl</depend>
-  <depend>rcl_action</depend>
-  <depend>yaml_cpp_vendor</depend>
+  <depend>std_msgs</depend>
 
+  <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
-  <test_depend>dynmsg_msgs</test_depend>
-  <test_depend>example_interfaces</test_depend>
-  <test_depend>geometry_msgs</test_depend>
-  <test_depend>std_msgs</test_depend>
+  <test_depend>builtin_interfaces</test_depend>
+  <test_depend>rcl_interfaces</test_depend>
   <test_depend>test_msgs</test_depend>
 
   <export>

@@ -1,4 +1,5 @@
 // Copyright 2020 Open Source Robotics Foundation, Inc.
+// Copyright 2021 Christophe Bedard
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_STRING_UTILS_HPP_
-#define DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_STRING_UTILS_HPP_
+#ifndef DYNMSG__TYPES_H_
+#define DYNMSG__TYPES_H_
 
-#include <string>
+#include <rcutils/types/rcutils_ret.h>
 
-extern "C"
-{
+/// The type that holds a dynmsg return code.
+typedef rcutils_ret_t dynmsg_ret_t;
 
-// Convert a std::string (8-bit characters) to a std::u16string (16-bit characters)
-std::u16string string_to_u16string(const std::string& input);
-// Convert a std::u16string (16-bit characters) to a std::string (8-bit characters)
-std::string u16string_to_string(const std::u16string& input);
+/// Success return code.
+#define DYNMSG_RET_OK RCUTILS_RET_OK
+/// Unspecified error return code.
+#define DYNMSG_RET_ERROR RCUTILS_RET_ERROR
 
-};  // extern "C"
-#endif  // DYNMSG_DEMO_INCLUDE_DYNMSG_DEMO_STRING_UTILS_HPP_
+#endif  // DYNMSG__TYPES_H_

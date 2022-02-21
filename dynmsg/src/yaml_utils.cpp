@@ -1,4 +1,4 @@
-// Copyright 2020 Open Source Robotics Foundation, Inc.
+// Copyright 2021 Christophe Bedard
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dynmsg_demo/string_utils.hpp"
+#include <yaml-cpp/yaml.h>
 
-#include <codecvt>
-#include <locale>
+#include <string>
 
-std::u16string string_to_u16string(const std::string& input) {
-  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
-  return converter.from_bytes(input);
+#include "dynmsg/yaml_utils.hpp"
+
+namespace dynmsg
+{
+
+std::string yaml_to_string(
+  const YAML::Node & yaml,
+  const bool double_quoted,
+  const bool flow_style)
+{
+  YAML::Emitter emitter;
+  if (double_quoted) {
+    emitter << YAML::DoubleQuoted;
+  }
+  if (flow_style) {
+    emitter << YAML::Flow;
+  }
+  emitter << yaml;
+  return emitter.c_str();
 }
 
-
-std::string u16string_to_string(const std::u16string& input) {
-  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
-  return converter.to_bytes(input);
-}
+}  // namespace dynmsg

@@ -12,31 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_DEMO__CLI_HPP_
-#define DYNMSG_DEMO__CLI_HPP_
-
+#include <codecvt>
+#include <locale>
 #include <string>
-#include <unordered_map>
 
-// Commands available in the CLI tool
-enum class Command
+#include "dynmsg/string_utils.hpp"
+
+std::u16string string_to_u16string(const std::string & input)
 {
-  Unknown,
-  TopicEcho,
-  TopicPublish,
-  ServiceCall,
-  ServiceHost,
-  Discover,
-};
+  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
+  return converter.from_bytes(input);
+}
 
-struct Arguments
+std::string u16string_to_string(const std::u16string & input)
 {
-  Command cmd;
-  std::unordered_map<std::string, std::string> params;
-};
-
-// Parse the arguments given on the command line into a command and its arguments.
-// Some simple error checking is performed only.
-Arguments parse_arguments(int argc, char ** argv);
-
-#endif  // DYNMSG_DEMO__CLI_HPP_
+  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
+  return converter.to_bytes(input);
+}

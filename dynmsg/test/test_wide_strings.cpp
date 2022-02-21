@@ -12,31 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DYNMSG_DEMO__CLI_HPP_
-#define DYNMSG_DEMO__CLI_HPP_
+#include <gtest/gtest.h>
 
 #include <string>
-#include <unordered_map>
 
-// Commands available in the CLI tool
-enum class Command
-{
-  Unknown,
-  TopicEcho,
-  TopicPublish,
-  ServiceCall,
-  ServiceHost,
-  Discover,
-};
+#include "dynmsg/string_utils.hpp"
 
-struct Arguments
-{
-  Command cmd;
-  std::unordered_map<std::string, std::string> params;
-};
+using namespace std::string_literals;
 
-// Parse the arguments given on the command line into a command and its arguments.
-// Some simple error checking is performed only.
-Arguments parse_arguments(int argc, char ** argv);
+TEST(WideStrings, StringToU16) {
+  std::string utf8 = u8"z\u00df\u6c34\U0001d10b";  // "zß水𝄋"
+  EXPECT_EQ(string_to_u16string(utf8), u"z\u00df\u6c34\U0001d10b"s);
+}
 
-#endif  // DYNMSG_DEMO__CLI_HPP_
+TEST(WideStrings, U16ToString) {
+  std::u16string u16 = u"z\u00df\u6c34\U0001d10b";  // "zß水𝄋"
+  EXPECT_EQ(u16string_to_string(u16), u8"z\u00df\u6c34\U0001d10b"s);
+}

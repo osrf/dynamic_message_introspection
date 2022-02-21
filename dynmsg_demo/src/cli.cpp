@@ -21,22 +21,24 @@
 
 using namespace std::string_literals;
 
-void print_help_and_exit(const char * program_name) {
+void print_help_and_exit(const char * program_name)
+{
   std::cout << "Usage:\n"
-    << "  " << program_name << " echo <topic>\n"
-    << "  " << program_name << " publish <topic> <type> <message>\n"
-    << "  " << program_name << " call <service> <request>\n"
-    << "  " << program_name << " host <service> <response>\n"
-    << "  " << program_name << " discover\n"
-    << std::endl;
+            << "  " << program_name << " echo <topic>\n"
+            << "  " << program_name << " publish <topic> <type> <message>\n"
+            << "  " << program_name << " call <service> <request>\n"
+            << "  " << program_name << " host <service> <response>\n"
+            << "  " << program_name << " discover\n"
+            << std::endl;
   exit(1);
 }
 
-Arguments parse_arguments(int argc, char** argv) {
+Arguments parse_arguments(int argc, char ** argv)
+{
   if (argc < 2 ||
-      std::string(argv[1]).rfind("-h", 0) == 0 ||
-      std::string(argv[1]).rfind("--help", 0) == 0
-  ) {
+    std::string(argv[1]).rfind("-h", 0) == 0 ||
+    std::string(argv[1]).rfind("--help", 0) == 0)
+  {
     print_help_and_exit(argv[0]);
   }
   Arguments args;
