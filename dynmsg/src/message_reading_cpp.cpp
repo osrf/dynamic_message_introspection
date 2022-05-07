@@ -25,7 +25,6 @@
 #include "dynmsg/message_reading.hpp"
 #include "dynmsg/string_utils.hpp"
 #include "dynmsg/typesupport.hpp"
-#include "dynmsg/vector_utils.hpp"
 
 namespace dynmsg
 {
@@ -516,21 +515,13 @@ dynamic_array_to_yaml(
         array_node);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE:
-      // We do not know the specific type of the sequence because the type is not available at
-      // compile-time, but we know it's a vector and we know the size of the contained type.
       RosMessage_Cpp nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo_Cpp *>(member_info.members_->data);
-      uint8_t * element_data;
-      memcpy(&element_data, member_data, sizeof(void *));
-      size_t element_size;
-      element_size = nested_member.type_info->size_of_;
-      size_t element_count;
-      element_count = dynmsg::get_vector_size(member_data, element_size);
-      DYNMSG_DEBUG(std::cout << "\telement_size=" << element_size << std::endl);
-      DYNMSG_DEBUG(std::cout << "\telement_count=" << element_count << std::endl);
-      for (size_t ii = 0; ii < element_count; ++ii) {
-        nested_member.data = element_data + ii * element_size;
+      void * data;
+      data = reinterpret_cast<void *>(const_cast<uint8_t *>(member_data));
+      for (size_t i = 0; i < member_info.size_function(data); i++) {
         // Recursively read the nested type into the array element in the YAML representation
+        nested_member.data = reinterpret_cast<uint8_t *>(member_info.get_function(data, i));
         array_node.push_back(message_to_yaml(nested_member));
       }
       break;
