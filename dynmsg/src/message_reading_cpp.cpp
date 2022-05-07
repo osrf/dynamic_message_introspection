@@ -517,11 +517,10 @@ dynamic_array_to_yaml(
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE:
       RosMessage_Cpp nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo_Cpp *>(member_info.members_->data);
-      void * data;
-      data = reinterpret_cast<void *>(const_cast<uint8_t *>(member_data));
-      for (size_t i = 0; i < member_info.size_function(data); i++) {
+      for (size_t i = 0; i < member_info.size_function(member_data); i++) {
         // Recursively read the nested type into the array element in the YAML representation
-        nested_member.data = reinterpret_cast<uint8_t *>(member_info.get_function(data, i));
+        nested_member.data = reinterpret_cast<uint8_t *>(
+          member_info.get_function(const_cast<uint8_t *>(member_data), i));
         array_node.push_back(message_to_yaml(nested_member));
       }
       break;
