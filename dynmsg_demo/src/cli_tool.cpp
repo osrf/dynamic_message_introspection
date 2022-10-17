@@ -218,8 +218,8 @@ int print_topics(const rcl_node_t * node)
   }
   std::cout << "topics:" << std::endl;
   for (size_t i = 0; i < topics.names.size; i++) {
-    std::cout << "  " << topics.names.data[i]
-              << " [" << topics.types[i].data[0] << "]" << std::endl;
+    std::cout << "  " << topics.names.data[i] <<
+      " [" << topics.types[i].data[0] << "]" << std::endl;
   }
   ret = rcl_names_and_types_fini(&topics);
   if (ret != RCL_RET_OK) {
@@ -246,9 +246,9 @@ int print_services(const rcl_node_t * node)
   }
   std::cout << "services:" << std::endl;
   for (size_t i = 0; i < services.names.size; i++) {
-    std::cout << "  " << services.names.data[i]
-              << " [" << services.types[i].data[0] << "]"
-              << std::endl;
+    std::cout << "  " << services.names.data[i] <<
+      " [" << services.types[i].data[0] << "]" <<
+      std::endl;
   }
   ret = rcl_names_and_types_fini(&services);
   if (ret != RCL_RET_OK) {
@@ -275,9 +275,9 @@ int print_actions(const rcl_node_t * node)
   }
   std::cout << "actions:" << std::endl;
   for (size_t i = 0; i < actions.names.size; i++) {
-    std::cout << "  " << actions.names.data[i]
-              << " [" << actions.types[i].data[0] << "]"
-              << std::endl;
+    std::cout << "  " << actions.names.data[i] <<
+      " [" << actions.types[i].data[0] << "]" <<
+      std::endl;
   }
   ret = rcl_names_and_types_fini(&actions);
   if (ret != RCL_RET_OK) {
