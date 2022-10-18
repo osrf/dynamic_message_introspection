@@ -16,6 +16,7 @@
 #define DYNMSG__VECTOR_UTILS_HPP_
 
 #include <cstdint>
+#include <cstddef>
 
 namespace dynmsg
 {
