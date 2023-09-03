@@ -630,7 +630,7 @@ message_to_yaml(const RosMessage_Cpp & message)
     DYNMSG_DEBUG(std::cout << "DEBUG: member_info name: " << member_info.name_ << std::endl);
     // Get a pointer to the member's data in the binary buffer
     uint8_t * member_data = &message.data[member_info.offset_];
-    // Recursively (because some members may be non-primitive types themeslves) convert the member
+    // Recursively (because some members may be non-primitive types themselves) convert the member
     // to YAML
     yaml_msg[member_info.name_] = impl::member_to_yaml(member_info, member_data);
   }
