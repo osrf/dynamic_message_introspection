@@ -932,3 +932,62 @@ TEST(TestConversion, rcl_interfaces__ParameterEvent_cpp)
   EXPECT_EQ(msg_from_yaml.new_parameters[0].value.type, 1u);
   EXPECT_EQ(msg_from_yaml.new_parameters[0].value.bool_value, true);
 }
+
+TEST(TestConversion, PartialConversion_std_msgs__Header_cpp)
+{
+  // Start with a ROS message, like a std_msgs/Header
+  std_msgs::msg::Header msg;
+  msg.frame_id = "my_frame";
+  builtin_interfaces::msg::Time stamp;
+  stamp.sec = 4;
+  stamp.nanosec = 20u;
+  msg.stamp = stamp;
+
+  // Convert solely the 'sec' member of the timestamp to a YAML representation
+  InterfaceTypeName interface{"std_msgs", "Header"};
+  RosMessage_Cpp ros_msg;
+  ros_msg.type_info = dynmsg::cpp::get_type_info(interface);
+  ros_msg.data = reinterpret_cast<uint8_t *>(&msg);
+  YAML::Node yaml_msg = dynmsg::cpp::selected_member_to_yaml(ros_msg, "stamp/sec");
+  std::cout << "'sec' as YAML:" << std::endl;
+  std::cout << yaml_msg << std::endl << std::endl;
+
+  EXPECT_EQ(yaml_msg.as<int>(), 4);
+}
+
+TEST(TestConversion, PartialConversion_rcl_interfaces__ParameterEvent_cpp)
+{
+  // Start with a ROS message, like a rcl_interfaces/ParameterEvent
+  rcl_interfaces::msg::ParameterEvent msg;
+
+  builtin_interfaces::msg::Time stamp;
+  stamp.sec = 4;
+  stamp.nanosec = 20u;
+
+  rcl_interfaces::msg::ParameterValue param_value;
+  param_value.type = 1u;
+  param_value.bool_value = true;
+
+  rcl_interfaces::msg::Parameter param;
+  param.name = "the_param_name";
+  param.value = param_value;
+
+  msg.stamp = stamp;
+  msg.node = "/my/node";
+  msg.new_parameters.push_back(param);
+
+  // Convert solely the parameter array to a YAML representation
+  InterfaceTypeName interface{"rcl_interfaces", "ParameterEvent"};
+  RosMessage_Cpp ros_msg;
+  ros_msg.type_info = dynmsg::cpp::get_type_info(interface);
+  ros_msg.data = reinterpret_cast<uint8_t *>(&msg);
+  YAML::Node yaml_msg = dynmsg::cpp::selected_member_to_yaml(ros_msg, "new_parameters");
+  std::cout << "partial message to YAML:" << std::endl;
+  std::cout << yaml_msg << std::endl << std::endl;
+
+  EXPECT_TRUE(yaml_msg.IsSequence());
+  EXPECT_EQ(yaml_msg.size(), 1);
+  EXPECT_STREQ(yaml_msg[0]["name"].as<std::string>().c_str(), "the_param_name");
+  EXPECT_EQ(yaml_msg[0]["value"]["type"].as<int>(), 1u);
+  EXPECT_EQ(yaml_msg[0]["value"]["bool_value"].as<bool>(), true);
+}
