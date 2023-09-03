@@ -62,5 +62,20 @@ int main()
   printf("%s\n", msg_from_yaml.frame_id.c_str());
   printf("%d s, %d ns\n", msg_from_yaml.stamp.sec, msg_from_yaml.stamp.nanosec);
 
+  printf("\n");
+
+  // Note: In case only a portion of the message is of interest, it is also possible to limit the conversion
+  //       to this part of the message. This can be beneficial if only a few members of large messages are
+  //       further processed (e.g. width and height fields of a Pointcloud2 message without further need for obtaining
+  //       detailed information about the individual points).
+  YAML::Node partial_yaml_msg = dynmsg::cpp::selected_member_to_yaml(ros_msg, "stamp");
+  const std::string partial_yaml_string = dynmsg::yaml_to_string(partial_yaml_msg);
+
+  // Prints solely the 'stamp' sub-message (but also works for extracting values of individual message fields
+  // which are not a message on their own)
+  // sec: 4
+  // nanosec: 20
+  printf("%s\n", partial_yaml_string.c_str());
+
   return 0;
 }
