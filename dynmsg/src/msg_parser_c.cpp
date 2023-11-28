@@ -493,7 +493,14 @@ void yaml_to_rosmsg_impl(
     }
   }
   if (!yaml_keys.empty()) {
-    throw std::runtime_error("Found unknown fields in the YAML not corresponding to the given message.");
+    std::stringstream error_message;
+    error_message << "Found unknown fields in the YAML not corresponding to a " << typeinfo->message_namespace_ << "/"
+                  << typeinfo->message_name_ << " message:";
+    for (const std::string& key : yaml_keys)
+    {
+      error_message << " " << key << std::endl;
+    }
+    throw std::runtime_error(error_message.str());
   }
 }
 
