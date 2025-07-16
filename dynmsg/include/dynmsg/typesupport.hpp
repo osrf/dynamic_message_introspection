@@ -55,11 +55,11 @@ using MemberInfo = MemberInfo_C;
 using RosMessage = RosMessage_C;
 
 typedef const rosidl_message_type_support_t * (* get_message_ts_func)();
+}  // extern "C"
 
 // An interface type can be identified by its namespace (i.e. the package that stores it) and its
 // type name
 using InterfaceTypeName = std::pair<std::string, std::string>;
-}  // extern "C"
 
 namespace dynmsg
 {

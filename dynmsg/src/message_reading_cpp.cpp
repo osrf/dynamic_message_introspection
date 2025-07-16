@@ -396,9 +396,9 @@ dynamic_array_to_yaml_impl_bool(
 {
   DYNMSG_DEBUG(std::cout << "DEBUG: dynamic_array_to_yaml_impl_bool" << std::endl);
   static_cast<void>(member_info);
-  for (size_t ii = 0; ii < v->size(); ++ii) {
-    DYNMSG_DEBUG(std::cout << (v->operator[](ii) ? "true" : "false") << ", ");
-    array_node.push_back(v->operator[](ii));
+  for (const bool val : (*v)) {
+    DYNMSG_DEBUG(std::cout << (val ? "true" : "false") << ", ");
+    array_node.push_back(val);
   }
   DYNMSG_DEBUG(std::cout << std::endl);
 }
