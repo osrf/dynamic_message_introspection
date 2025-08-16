@@ -90,7 +90,7 @@ echo_topic(
     if (count > 0) {
       break;
     }
-    sleep(0.25);
+    usleep(250000);
   }
 
   bool taken = false;
@@ -364,7 +364,7 @@ main(int argc, char ** argv)
         return 1;
     }
   } catch (const std::runtime_error & e) {
-    RCUTILS_LOG_ERROR_NAMED("cli-tool", e.what());
+    RCUTILS_LOG_ERROR_NAMED("cli-tool", "Runtime error caught while dispatching command");
     return 1;
   }
 

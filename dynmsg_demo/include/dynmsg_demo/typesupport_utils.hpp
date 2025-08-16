@@ -23,8 +23,6 @@
 #include "rcl/node.h"
 #include "rcl/types.h"
 
-extern "C"
-{
 // Get the type name of an existing topic.
 // The topic must be being published or subscribed to by at least one node. If it is not, then the
 // topic will not exist and so no type information will be retrievable.
@@ -45,5 +43,5 @@ InterfaceTypeName get_topic_type_from_string_type(const std::string & type);
 // interface type. This pointer is returned. It can be passed to functions such as
 // rcl_subscription_init().
 const TypeSupport * get_type_support(const InterfaceTypeName & interface_type);
-}  // extern "C"
+
 #endif  // DYNMSG_DEMO__TYPESUPPORT_UTILS_HPP_
