@@ -51,7 +51,12 @@ ament_target_dependencies(dynmsg
   rosidl_typesupport_introspection_cpp
   yaml_cpp_vendor
 )
-target_link_libraries(dynmsg yaml-cpp::yaml-cpp)
+# Humble's yaml_cpp_vendor provides yaml-cpp; Jazzy+ provides yaml-cpp::yaml-cpp
+if(TARGET yaml-cpp::yaml-cpp)
+  target_link_libraries(dynmsg yaml-cpp::yaml-cpp)
+else()
+  target_link_libraries(dynmsg yaml-cpp)
+endif()
 target_include_directories(dynmsg PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
