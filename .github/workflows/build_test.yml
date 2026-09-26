@@ -17,7 +17,7 @@ env:
   CLONE_PATH: ros_ws/src/${{ github.events.repo.name }}
 
 # only run one build doc workflow at a time, cancel any running ones
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -31,6 +31,7 @@ jobs:
           - foxy
           - galactic
           - humble
+          - jazzy
           - rolling
         include:
           # Foxy Fitzroy (June 2020 - May 2023)
@@ -42,6 +43,9 @@ jobs:
           # Humble Hawksbill (May 2022 - May 2027)
           - ros_distribution: humble
             docker_image: rostooling/setup-ros-docker:ubuntu-jammy-ros-humble-ros-base-latest
+          # Jazzy Jalisco (May 2024 - May 2029)
+          - ros_distribution: jazzy
+            docker_image: rostooling/setup-ros-docker:ubuntu-jammy-ros-jazzy-ros-base-latest
           # Rolling Ridley  (June 2020 - Present)
           - ros_distribution: rolling
             docker_image: rostooling/setup-ros-docker:ubuntu-jammy-ros-rolling-ros-base-latest
