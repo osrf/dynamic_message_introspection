@@ -28,8 +28,6 @@ jobs:
       fail-fast: false
       matrix:
         ros_distribution:
-          - foxy
-          - galactic
           - humble
           - rolling
         include:
