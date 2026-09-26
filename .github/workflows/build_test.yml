@@ -42,6 +42,9 @@ jobs:
           # Humble Hawksbill (May 2022 - May 2027)
           - ros_distribution: humble
             docker_image: rostooling/setup-ros-docker:ubuntu-jammy-ros-humble-ros-base-latest
+          # Jazzy Jalisco (May 2024 - May 2029)
+          - ros_distribution: jazzy
+            docker_image: rostooling/setup-ros-docker:ubuntu-jammy-ros-jazzy-ros-base-latest
           # Rolling Ridley  (June 2020 - Present)
           - ros_distribution: rolling
             docker_image: rostooling/setup-ros-docker:ubuntu-jammy-ros-rolling-ros-base-latest
@@ -62,7 +65,7 @@ jobs:
           target-ros2-distro: ${{ matrix.ros_distribution }}
           vcs-repo-file-url: ""
       - name: Upload logs as artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build_and_test_logs_${{ matrix.ros_distribution }}
           path: ${{ env.WORKSPACE_PATH }}/log
