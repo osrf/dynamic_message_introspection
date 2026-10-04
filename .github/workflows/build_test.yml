@@ -38,6 +38,9 @@ jobs:
           # Jazzy Jalisco (May 2024 - May 2029)
           - ros_distribution: jazzy
             docker_image: rostooling/setup-ros-docker:ubuntu-noble-ros-jazzy-ros-base-latest
+          # Kilted Kaiju (May 2025 - Dec 2026)
+          - ros_distribution: jazzy
+            docker_image: rostooling/setup-ros-docker:ubuntu-noble-ros-kilted-ros-base-latest
           # Rolling Ridley  (June 2020 - Present)
           - ros_distribution: rolling
             docker_image: rostooling/setup-ros-docker:ubuntu-resolute-ros-rolling-ros-base-latest
