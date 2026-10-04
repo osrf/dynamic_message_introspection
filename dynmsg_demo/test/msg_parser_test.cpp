@@ -126,6 +126,16 @@ TEST(MsgParser, String) {
   dynmsg::c::ros_message_destroy(&generic_msg);
 }
 
+TEST(MsgParser, StringInvalidFieldCpp) {
+  EXPECT_ANY_THROW(dynmsg::cpp::yaml_to_rosmsg(
+    InterfaceTypeName{"std_msgs", "String"}, "{ invalid_field: hello }"));
+}
+
+TEST(MsgParser, StringInvalidFieldC) {
+  EXPECT_ANY_THROW(dynmsg::c::yaml_to_rosmsg(
+    InterfaceTypeName{"std_msgs", "String"}, "{ invalid_field: hello }"));
+}
+
 TEST(MsgParser, WideString) {
   auto generic_msg = dynmsg::c::yaml_to_rosmsg(
     InterfaceTypeName{"dynmsg_msgs", "WideString"},
