@@ -52,6 +52,19 @@ namespace cpp
  */
 YAML::Node message_to_yaml(const RosMessage_Cpp & message);
 
+/// Variant of dynmsg::cpp::message_to_yaml() for converting only selected members of a message into a YAML format.
+/**
+ * \details In order to decrease the overhead of converting full messages into their corresponding YAML format this
+ *          function uses the type introspection information to convert solely the specified member. This member
+ *          can either be a raw value or a message itself.
+ *
+ * \param message           ROS message to convert.
+ * \param member_identifier Identifier of the member, multiple levels within the message are separated by '/'.
+ * \return YAML representation of the selected member, will be null if the specified member is not part of the
+ *         provided message.
+ */
+YAML::Node selected_member_to_yaml(const RosMessage_Cpp & message, const std::string &member_identifier);
+
 }  // namespace cpp
 
 }  // namespace dynmsg

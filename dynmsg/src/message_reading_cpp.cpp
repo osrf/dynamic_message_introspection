@@ -630,11 +630,65 @@ message_to_yaml(const RosMessage_Cpp & message)
     DYNMSG_DEBUG(std::cout << "DEBUG: member_info name: " << member_info.name_ << std::endl);
     // Get a pointer to the member's data in the binary buffer
     uint8_t * member_data = &message.data[member_info.offset_];
-    // Recursively (because some members may be non-primitive types themeslves) convert the member
+    // Recursively (because some members may be non-primitive types themselves) convert the member
     // to YAML
     yaml_msg[member_info.name_] = impl::member_to_yaml(member_info, member_data);
   }
   return yaml_msg;
+}
+
+YAML::Node
+selected_member_to_yaml(const RosMessage_Cpp & message, const std::string &member_identifier)
+{
+  // in case no member identifier is provided the function defaults to converting the full message
+  if (member_identifier.empty()) {
+      return message_to_yaml(message);
+  }
+
+  RosMessage_Cpp tmp_msg = message;
+  std::size_t start = 0;
+  std::size_t end = 0;
+
+  const MemberInfo_Cpp *member_info = nullptr;
+  uint8_t * member_data = nullptr;
+
+  bool more_sublevels_available = true;
+
+  while (more_sublevels_available) {
+    std::string field_name;
+    if ((end = member_identifier.find('/', start)) != std::string::npos) {
+        field_name = member_identifier.substr(start, end - start);
+        start = end + 1;
+    } else {
+        field_name = member_identifier.substr(start);
+        more_sublevels_available = false;
+    }
+
+    // iterate over message and check whether the field is available
+    bool found = false;
+
+    for (uint32_t idx = 0; idx < tmp_msg.type_info->member_count_; idx++) {
+      member_info = &tmp_msg.type_info->members_[idx];
+      member_data = &tmp_msg.data[member_info->offset_];
+
+      if (std::string(member_info->name_) == field_name) {
+        if (member_info->type_id_ == rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE) {
+          // update temporary message used for processing to the nested member
+          tmp_msg.type_info = reinterpret_cast<const TypeInfo_Cpp *>(member_info->members_->data);
+          tmp_msg.data = const_cast<uint8_t *>(member_data);
+        }
+
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      return YAML::Node();
+    }
+  }
+
+  return impl::member_to_yaml(*member_info, member_data);
 }
 
 }  // namespace cpp
