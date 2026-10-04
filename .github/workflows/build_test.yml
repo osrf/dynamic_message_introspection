@@ -55,6 +55,13 @@ jobs:
         uses: actions/checkout@v7
         with:
           path: ${{ env.CLONE_PATH }}
+      - name: Debug ROS environment
+        run: |
+          echo "PATH=$PATH"
+          command -v rosdep || true
+          which rosdep || true
+          ls -l /usr/bin/rosdep || true
+          rosdep --version || true
       - name: Build and test
         uses: ros-tooling/action-ros-ci@0.4.8
         with:
