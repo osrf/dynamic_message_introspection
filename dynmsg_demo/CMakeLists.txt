@@ -22,7 +22,6 @@ find_package(dynmsg REQUIRED)
 find_package(rcl REQUIRED)
 find_package(rcl_action REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
-find_package(yaml-cpp REQUIRED)
 
 include_directories(include)
 add_library(dynmsg_demo_library STATIC
@@ -40,7 +39,6 @@ ament_export_targets(dynmsg_demo_library HAS_LIBRARY_TARGET)
 ament_export_dependencies(dynmsg)
 ament_export_dependencies(rcl)
 ament_export_dependencies(rcl_action)
-ament_export_dependencies(yaml-cpp)
 
 install(
   DIRECTORY include/
@@ -57,7 +55,7 @@ install(
 
 add_executable(clitool src/cli_tool.cpp)
 # should have been PRIVATE, but ament uses the old signature and we can't mix them
-target_link_libraries(clitool dynmsg_demo_library yaml-cpp::yaml-cpp)
+target_link_libraries(clitool dynmsg_demo_library)
 ament_target_dependencies(clitool dynmsg rcl yaml_cpp_vendor)
 
 install(TARGETS clitool DESTINATION lib/${PROJECT_NAME})
@@ -84,7 +82,7 @@ if(BUILD_TESTING)
   if(TEST_ASAN)
     target_compile_options(msg_parser_test PRIVATE -fsanitize=address)
   endif()
-  target_link_libraries(msg_parser_test dynmsg_demo_library ${asan_link_lib} yaml-cpp::yaml-cpp)
+  target_link_libraries(msg_parser_test dynmsg_demo_library ${asan_link_lib})
   ament_target_dependencies(msg_parser_test
     rcl
     test_msgs
@@ -94,7 +92,7 @@ if(BUILD_TESTING)
   )
   ament_add_gtest(read_msg_buffer test/test_read_msg_buffer.cpp)
   ament_target_dependencies(read_msg_buffer example_interfaces test_msgs)
-  target_link_libraries(read_msg_buffer dynmsg_demo_library yaml-cpp::yaml-cpp)
+  target_link_libraries(read_msg_buffer dynmsg_demo_library)
 endif()
 
 ament_package()
