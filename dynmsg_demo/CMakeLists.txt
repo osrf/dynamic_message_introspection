@@ -28,7 +28,13 @@ add_library(dynmsg_demo_library STATIC
   src/cli.cpp
   src/typesupport_utils.cpp
 )
-ament_target_dependencies(dynmsg_demo_library dynmsg rcl rcl_action yaml_cpp_vendor)
+target_link_libraries(dynmsg_demo_library
+  dynmsg::dynmsg
+  rcl::rcl
+  rcl_action::rcl_action
+  yaml-cpp
+)
+
 target_include_directories(dynmsg_demo_library PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>"
@@ -44,6 +50,7 @@ install(
   DIRECTORY include/
   DESTINATION include
 )
+
 install(
   TARGETS dynmsg_demo_library
   EXPORT dynmsg_demo_library
@@ -54,9 +61,12 @@ install(
 )
 
 add_executable(clitool src/cli_tool.cpp)
-# should have been PRIVATE, but ament uses the old signature and we can't mix them
-target_link_libraries(clitool dynmsg_demo_library)
-ament_target_dependencies(clitool dynmsg rcl yaml_cpp_vendor)
+target_link_libraries(clitool PRIVATE
+  dynmsg_demo_library
+  dynmsg::dynmsg
+  rcl::rcl
+  yaml-cpp
+)
 
 install(TARGETS clitool DESTINATION lib/${PROJECT_NAME})
 
@@ -82,17 +92,19 @@ if(BUILD_TESTING)
   if(TEST_ASAN)
     target_compile_options(msg_parser_test PRIVATE -fsanitize=address)
   endif()
-  target_link_libraries(msg_parser_test dynmsg_demo_library ${asan_link_lib})
-  ament_target_dependencies(msg_parser_test
-    rcl
-    test_msgs
-    std_msgs
-    dynmsg_msgs
-    yaml_cpp_vendor
+  target_link_libraries(msg_parser_test dynmsg_demo_library ${asan_link_lib}
+    rcl::rcl
+    test_msgs::test_msgs
+    std_msgs::std_msgs
+    dynmsg_msgs::dynmsg_msgs
+    yaml-cpp
   )
   ament_add_gtest(read_msg_buffer test/test_read_msg_buffer.cpp)
-  ament_target_dependencies(read_msg_buffer example_interfaces test_msgs)
-  target_link_libraries(read_msg_buffer dynmsg_demo_library)
+  target_link_libraries(read_msg_buffer
+    example_interfaces::example_interfaces
+    dynmsg_demo_library
+    test_msgs::test_msgs
+  )
 endif()
 
 ament_package()

@@ -17,10 +17,12 @@ find_package(std_msgs REQUIRED)
 add_executable(conversion_cpp
   examples/conversion_cpp.cpp
 )
-ament_target_dependencies(conversion_cpp
-  dynmsg
-  std_msgs
+
+target_link_libraries(conversion_cpp
+  dynmsg::dynmsg
+  std_msgs::std_msgs
 )
+
 install(TARGETS
   conversion_cpp
   DESTINATION lib/${PROJECT_NAME}
@@ -29,10 +31,12 @@ install(TARGETS
 add_executable(conversion_c
   examples/conversion_c.cpp
 )
-ament_target_dependencies(conversion_c
-  dynmsg
-  std_msgs
+
+target_link_libraries(conversion_c
+  dynmsg::dynmsg
+  std_msgs::std_msgs
 )
+
 install(TARGETS
   conversion_c
   DESTINATION lib/${PROJECT_NAME}
@@ -50,12 +54,12 @@ if(BUILD_TESTING)
   ament_add_gtest(test_conversion
     test/test_conversion.cpp
   )
-  ament_target_dependencies(test_conversion
-    builtin_interfaces
-    dynmsg
-    rcl_interfaces
-    std_msgs
-    test_msgs
+  target_link_libraries(test_conversion
+    builtin_interfaces::builtin_interfaces
+    dynmsg::dynmsg
+    rcl_interfaces::rcl_interfaces
+    std_msgs::std_msgs
+    test_msgs::test_msgs
   )
 endif()
 
