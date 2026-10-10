@@ -43,15 +43,16 @@ add_library(dynmsg STATIC
   src/string_utils.cpp
   src/yaml_utils.cpp
 )
-ament_target_dependencies(dynmsg
-  rcutils
-  rosidl_runtime_c
-  rosidl_runtime_cpp
-  rosidl_typesupport_introspection_c
-  rosidl_typesupport_introspection_cpp
-  yaml_cpp_vendor
+
+target_link_libraries(dynmsg PUBLIC
+  rcutils::rcutils
+  rosidl_runtime_c::rosidl_runtime_c
+  rosidl_runtime_cpp::rosidl_runtime_cpp
+  rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
+  rosidl_typesupport_introspection_cpp::rosidl_typesupport_introspection_cpp
+  yaml-cpp
 )
-target_link_libraries(dynmsg yaml-cpp)
+
 target_include_directories(dynmsg PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
@@ -96,8 +97,7 @@ if(BUILD_TESTING)
   target_link_libraries(test_vector_utils dynmsg)
 
   ament_add_gtest(test_typesupport test/test_typesupport.cpp)
-  target_link_libraries(test_typesupport dynmsg)
-  ament_target_dependencies(test_typesupport std_msgs)
+  target_link_libraries(test_typesupport dynmsg std_msgs::std_msgs)
 endif()
 
 ament_package()
