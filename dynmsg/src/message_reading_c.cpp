@@ -491,20 +491,12 @@ dynamic_array_to_yaml(
         array_node);
       break;
     case rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE:
-      // We do not know the specific type of the sequence because the type is not available at
-      // compile-time, but they all follow the same structure pattern, where a pointer to the data
-      // is first, followed by the element count, followed by the capacity
       RosMessage nested_member;
       nested_member.type_info = reinterpret_cast<const TypeInfo *>(member_info.members_->data);
-      uint8_t * element_data;
-      memcpy(&element_data, member_data, sizeof(void *));
-      size_t element_size;
-      element_size = nested_member.type_info->size_of_;
-      size_t element_count;
-      element_count = static_cast<size_t>(member_data[sizeof(void *)]);
-      for (size_t ii = 0; ii < element_count; ++ii) {
-        nested_member.data = element_data + ii * element_size;
+      for (size_t i = 0; i < member_info.size_function(member_data); i++) {
         // Recursively read the nested type into the array element in the YAML representation
+        nested_member.data = reinterpret_cast<uint8_t *>(
+          member_info.get_function(const_cast<uint8_t *>(member_data), i));
         array_node.push_back(dynmsg::c::message_to_yaml(nested_member));
       }
       break;
