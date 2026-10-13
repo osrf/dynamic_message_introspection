@@ -15,6 +15,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <string>
+#include <unordered_set>
 
 #include "rosidl_runtime_c/string.h"
 #include "rosidl_runtime_c/string_functions.h"
@@ -413,12 +414,23 @@ void yaml_to_rosmsg_impl(
   const TypeInfo * typeinfo,
   uint8_t * buffer)
 {
+  // Put all the YAML node keys into a set. We'll be removing the keys from the set as they are parsed. If at the end
+  // there are some keys left in the set, it means the YAML has extra fields that don't belong to the message, and an
+  // exception will be thrown.
+  std::unordered_set<std::string> yaml_keys;
+  for (const auto& elem : root)
+  {
+    yaml_keys.insert(elem.first.as<std::string>());
+  }
+
+
   for (uint32_t i = 0; i < typeinfo->member_count_; i++) {
     const auto & member = typeinfo->members_[i];
 
     if (!root[member.name_]) {
       continue;
     }
+    yaml_keys.erase(member.name_);
 
     switch (member.type_id_) {
       case rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT:
@@ -479,6 +491,16 @@ void yaml_to_rosmsg_impl(
       default:
         throw std::runtime_error("unknown type");
     }
+  }
+  if (!yaml_keys.empty()) {
+    std::stringstream error_message;
+    error_message << "Found unknown fields in the YAML not corresponding to a " << typeinfo->message_namespace_ << "/"
+                  << typeinfo->message_name_ << " message:";
+    for (const std::string& key : yaml_keys)
+    {
+      error_message << " " << key << std::endl;
+    }
+    throw std::runtime_error(error_message.str());
   }
 }
 
