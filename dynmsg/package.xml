@@ -5,7 +5,7 @@
   <version>1.0.0</version>
   <description>Introspection tools for message to/from YAML conversions</description>
   <maintainer email="geoff@openrobotics.org">Geoffrey Biggs</maintainer>
-  <license>Apache 2.0</license>
+  <license>Apache-2.0</license>
   <author email="bedard.christophe@gmail.com">Christophe Bedard</author>
   <author email="geoff@openrobotics.org">Geoffrey Biggs</author>
   <author email="koonpeng@openrobotics.org">Koon Peng Teo</author>
