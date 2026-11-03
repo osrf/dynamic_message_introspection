@@ -5,7 +5,7 @@
   <version>1.0.0</version>
   <description>Test messages for dynamic message type loading</description>
   <maintainer email="geoff@openrobotics.org">Geoffrey Biggs</maintainer>
-  <license>Apache 2.0</license>
+  <license>Apache-2.0</license>
   <author email="geoff@openrobotics.org">Geoffrey Biggs</author>
   <author email="koonpeng@openrobotics.org">Koon Peng Teo</author>
 
