@@ -20,12 +20,15 @@
 
 using namespace std::string_literals;
 
+// UTF-8 encoding of "zß水𝄋", spelled out as bytes so that it is a plain char string in every
+// C++ standard (u8"" literals are char8_t since C++20 and do not convert to std::string)
+static const char kUtf8[] = "z\xc3\x9f\xe6\xb0\xb4\xf0\x9d\x84\x8b";
+
 TEST(WideStrings, StringToU16) {
-  std::string utf8 = u8"z\u00df\u6c34\U0001d10b";  // "zß水𝄋"
-  EXPECT_EQ(string_to_u16string(utf8), u"z\u00df\u6c34\U0001d10b"s);
+  EXPECT_EQ(string_to_u16string(kUtf8), u"z\u00df\u6c34\U0001d10b"s);
 }
 
 TEST(WideStrings, U16ToString) {
   std::u16string u16 = u"z\u00df\u6c34\U0001d10b";  // "zß水𝄋"
-  EXPECT_EQ(u16string_to_string(u16), u8"z\u00df\u6c34\U0001d10b"s);
+  EXPECT_EQ(u16string_to_string(u16), kUtf8);
 }
