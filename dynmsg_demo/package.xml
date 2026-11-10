@@ -14,6 +14,7 @@
   <depend>dynmsg</depend>
   <depend>rcl</depend>
   <depend>rcl_action</depend>
+  <depend>rmw</depend>
   <depend>yaml_cpp_vendor</depend>
 
   <test_depend>ament_lint_auto</test_depend>
