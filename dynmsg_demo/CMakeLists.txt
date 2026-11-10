@@ -1,16 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(dynmsg_demo)
 
-# Default to C99
-if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 99)
-endif()
-
-# Default to C++14
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
   set(FLAG_NO_WARNINGS "-w")
@@ -18,6 +8,7 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 find_package(dynmsg REQUIRED)
 find_package(rcl REQUIRED)
 find_package(rcl_action REQUIRED)
@@ -30,6 +21,7 @@ add_library(dynmsg_demo_library STATIC
   src/typesupport_utils.cpp
 )
 target_link_libraries(dynmsg_demo_library
+  ament_cmake_ros_core::ament_ros_defaults
   dynmsg::dynmsg
   rcl::rcl
   rcl_action::rcl_action
@@ -43,6 +35,7 @@ target_include_directories(dynmsg_demo_library PUBLIC
 ament_export_include_directories(include)
 ament_export_libraries(dynmsg_demo_library)
 ament_export_targets(dynmsg_demo_library HAS_LIBRARY_TARGET)
+ament_export_dependencies(ament_cmake_ros_core)
 ament_export_dependencies(dynmsg)
 ament_export_dependencies(rcl)
 ament_export_dependencies(rcl_action)
@@ -63,6 +56,7 @@ install(
 
 add_executable(clitool src/cli_tool.cpp)
 target_link_libraries(clitool PRIVATE
+  ament_cmake_ros_core::ament_ros_defaults
   dynmsg_demo_library
   dynmsg::dynmsg
   rcl::rcl
@@ -95,6 +89,7 @@ if(BUILD_TESTING)
     target_compile_options(msg_parser_test PRIVATE -fsanitize=address)
   endif()
   target_link_libraries(msg_parser_test dynmsg_demo_library ${asan_link_lib}
+    ament_cmake_ros_core::ament_ros_defaults
     rcl::rcl
     test_msgs::test_msgs
     std_msgs::std_msgs
@@ -103,6 +98,7 @@ if(BUILD_TESTING)
   )
   ament_add_gtest(read_msg_buffer test/test_read_msg_buffer.cpp)
   target_link_libraries(read_msg_buffer
+    ament_cmake_ros_core::ament_ros_defaults
     example_interfaces::example_interfaces
     dynmsg_demo_library
     test_msgs::test_msgs

@@ -1,16 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 project(test_dynmsg)
 
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 find_package(dynmsg REQUIRED)
 find_package(std_msgs REQUIRED)
 
@@ -19,6 +15,7 @@ add_executable(conversion_cpp
 )
 
 target_link_libraries(conversion_cpp
+  ament_cmake_ros_core::ament_ros_defaults
   dynmsg::dynmsg
   std_msgs::std_msgs
 )
@@ -33,6 +30,7 @@ add_executable(conversion_c
 )
 
 target_link_libraries(conversion_c
+  ament_cmake_ros_core::ament_ros_defaults
   dynmsg::dynmsg
   std_msgs::std_msgs
 )
@@ -55,6 +53,7 @@ if(BUILD_TESTING)
     test/test_conversion.cpp
   )
   target_link_libraries(test_conversion
+    ament_cmake_ros_core::ament_ros_defaults
     builtin_interfaces::builtin_interfaces
     dynmsg::dynmsg
     rcl_interfaces::rcl_interfaces

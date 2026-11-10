@@ -1,16 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(dynmsg)
 
-# Default to C99
-if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 99)
-endif()
-
-# Default to C++14
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # -fPIC for building a static lib (yaml-cpp) that later gets linked into a dynamic lib
   add_compile_options(-Wall -Wextra -Wpedantic -fPIC)
@@ -19,6 +9,7 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(rosidl_runtime_c REQUIRED)
 find_package(rosidl_runtime_cpp REQUIRED)
@@ -44,6 +35,7 @@ add_library(dynmsg STATIC
 )
 
 target_link_libraries(dynmsg PUBLIC
+  ament_cmake_ros_core::ament_ros_defaults
   rcutils::rcutils
   rosidl_runtime_c::rosidl_runtime_c
   rosidl_runtime_cpp::rosidl_runtime_cpp
@@ -60,6 +52,7 @@ target_include_directories(dynmsg PUBLIC
 ament_export_include_directories(include)
 ament_export_libraries(dynmsg)
 ament_export_targets(dynmsg HAS_LIBRARY_TARGET)
+ament_export_dependencies(ament_cmake_ros_core)
 ament_export_dependencies(rcutils)
 ament_export_dependencies(rosidl_runtime_c)
 ament_export_dependencies(rosidl_runtime_cpp)
@@ -90,10 +83,14 @@ if(BUILD_TESTING)
   find_package(std_msgs REQUIRED)
 
   ament_add_gtest(wide_strings test/test_wide_strings.cpp)
-  target_link_libraries(wide_strings dynmsg)
+  target_link_libraries(wide_strings ament_cmake_ros_core::ament_ros_defaults dynmsg)
 
   ament_add_gtest(test_typesupport test/test_typesupport.cpp)
-  target_link_libraries(test_typesupport dynmsg std_msgs::std_msgs)
+  target_link_libraries(test_typesupport
+    ament_cmake_ros_core::ament_ros_defaults
+    dynmsg
+    std_msgs::std_msgs
+  )
 endif()
 
 ament_package()
