@@ -55,119 +55,102 @@ template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT>
 {
   using CppType = float;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_DOUBLE>
 {
   using CppType = double;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_LONG_DOUBLE>
 {
   using CppType = long double;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR>
 {
   using CppType = signed char;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_WCHAR>
 {
   using CppType = uint16_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOLEAN>
 {
   using CppType = bool;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET>
 {
   using CppType = uint8_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8>
 {
   using CppType = uint8_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8>
 {
   using CppType = int8_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT16>
 {
   using CppType = uint16_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT16>
 {
   using CppType = int16_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT32>
 {
   using CppType = uint32_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32>
 {
   using CppType = int32_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT64>
 {
   using CppType = uint64_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT64>
 {
   using CppType = int64_t;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING>
 {
   using CppType = std::string;
-  using SequenceType = std::vector<CppType>;
 };
 
 template<>
 struct TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING>
 {
   using CppType = std::u16string;
-  using SequenceType = std::vector<CppType>;
 };
 
 // Write an individual member into the binary message - generic
@@ -255,101 +238,6 @@ void write_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING>(
   *reinterpret_cast<CppType *>(buffer) = string_to_u16string(yaml.as<std::string>());
 }
 
-// Write an individual sequence member into the binary message - generic
-template<int RosTypeId>
-void write_sequence_member_item(
-  const YAML::Node & yaml,
-  uint8_t * buffer)
-{
-  DYNMSG_DEBUG(std::cout << "DEBUG: write_sequence_member_item<T>(): " << std::endl);
-  using CppType = typename TypeMappingCpp<RosTypeId>::CppType;
-  using SequenceType = typename TypeMappingCpp<RosTypeId>::SequenceType;
-  auto seq = reinterpret_cast<SequenceType *>(buffer);
-  seq->push_back(yaml.as<CppType>());
-}
-
-#ifdef DYNMSG_YAML_CPP_BAD_INT8_HANDLING
-// Write an individual sequence member into the binary message - [u]int8_t: char, octet, uint8/int8
-template<>
-void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR>(
-  const YAML::Node & yaml,
-  uint8_t * buffer)
-{
-  DYNMSG_DEBUG(std::cout << "DEBUG: write_sequence_member_item<char>(): " << std::endl);
-  using SequenceType =
-    typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR>::SequenceType;
-  std::string s = yaml.as<std::string>();
-  auto seq = reinterpret_cast<SequenceType *>(buffer);
-  seq->push_back((uint8_t)std::stoul(s));
-}
-template<>
-void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET>(
-  const YAML::Node & yaml,
-  uint8_t * buffer)
-{
-  DYNMSG_DEBUG(std::cout << "DEBUG: write_sequence_member_item<octet>(): " << std::endl);
-  using SequenceType =
-    typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET>::SequenceType;
-  std::string s = yaml.as<std::string>();
-  auto seq = reinterpret_cast<SequenceType *>(buffer);
-  seq->push_back((uint8_t)std::stoul(s));
-}
-template<>
-void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8>(
-  const YAML::Node & yaml,
-  uint8_t * buffer)
-{
-  DYNMSG_DEBUG(std::cout << "DEBUG: write_sequence_member_item<uint8>(): " << std::endl);
-  using SequenceType =
-    typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8>::SequenceType;
-  std::string s = yaml.as<std::string>();
-  auto seq = reinterpret_cast<SequenceType *>(buffer);
-  seq->push_back((uint8_t)std::stoul(s));
-}
-template<>
-void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8>(
-  const YAML::Node & yaml,
-  uint8_t * buffer)
-{
-  DYNMSG_DEBUG(std::cout << "DEBUG: write_sequence_member_item<int8>(): " << std::endl);
-  using SequenceType =
-    typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8>::SequenceType;
-  std::string s = yaml.as<std::string>();
-  auto seq = reinterpret_cast<SequenceType *>(buffer);
-  seq->push_back((int8_t)std::stoi(s));
-}
-#endif  // DYNMSG_YAML_CPP_BAD_INT8_HANDLING
-
-// Write an individual sequence member into the binary message - string
-template<>
-void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING>(
-  const YAML::Node & yaml,
-  uint8_t * buffer)
-{
-  DYNMSG_DEBUG(
-    std::cout << "DEBUG: write_sequence_member_item<string>(): " <<
-      yaml.as<std::string>() << std::endl);
-  using SequenceType =
-    typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING>::SequenceType;
-  auto seq = reinterpret_cast<SequenceType *>(buffer);
-  seq->push_back(yaml.as<std::string>());
-}
-
-// Write an individual sequence member into the binary message - wstring
-template<>
-void write_sequence_member_item<rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING>(
-  const YAML::Node & yaml,
-  uint8_t * buffer)
-{
-  DYNMSG_DEBUG(
-    std::cout << "DEBUG: write_sequence_member_item<wstring>(): " <<
-      yaml.as<std::string>() << std::endl);
-  using SequenceType =
-    typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING>::SequenceType;
-  auto seq = reinterpret_cast<SequenceType *>(buffer);
-  seq->push_back(string_to_u16string(yaml.as<std::string>()));
-}
-
 // Write a sequence member into the binary message - generic
 template<int RosTypeId>
 void write_member_sequence(
@@ -362,14 +250,15 @@ void write_member_sequence(
   if (member.is_upper_bound_ && yaml.size() > member.array_size_) {
     throw std::runtime_error("yaml sequence is more than capacity");
   }
+  member.resize_function(buffer, yaml.size());
   for (size_t i = 0; i < yaml.size(); i++) {
-    write_sequence_member_item<RosTypeId>(
+    write_member_item<RosTypeId>(
       yaml[i],
-      buffer
+      reinterpret_cast<uint8_t *>(member.get_function(buffer, i))
     );
   }
 }
-// std::vector<bool> is different
+// std::vector<bool> is different: its elements are not addressable, so there is no get function
 // https://en.cppreference.com/w/cpp/container/vector_bool
 template<>
 void write_member_sequence<rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOL>(
@@ -383,9 +272,8 @@ void write_member_sequence<rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOL>(
     throw std::runtime_error("yaml sequence is more than capacity");
   }
   // Just cast the sequence to std::vector<bool> and copy YAML node elements into it
-  using SequenceType =
-    typename TypeMappingCpp<rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOL>::SequenceType;
-  auto seq = reinterpret_cast<SequenceType *>(buffer);
+  auto seq = reinterpret_cast<std::vector<bool> *>(buffer);
+  seq->clear();
   for (size_t i = 0; i < yaml.size(); i++) {
     seq->push_back(yaml[i].as<bool>());
   }
