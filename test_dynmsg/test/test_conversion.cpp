@@ -571,6 +571,7 @@ TEST(TestConversion, test_msgs__UnboundedSequences_cpp)
   dynmsg::cpp::yaml_and_typeinfo_to_rosmsg(ros_msg.type_info, yaml_string, ros_message);
 
   compare_unbounded_sequences(&msg_from_yaml);
+  EXPECT_EQ(msg, msg_from_yaml);
 }
 
 TEST(TestConversion, test_msgs__Nested_c)

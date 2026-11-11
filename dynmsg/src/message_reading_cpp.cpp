@@ -368,24 +368,24 @@ void basic_value_to_yaml(
 }
 
 // Convert a dynamically-sized sequence to YAML - implementation function
-template<typename T>
 void
 dynamic_array_to_yaml_impl(
   const MemberInfo_Cpp & member_info,
-  const std::vector<T> * v,
+  const uint8_t * member_data,
   YAML::Node & array_node)
 {
   DYNMSG_DEBUG(
     std::cout << "DEBUG: dynamic_array_to_yaml_impl: " << (int)member_info.type_id_ << std::endl);
-  std::vector<T> * vn = const_cast<std::vector<T> *>(v);
-  for (size_t ii = 0; ii < vn->size(); ++ii) {
+  const size_t size = member_info.size_function(member_data);
+  for (size_t ii = 0; ii < size; ++ii) {
     member_to_yaml_array_item(
       member_info,
-      reinterpret_cast<const uint8_t *>(&(vn->data()[ii])),
+      reinterpret_cast<const uint8_t *>(member_info.get_const_function(member_data, ii)),
       array_node);
   }
 }
-// Custom version for std::vector<bool> because its implementation is different
+// Custom version for std::vector<bool> because its implementation is different: its elements are
+// not addressable, so there is no get function
 // https://en.cppreference.com/w/cpp/container/vector_bool
 void
 dynamic_array_to_yaml_impl_bool(
@@ -413,105 +413,27 @@ dynamic_array_to_yaml(
     std::cout << "DEBUG: dynamic_array_to_yaml: " << (int)member_info.type_id_ << std::endl);
   switch (member_info.type_id_) {
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<float> *>(member_data),
-        array_node);
-      break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_DOUBLE:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<double> *>(member_data),
-        array_node);
-      break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_LONG_DOUBLE:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<long double> *>(member_data),
-        array_node);
-      break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<signed char> *>(member_data),
-        array_node);
-      break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_WCHAR:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<uint16_t> *>(member_data),
-        array_node);
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT16:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT16:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT32:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT64:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT64:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING:
+    case rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING:
+      dynamic_array_to_yaml_impl(member_info, member_data, array_node);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOLEAN:
       dynamic_array_to_yaml_impl_bool(
         member_info,
         reinterpret_cast<const std::vector<bool> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_OCTET:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<uint8_t> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT8:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<uint8_t> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT8:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<int8_t> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT16:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<uint16_t> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT16:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<int16_t> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT32:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<uint32_t> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<int32_t> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_UINT64:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<uint64_t> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_INT64:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<int64_t> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<std::string> *>(member_data),
-        array_node);
-      break;
-    case rosidl_typesupport_introspection_cpp::ROS_TYPE_WSTRING:
-      dynamic_array_to_yaml_impl(
-        member_info,
-        reinterpret_cast<const std::vector<std::u16string> *>(member_data),
         array_node);
       break;
     case rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE:
