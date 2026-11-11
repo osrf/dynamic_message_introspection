@@ -37,6 +37,7 @@
 #include "rcl_action/graph.h"
 
 #include "rcutils/logging_macros.h"
+#include "rmw/rmw.h"
 
 class NotImplemented : public std::logic_error
 {

@@ -21,6 +21,7 @@ find_package(ament_cmake REQUIRED)
 find_package(dynmsg REQUIRED)
 find_package(rcl REQUIRED)
 find_package(rcl_action REQUIRED)
+find_package(rmw REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
 include_directories(include)
@@ -65,6 +66,7 @@ target_link_libraries(clitool PRIVATE
   dynmsg_demo_library
   dynmsg::dynmsg
   rcl::rcl
+  rmw::rmw
   yaml-cpp
 )
 
