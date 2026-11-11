@@ -15,6 +15,7 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <iomanip>
 #include <limits>
 #include <string>
 #include <vector>
