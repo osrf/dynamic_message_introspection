@@ -11,6 +11,7 @@
   <author email="koonpeng@openrobotics.org">Koon Peng Teo</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_ros_core</buildtool_depend>
 
   <depend>dynmsg</depend>
   <depend>std_msgs</depend>
