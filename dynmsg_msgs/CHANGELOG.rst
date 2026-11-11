@@ -2,8 +2,8 @@
 Changelog for package dynmsg_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2026-11-10)
+------------------
 * Use ament_ros_defaults for C and C++ standards (`#39 <https://github.com/osrf/dynamic_message_introspection/issues/39>`_)
 * Use proper SPDX ID for Apache-2.0 (`#37 <https://github.com/osrf/dynamic_message_introspection/issues/37>`_)
 * Add basic CI (`#19 <https://github.com/osrf/dynamic_message_introspection/issues/19>`_)

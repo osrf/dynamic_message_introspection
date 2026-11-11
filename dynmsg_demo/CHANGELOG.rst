@@ -2,8 +2,8 @@
 Changelog for package dynmsg_demo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2026-11-10)
+------------------
 * Add missing <iomanip> include in test (`#40 <https://github.com/osrf/dynamic_message_introspection/issues/40>`_)
 * Use ament_ros_defaults for C and C++ standards (`#39 <https://github.com/osrf/dynamic_message_introspection/issues/39>`_)
 * Add missing rmw/rmw.h include (`#42 <https://github.com/osrf/dynamic_message_introspection/issues/42>`_)

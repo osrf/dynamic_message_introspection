@@ -2,8 +2,8 @@
 Changelog for package test_dynmsg
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2026-11-10)
+------------------
 * Support rosidl::Buffer for uint8[] sequences (`#44 <https://github.com/osrf/dynamic_message_introspection/issues/44>`_)
 * Use ament_ros_defaults for C and C++ standards (`#39 <https://github.com/osrf/dynamic_message_introspection/issues/39>`_)
 * Use proper SPDX ID for Apache-2.0 (`#37 <https://github.com/osrf/dynamic_message_introspection/issues/37>`_)
