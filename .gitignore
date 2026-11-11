@@ -1,0 +1,7 @@
+tmp/
+build/
+build-*/
+
+*.so
+*.a
+*.tmp
