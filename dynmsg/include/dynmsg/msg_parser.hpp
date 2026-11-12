@@ -34,6 +34,8 @@ namespace c
  * representation for the given ROS message.
  *
  * It is an error for the YAML representation to contain a field that is not in the ROS message.
+ * A std::runtime_error exception will be thrown in this case.
+ *
  * It is not an error for a field of the ROS message to not be specified in the YAML
  * representation; that field will be left uninitialised.
  */
